@@ -23,16 +23,25 @@ def create_proposal_blueprint(db, fs):
     ##@token_required
     # def get_proposals(current_user):
     def get_proposals():
-        # proposals = proposal_service.get_user_proposals(str(current_user['_id']))
-        proposals = proposal_service.get_user_proposals("60f5a4f3a5c7e4a4f8b2b7b2")
+        proposals = proposal_service.get_proposals()
+        proposals = convert_object_ids(proposals)
+        return jsonify(proposals), 200
+    
+    @blueprint.route('/<proposal_id>', methods=['GET'])
+    ##@token_required
+    # def get_proposals(current_user):
+    def get_specific_proposals(proposal_id):
+        proposals = proposal_service.get_specific_proposal(proposal_id)
         proposals = convert_object_ids(proposals)
         return jsonify(proposals), 200
 
     @blueprint.route('/<proposal_id>', methods=['PUT'])
     #@token_required
-    def update_proposal(current_user, proposal_id):
+    # def update_proposal(current_user, proposal_id):
+    def update_proposal(proposal_id):
         data = request.get_json()
-        updated = proposal_service.update_proposal(proposal_id, data, str(current_user['_id']))
+        # updated = proposal_service.update_proposal(proposal_id, data, str(current_user['_id']))
+        updated = proposal_service.update_proposal(proposal_id, data, "60f5a4f3a5c7e4a4f8b2b7b2")
         return jsonify({'success': updated}), 200
 
     @blueprint.route('/<proposal_id>/team', methods=['POST'])

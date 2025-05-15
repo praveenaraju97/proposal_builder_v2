@@ -7,8 +7,10 @@ from controllers.proposal_controller import create_proposal_blueprint
 from utils.error_handler import handle_errors
 import os
 
+
 def create_app(config_name='default'):
     app = Flask(__name__)
+    CORS(app)  # Enable CORS for all routes
     app.config.from_object(config[config_name])
 
     # MongoDB setup
@@ -16,6 +18,13 @@ def create_app(config_name='default'):
     db = client['proposalbuilder']
     fs = GridFS(db)
 
+    CORS(app, resources={
+        r"/api/*": {
+            "origins": ["http://127.0.0.1:5000:5000"]
+        }
+    })
+
+    
     # Register blueprint with db and fs
     app.register_blueprint(create_proposal_blueprint(db, fs), url_prefix='/api/proposals')
 

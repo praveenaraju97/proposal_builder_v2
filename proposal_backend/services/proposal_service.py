@@ -17,10 +17,16 @@ class ProposalService:
         proposal_id = self.model.create(data)
         return self.model.get_by_id(proposal_id)
 
-    def get_user_proposals(self, user_id):
+    def get_proposals(self):
         proposals = self.model.get_all()
-        return [p for p in proposals if str(p['created_by']) == user_id or
-                any(str(m['user_id']) == user_id for m in p.get('team_members', []))]
+        # return [p for p in proposals if str(p['created_by']) == user_id or
+        #         any(str(m['user_id']) == user_id for m in p.get('team_members', []))]
+        return proposals 
+       
+    def get_specific_proposal(self,proposal_id):
+        proposals = self.model.get_by_id(proposal_id)
+        print(f"coming from service: {proposals}")
+        return proposals  
 
     def update_proposal(self, proposal_id, data, user_id):
         proposal = self.model.get_by_id(proposal_id)
