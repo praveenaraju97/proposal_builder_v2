@@ -27,17 +27,22 @@ class ProposalService:
         proposals = self.model.get_by_id(proposal_id)
         print(f"coming from service: {proposals}")
         return proposals  
+    
+    def delete_proposal(self,proposal_id):
+        proposals = self.model.delete(proposal_id)
+        print(f"coming from service for delete: {proposals}")
+        return proposals 
 
-    def update_proposal(self, proposal_id, data, user_id):
+    def update_proposal(self, proposal_id, data):
         proposal = self.model.get_by_id(proposal_id)
         if not proposal:
             raise APIError('Proposal not found', 404)
 
-        if str(proposal['created_by']) != user_id and not any(
-            str(m['user_id']) == user_id and m['role'] in ['editor', 'owner']
-            for m in proposal.get('team_members', [])
-        ):
-            raise APIError('Unauthorized', 403)
+        # if str(proposal['created_by']) != user_id and not any(
+        #     str(m['user_id']) == user_id and m['role'] in ['editor', 'owner']
+        #     for m in proposal.get('team_members', [])
+        # ):
+        #     raise APIError('Unauthorized', 403)
 
         return self.model.update(proposal_id, data)
 

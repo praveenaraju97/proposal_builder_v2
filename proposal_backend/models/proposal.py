@@ -34,6 +34,10 @@ class Proposal:
         result = self.collection.update_one({'_id': ObjectId(proposal_id)}, {'$set': data} if '$' not in data else data)
         return result.modified_count > 0
 
+    def delete(self, proposal_id):
+        result = self.collection.delete_one({'_id': ObjectId(proposal_id)})
+        return result.deleted_count > 0
+
     def add_version(self, proposal_id, file_id, user_id):
         proposal = self.get_by_id(proposal_id)
         new_version = proposal['current_version'] + 1
