@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Architecture Proposal Builder</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="styles.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar Navigation -->
+            <div class="col-md-3 sidebar">
+                <div class="sidebar-header">
+                    <img src="logo.png" alt="Company Logo" class="company-logo">
+                    <h3>Proposal Builder</h3>
+                </div>
+                <ul class="nav flex-column" id="proposalSections">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#cover-section">Cover Page</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#intro-section">Introduction</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#scope-section">Project Scope</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#approach-section">Our Approach</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#team-section">Our Team</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#timeline-section">Timeline</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#budget-section">Budget</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#terms-section">Terms & Conditions</a>
+                    </li>
+                </ul>
+                <div class="sidebar-footer">
+                    <button id="previewBtn" class="btn btn-primary">Preview Proposal</button>
+                    <button id="downloadBtn" class="btn btn-success">Download Word</button>
+                </div>
+            </div>
+            
+            <!-- Main Content Area -->
+            <div class="col-md-9 main-content">
+                <div class="toolbar">
+                    <button class="btn btn-sm btn-outline-secondary" id="addImageBtn">
+                        <i class="fas fa-image"></i> Add Image
+                    </button>
+                    <button class="btn btn-sm btn-outline-secondary" id="addTableBtn">
+                        <i class="fas fa-table"></i> Add Table
+                    </button>
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="togglePreview">
+                        <label class="form-check-label" for="togglePreview">Live Preview</label>
+                    </div>
+                </div>
+                
+                <!-- Proposal Sections -->
+                <div class="proposal-container">
+                    <!-- Cover Section -->
+                    <div id="cover-section" class="proposal-section active">
+                        <h2>Cover Page</h2>
+                        <div class="form-group">
+                            <label>Proposal Title</label>
+                            <input type="text" class="form-control" id="proposalTitle" placeholder="Enter proposal title">
+                        </div>
+                        <div class="form-group">
+                            <label>Client Name</label>
+                            <input type="text" class="form-control" id="clientName" placeholder="Enter client name">
+                        </div>
+                        <div class="form-group">
+                            <label>Project Address</label>
+                            <textarea class="form-control" id="projectAddress" rows="2" placeholder="Enter project address"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Date</label>
+                            <input type="date" class="form-control" id="proposalDate">
+                        </div>
+                        <div class="form-group">
+                            <label>Cover Image</label>
+                            <input type="file" class="form-control" id="coverImage" accept="image/*">
+                            <div id="coverImagePreview" class="image-preview mt-2"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Introduction Section -->
+                    <div id="intro-section" class="proposal-section">
+                        <h2>Introduction</h2>
+                        <div class="form-group">
+                            <label>Company Overview</label>
+                            <textarea class="form-control wysiwyg" id="companyOverview" rows="6" placeholder="Describe your company"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Project Understanding</label>
+                            <textarea class="form-control wysiwyg" id="projectUnderstanding" rows="6" placeholder="Describe your understanding of the project"></textarea>
+                        </div>
+                    </div>
+                    
+                    <!-- Project Scope Section -->
+                    <div id="scope-section" class="proposal-section">
+                        <h2>Project Scope</h2>
+                        <div class="scope-items">
+                            <div class="scope-item">
+                                <div class="form-group">
+                                    <label>Scope Item</label>
+                                    <input type="text" class="form-control scope-title" placeholder="Scope item title">
+                                </div>
+                                <div class="form-group">
+                                    <label>Description</label>
+                                    <textarea class="form-control scope-description" rows="3" placeholder="Scope item description"></textarea>
+                                </div>
+                                <button class="btn btn-sm btn-danger remove-scope">Remove</button>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary add-scope">Add Scope Item</button>
+                    </div>
+                    
+                    <!-- Our Approach Section -->
+                    <div id="approach-section" class="proposal-section">
+                        <h2>Our Approach</h2>
+                        <div class="form-group">
+                            <label>Design Philosophy</label>
+                            <textarea class="form-control wysiwyg" id="designPhilosophy" rows="4" placeholder="Describe your design philosophy and approach"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Methodology</label>
+                            <textarea class="form-control wysiwyg" id="methodology" rows="4" placeholder="Describe your project methodology"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Key Differentiators</label>
+                            <textarea class="form-control wysiwyg" id="differentiators" rows="4" placeholder="What makes your approach unique?"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Process Image</label>
+                            <input type="file" class="form-control" id="processImage" accept="image/*">
+                            <div id="processImagePreview" class="image-preview mt-2"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Our Team Section -->
+                    <div id="team-section" class="proposal-section">
+                        <h2>Our Team</h2>
+                        <div class="team-members">
+                            <div class="team-member">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>Team Member Name</label>
+                                            <input type="text" class="form-control member-name" placeholder="Name">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>Role</label>
+                                            <input type="text" class="form-control member-role" placeholder="Role">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>Photo</label>
+                                            <input type="file" class="form-control member-photo" accept="image/*">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>Bio/Experience</label>
+                                    <textarea class="form-control member-bio" rows="3" placeholder="Brief bio and relevant experience"></textarea>
+                                </div>
+                                <button class="btn btn-sm btn-danger remove-member">Remove</button>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary add-member">Add Team Member</button>
+                    </div>
+                    
+                    <!-- Timeline Section -->
+                    <div id="timeline-section" class="proposal-section">
+                        <h2>Project Timeline</h2>
+                        <div class="form-group">
+                            <label>Project Start Date</label>
+                            <input type="date" class="form-control" id="projectStartDate">
+                        </div>
+                        <div class="form-group">
+                            <label>Project Duration</label>
+                            <input type="text" class="form-control" id="projectDuration" placeholder="e.g., 6 months">
+                        </div>
+                        <div class="milestones">
+                            <div class="milestone">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label>Milestone</label>
+                                            <input type="text" class="form-control milestone-name" placeholder="Milestone name">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label>Start Date</label>
+                                            <input type="date" class="form-control milestone-start">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label>End Date</label>
+                                            <input type="date" class="form-control milestone-end">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label>Deliverables</label>
+                                            <input type="text" class="form-control milestone-deliverables" placeholder="Key deliverables">
+                                        </div>
+                                    </div>
+                                </div>
+                                <button class="btn btn-sm btn-danger remove-milestone">Remove</button>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary add-milestone">Add Milestone</button>
+                    </div>
+                    
+                    <!-- Budget Section -->
+                    <div id="budget-section" class="proposal-section">
+                        <h2>Project Budget</h2>
+                        <div class="form-group">
+                            <label>Total Project Budget</label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input type="number" class="form-control" id="totalBudget" placeholder="Total project budget">
+                            </div>
+                        </div>
+                        <div class="budget-items">
+                            <div class="budget-item">
+                                <div class="row">
+                                    <div class="col-md-5">
+                                        <div class="form-group">
+                                            <label>Item Description</label>
+                                            <input type="text" class="form-control budget-description" placeholder="Budget item description">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="form-group">
+                                            <label>Quantity</label>
+                                            <input type="number" class="form-control budget-quantity" placeholder="Qty">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="form-group">
+                                            <label>Unit Cost</label>
+                                            <div class="input-group">
+                                                <span class="input-group-text">$</span>
+                                                <input type="number" class="form-control budget-unit-cost" placeholder="Unit cost">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="form-group">
+                                            <label>Total</label>
+                                            <div class="input-group">
+                                                <span class="input-group-text">$</span>
+                                                <input type="number" class="form-control budget-total" placeholder="Total" readonly>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <button class="btn btn-sm btn-danger remove-budget-item">Remove</button>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary add-budget-item">Add Budget Item</button>
+                        <div class="form-group mt-3">
+                            <label>Payment Schedule</label>
+                            <textarea class="form-control wysiwyg" id="paymentSchedule" rows="3" placeholder="Describe payment terms and schedule"></textarea>
+                        </div>
+                    </div>
+                    
+                    <!-- Terms Section -->
+                    <div id="terms-section" class="proposal-section">
+                        <h2>Terms & Conditions</h2>
+                        <div class="form-group">
+                            <label>Standard Terms</label>
+                            <textarea class="form-control wysiwyg" id="standardTerms" rows="6" placeholder="Your standard terms and conditions"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Additional Notes</label>
+                            <textarea class="form-control wysiwyg" id="additionalNotes" rows="4" placeholder="Any additional terms or notes"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Signature</label>
+                            <input type="file" class="form-control" id="signatureImage" accept="image/*">
+                            <div id="signatureImagePreview" class="image-preview mt-2"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Preview Modal -->
+            <div class="modal fade" id="previewModal" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-xl">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Proposal Preview</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body" id="previewContent">
+                            <!-- Preview content will be generated here -->
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary" id="downloadFromPreview">Download Word</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Add Table Modal -->
+            <div class="modal fade" id="tableModal" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Add Table</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label>Number of Rows</label>
+                                <input type="number" class="form-control" id="tableRows" min="1" value="3">
+                            </div>
+                            <div class="form-group">
+                                <label>Number of Columns</label>
+                                <input type="number" class="form-control" id="tableCols" min="1" value="3">
+                            </div>
+                            <div class="form-group">
+                                <label>Table Caption (Optional)</label>
+                                <input type="text" class="form-control" id="tableCaption">
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button type="button" class="btn btn-primary" id="insertTable">Insert Table</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/docx/7.1.0/docx.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
