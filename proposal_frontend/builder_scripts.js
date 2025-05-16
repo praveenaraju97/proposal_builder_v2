@@ -242,7 +242,171 @@ $(document).ready(function() {
             ${/* Original preview content */''}
         `;
 
+        // Design Payment Stages Preview
+        previewHtml += `
+            <h2>Design Payment Stages</h2>
+            <table class="preview-table">
+                <thead>
+                    <tr>
+                        <th>Stage</th>
+                        <th>%age to be Paid</th>
+                        <th>On Submission</th>
+                        <th>On Approval</th>
+                    </tr>
+                </thead>
+                <tbody>
+        `;
+
+        $('.design-payment-entry').each(function() {
+            const stage = $(this).find('.design-stage').val() || '';
+            const percentage = $(this).find('.design-percentage').val() || '';
+            const submission = $(this).find('.design-submission').val() || '';
+            const approval = $(this).find('.design-approval').val() || '';
+
+            previewHtml += `
+                <tr>
+                    <td>${stage}</td>
+                    <td>${percentage}</td>
+                    <td>${submission}</td>
+                    <td>${approval}</td>
+                </tr>
+            `;
+        });
+
+        previewHtml += `
+                </tbody>
+            </table>
+        `;
+
+        // // Additional Service Rates Preview
+        // previewHtml += `
+        //     <h2>Schedule of Rates for Additional Service</h2>
+        //     <table class="preview-table">
+        //         <thead>
+        //             <tr>
+        //                 <th>Position</th>
+        //                 <th>AED/Hour</th>
+        //                 <th>Construction Stage Role</th>
+        //             </tr>
+        //         </thead>
+        //         <tbody>
+        // `;
+
+        // $('.additional-rate-entry').each(function() {
+        //     const position = $(this).find('.rate-position').val() || '';
+        //     const hourly = $(this).find('.rate-hourly').val() || '';
+        //     const role = $(this).find('.rate-const-role').val() || '';
+
+        //     previewHtml += `
+        //         <tr>
+        //             <td>${position}</td>
+        //             <td>${hourly}</td>
+        //             <td>${role}</td>
+        //         </tr>
+        //     `;
+        // });
+
+        // previewHtml += `
+        //         </tbody>
+        //     </table>
+        // `;
+        previewHtml += `
+            <h2>Schedule of Rates for Additional Service</h2>
+
+            <h4>Design Stage</h4>
+            <table class="preview-table">
+                <thead>
+                    <tr>
+                        <th>Position</th>
+                        <th>AED/Hour</th>
+                    </tr>
+                </thead>
+                <tbody>
+        `;
+
+        $('.design-service-rates .additional-rate-entry').each(function () {
+            const position = $(this).find('.rate-position').val() || '';
+            const hourly = $(this).find('.rate-hourly').val() || '';
+            previewHtml += `
+                <tr>
+                    <td>${position}</td>
+                    <td>${hourly}</td>
+                </tr>
+            `;
+        });
+
+        previewHtml += `
+                </tbody>
+            </table>
+
+            <h4>Construction Stage</h4>
+            <table class="preview-table">
+                <thead>
+                    <tr>
+                        <th>Position</th>
+                        <th>AED/Hour</th>
+                    </tr>
+                </thead>
+                <tbody>
+        `;
+
+        $('.construction-service-rates .additional-rate-entry').each(function () {
+            const position = $(this).find('.rate-position').val() || '';
+            const hourly = $(this).find('.rate-hourly').val() || '';
+            previewHtml += `
+                <tr>
+                    <td>${position}</td>
+                    <td>${hourly}</td>
+                </tr>
+            `;
+        });
+        previewHtml += `
+                </tbody>
+            </table>
+        `;
+        // Man Month Deployment Preview
+        previewHtml += `
+            <h2>Man Month Rates and Proposed Deployment</h2>
+            <table class="preview-table">
+                <thead>
+                    <tr>
+                        <th>Position / Location</th>
+                        <th>Role</th>
+                        <th>Man Month Rate</th>
+                        <th>Allocation</th>
+                        <th>Proposed Monthly Fee</th>
+                        <th>Remarks</th>
+                    </tr>
+                </thead>
+                <tbody>
+        `;
+
+        $('.man-month-entry').each(function () {
+            const pos = $(this).find('.mm-position').val() || '';
+            const role = $(this).find('.mm-role').val() || '';
+            const rate = $(this).find('.mm-rate').val() || '';
+            const alloc = $(this).find('.mm-allocation').val() || '';
+            const fee = $(this).find('.mm-fee').val() || '';
+            const rem = $(this).find('.mm-remarks').val() || '';
+
+            previewHtml += `
+                <tr>
+                    <td>${pos}</td>
+                    <td>${role}</td>
+                    <td>${rate}</td>
+                    <td>${alloc}</td>
+                    <td>${fee}</td>
+                    <td>${rem}</td>
+                </tr>
+            `;
+        });
+        previewHtml += `
+                </tbody>
+            </table>
+        `;
+
         $('#previewContent').html(previewHtml);
+
     }
 
     // Updated generateWordDocument()
@@ -623,6 +787,154 @@ $(document).ready(function() {
             }
         });
     }
+
+    // Design Payment Stage - Add Entry
+    $('.add-design-payment').click(function() {
+        const newEntry = $('.design-payment-entry').first().clone();
+        newEntry.find('input').val('');
+        $('.design-payment-stages').append(newEntry);
+    });
+
+    // Remove Design Payment Entry
+    $(document).on('click', '.remove-design-payment', function() {
+        if ($('.design-payment-entry').length > 1) {
+            $(this).closest('.design-payment-entry').remove();
+        } else {
+            alert('At least one payment stage is required.');
+        }
+    });
+
+    // Additional Service Rate - Add Entry
+    // $('.add-additional-rate').click(function() {
+    //     const newRate = $('.additional-rate-entry').first().clone();
+    //     newRate.find('input').val('');
+    //     $('.additional-service-rates').append(newRate);
+    // });
+
+    // // Remove Additional Rate Entry
+    // $(document).on('click', '.remove-additional-rate', function() {
+    //     if ($('.additional-rate-entry').length > 1) {
+    //         $(this).closest('.additional-rate-entry').remove();
+    //     } else {
+    //         alert('At least one rate is required.');
+    //     }
+    // });
+    // Add Design Stage Rate
+    $('.add-design-rate').click(function () {
+        const newRate = $('.design-service-rates .additional-rate-entry').first().clone();
+        newRate.find('input').val('');
+        $('.design-service-rates').append(newRate);
+    });
+
+    // Add Construction Stage Rate
+    $('.add-construction-rate').click(function () {
+        const newRate = $('.construction-service-rates .additional-rate-entry').first().clone();
+        newRate.find('input').val('');
+        $('.construction-service-rates').append(newRate);
+    });
+
+    // Remove Rate Entry (shared)
+    $(document).on('click', '.remove-additional-rate', function () {
+        const container = $(this).closest('.additional-rate-entry').parent();
+        if (container.find('.additional-rate-entry').length > 1) {
+            $(this).closest('.additional-rate-entry').remove();
+        } else {
+            alert('At least one rate must be maintained.');
+        }
+    });
+
+    // Add Man Month entry
+    $('.add-man-month').click(function () {
+        const newEntry = $('.man-month-entry').first().clone();
+        newEntry.find('input, textarea').val('');
+        $('.man-month-entries').append(newEntry);
+    });
+
+    // Remove Man Month entry
+    $(document).on('click', '.remove-man-month', function () {
+        if ($('.man-month-entry').length > 1) {
+            $(this).closest('.man-month-entry').remove();
+        } else {
+            alert('At least one entry is required.');
+        }
+    });
+
+    // Extend collectSectionData to handle new sections
+    function collectSectionData(section) {
+        const data = {};
+
+        section.find('input, textarea, select').each(function() {
+            const field = $(this);
+            const id = field.attr('id');
+            if (id) {
+                if (field.attr('type') === 'checkbox') {
+                    data[id] = field.is(':checked');
+                } else {
+                    data[id] = field.val();
+                }
+            }
+        });
+
+        // Collect design payment stage data
+        if (section.attr('id') === 'editable-design-payment-section') {
+            data.designPayments = [];
+            $('.design-payment-entry').each(function() {
+                data.designPayments.push({
+                    stage: $(this).find('.design-stage').val(),
+                    percentage: $(this).find('.design-percentage').val(),
+                    submission: $(this).find('.design-submission').val(),
+                    approval: $(this).find('.design-approval').val()
+                });
+            });
+        }
+
+        // Collect additional service rate data
+        if (section.attr('id') === 'editable-additional-rates-section') {
+            data.additionalRates = [];
+            // $('.additional-rate-entry').each(function() {
+            //     data.additionalRates.push({
+            //         position: $(this).find('.rate-position').val(),
+            //         rate: $(this).find('.rate-hourly').val(),
+            //         role: $(this).find('.rate-const-role').val()
+            //     });
+            // });
+            data.constructionStageRates = [];
+
+            $('.design-service-rates .additional-rate-entry').each(function () {
+                data.designStageRates.push({
+                    position: $(this).find('.rate-position').val(),
+                    rate: $(this).find('.rate-hourly').val()
+                });
+            });
+
+            $('.construction-service-rates .additional-rate-entry').each(function () {
+                data.constructionStageRates.push({
+                    position: $(this).find('.rate-position').val(),
+                    rate: $(this).find('.rate-hourly').val()
+                });
+            });
+        }
+        if (section.attr('id') === 'man-month-section') {
+            data.manMonthRates = [];
+
+            $('.man-month-entry').each(function () {
+                data.manMonthRates.push({
+                    position: $(this).find('.mm-position').val(),
+                    role: $(this).find('.mm-role').val(),
+                    rate: $(this).find('.mm-rate').val(),
+                    allocation: $(this).find('.mm-allocation').val(),
+                    fee: $(this).find('.mm-fee').val(),
+                    remarks: $(this).find('.mm-remarks').val()
+                });
+            });
+        }
+
+
+        data.section = section.attr('id');
+        data.status = 'draft';
+        return data;
+    }
+
 
     // Helper function to collect section data
     function collectSectionData(section) {

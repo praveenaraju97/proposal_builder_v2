@@ -46,6 +46,10 @@
                     <li class="nav-item"><a class="nav-link" href="#timeline-section">Timeline</a></li>
                     <li class="nav-item"><a class="nav-link" href="#budget-section">Budget</a></li>
                     <li class="nav-item"><a class="nav-link" href="#terms-section">Terms</a></li>
+                    <!-- ✅ Newly added sections below -->
+                    <li class="nav-item"><a class="nav-link" href="#man-month-section">Man Month Deployment</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#editable-design-payment-section">Design Payment Stages</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#editable-additional-rates-section">Additional Service Rates</a></li>
                 </ul>
                 <div class="sidebar-footer">
                     <button id="previewBtn" class="btn btn-primary">Preview Proposal</button>
@@ -247,6 +251,118 @@
                             <div id="processImagePreview" class="image-preview mt-2"></div>
                         </div>
                     </div>
+
+                    <div id="man-month-section" class="proposal-section">
+                    <h2>Man Month Rates and Proposed Deployment</h2>
+                    <div class="man-month-entries">
+                        <div class="man-month-entry row mb-3">
+                            <div class="col-md-3">
+                                <label>Position / Location</label>
+                                <input type="text" class="form-control mm-position" placeholder="e.g., Resident Engineer / Site Based">
+                            </div>
+                            <div class="col-md-3">
+                                <label>Role</label>
+                                <input type="text" class="form-control mm-role" placeholder="e.g., Technical coordination...">
+                            </div>
+                            <div class="col-md-2">
+                                <label>Man Month Rate</label>
+                                <input type="text" class="form-control mm-rate" placeholder="e.g., 45000">
+                            </div>
+                            <div class="col-md-2">
+                                <label>Allocation</label>
+                                <input type="text" class="form-control mm-allocation" placeholder="e.g., 60%">
+                            </div>
+                            <div class="col-md-2">
+                                <label>Monthly Fee</label>
+                                <input type="text" class="form-control mm-fee" placeholder="e.g., 27000">
+                            </div>
+                            <div class="col-md-12 mt-2">
+                                <label>Remarks</label>
+                                <textarea class="form-control mm-remarks" placeholder="e.g., 3 Full days / week"></textarea>
+                                <button class="btn btn-sm btn-danger mt-2 remove-man-month">Remove</button>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary add-man-month">Add Deployment Entry</button>
+                </div>
+
+                    <!-- Editable Design Payment Stages -->
+                    <div id="editable-design-payment-section" class="proposal-section">
+                        <h2>Design Payment Stages</h2>
+                        <div class="design-payment-stages">
+                            <div class="design-payment-entry row mb-3">
+                                <div class="col-md-3">
+                                    <label>Stage</label>
+                                    <input type="text" class="form-control design-stage" placeholder="e.g., Concept Design">
+                                </div>
+                                <div class="col-md-2">
+                                    <label>%age to be Paid</label>
+                                    <input type="text" class="form-control design-percentage" placeholder="e.g., 10%">
+                                </div>
+                                <div class="col-md-3">
+                                    <label>On Submission</label>
+                                    <input type="text" class="form-control design-submission" placeholder="e.g., 100%">
+                                </div>
+                                <div class="col-md-3">
+                                    <label>On Approval</label>
+                                    <input type="text" class="form-control design-approval" placeholder="e.g., 0%">
+                                </div>
+                                <div class="col-md-1 d-flex align-items-end">
+                                    <button class="btn btn-sm btn-danger remove-design-payment">Remove</button>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary add-design-payment">Add Payment Stage</button>
+                    </div>
+
+                    <!-- Editable Additional Services Rates -->
+                    <div id="editable-additional-rates-section" class="proposal-section">
+                    <h2>Schedule of Rates for Additional Service</h2>
+
+                    <!-- Design Stage Rates -->
+                    <h4>Design Stage</h4>
+                    <div class="design-service-rates">
+                        <div class="additional-rate-entry row mb-3">
+                            <div class="col-md-5">
+                                <label>Position</label>
+                                <input type="text" class="form-control rate-position" placeholder="e.g., Architect">
+                            </div>
+                            <div class="col-md-4">
+                                <label>AED/Hour</label>
+                                <input type="number" class="form-control rate-hourly" placeholder="e.g., 300">
+                            </div>
+                            <div class="col-md-2 d-flex align-items-end">
+                                <button class="btn btn-sm btn-danger remove-additional-rate">Remove</button>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary add-design-rate">Add Design Stage Rate</button>
+
+                    <hr>
+
+                    <!-- Construction Stage Rates -->
+                    <h4>Construction Stage</h4>
+                    <div class="construction-service-rates">
+                        <div class="additional-rate-entry row mb-3">
+                            <div class="col-md-5">
+                                <label>Position</label>
+                                <input type="text" class="form-control rate-position" placeholder="e.g., Site Engineer">
+                            </div>
+                            <div class="col-md-4">
+                                <label>AED/Hour</label>
+                                <input type="number" class="form-control rate-hourly" placeholder="e.g., 350">
+                            </div>
+                            <div class="col-md-2 d-flex align-items-end">
+                                <button class="btn btn-sm btn-danger remove-additional-rate">Remove</button>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary add-construction-rate">Add Construction Stage Rate</button>
+                </div>
+
+                    
+
+                    
                     
                     <!-- Our Team Section -->
                     <div id="team-section" class="proposal-section">
