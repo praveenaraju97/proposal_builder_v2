@@ -59,8 +59,8 @@ function loadProposals() {
             data.forEach(proposal => {
                 const row = `
                     <tr>
-                        <td>${proposal.title}</td>
-                        <td>${proposal.client_name || 'N/A'}</td>
+                        <td>${proposal.proposalTitle}</td>
+                        <td>${proposal.clientName || 'N/A'}</td>
                         <td><span class="badge ${getStatusBadgeClass(proposal.status)}">${proposal.status}</span></td>
                         <td>${new Date(proposal.created_at).toLocaleString()}</td>
                         <td>${new Date(proposal.updated_at).toLocaleString()}</td>
@@ -123,8 +123,8 @@ function deleteProposal(proposalId) {
     });
 }
 
-// Save proposal function
-function saveProposal(data, isUpdate = false) {
+// Save proposal function with continuation support
+function saveProposal(data, isUpdate = false, moveToNext = false) {
     const method = isUpdate ? 'PUT' : 'POST';
     const url = isUpdate ? `${API_BASE_URL}/proposals/${data._id}` : `${API_BASE_URL}/proposals`;
     
@@ -139,6 +139,22 @@ function saveProposal(data, isUpdate = false) {
         data: JSON.stringify(data),
         success: (response) => {
             alert(isUpdate ? 'Proposal updated successfully!' : 'Proposal saved successfully!');
+            
+            if (moveToNext) {
+                // Move to next section
+                const currentSection = $('.proposal-section.active');
+                const nextSection = currentSection.next('.proposal-section');
+                if (nextSection.length) {
+                    $('.proposal-section').removeClass('active');
+                    nextSection.addClass('active');
+                    
+                    // Update sidebar navigation
+                    const nextSectionId = nextSection.attr('id');
+                    $('#proposalSections a').removeClass('active');
+                    $(`#proposalSections a[href="#${nextSectionId}"]`).addClass('active');
+                }
+            }
+            
             return response;
         },
         error: handleApiError
@@ -1014,42 +1030,11 @@ $(document).ready(function() {
             <div class="button-group mt-3">
                 <button class="btn btn-primary save-section">Save</button>
                 <button class="btn btn-secondary clear-section">Clear</button>
+                <button class="btn btn-primary save-continue-section">Save & Continue</button>
             </div>
         `;
         $(this).append(buttonGroup);
     });
 
-    // Handle save section
-    $('.save-section').click(function() {
-        const section = $(this).closest('.proposal-section');
-        const sectionData = {};
-        
-        // Collect form data from the section
-        section.find('input, textarea').each(function() {
-            const field = $(this);
-            sectionData[field.attr('id')] = field.val();
-        });
-
-        // Check if we're updating an existing proposal
-        const urlParams = new URLSearchParams(window.location.search);
-        const proposalParam = urlParams.get('proposal');
-        const isUpdate = !!proposalParam;
-
-        if (isUpdate) {
-            const existingData = JSON.parse(decodeURIComponent(proposalParam));
-            sectionData._id = existingData._id;
-        }
-
-        saveProposal(sectionData, isUpdate);
-    });
-
-    // Handle clear section
-    $('.clear-section').click(function() {
-        if (confirm('Are you sure you want to clear this section? This will not affect saved data.')) {
-            const section = $(this).closest('.proposal-section');
-            section.find('input:not([type="button"]):not([type="submit"]):not([type="reset"])').val('');
-            section.find('textarea').val('');
-            section.find('.image-preview').empty().hide();
-        }
-    });
+    
 });

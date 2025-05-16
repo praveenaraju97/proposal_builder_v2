@@ -484,4 +484,168 @@ $(document).ready(function() {
             })
         ];
     }
+
+    document.addEventListener('DOMContentLoaded', function() {
+            // Get proposal data from URL if exists
+            const urlParams = new URLSearchParams(window.location.search);
+            const proposalParam = urlParams.get('proposal');
+            
+            if (proposalParam) {
+                try {
+                    const proposalData = JSON.parse(decodeURIComponent(proposalParam));
+                    // Fill form fields with proposal data
+                    $('#proposalTitle').val(proposalData.title);
+                    $('#clientName').val(proposalData.client_name);
+                    $('#projectAddress').val(proposalData.project_address);
+                    // ... populate other fields as needed
+                } catch (e) {
+                    console.error('Error parsing proposal data:', e);
+                }
+            }
+        });
+    // Update the section button group generation
+    $('.proposal-section').each(function() {
+        const buttonGroup = `
+            <div class="button-group mt-3">
+                <button class="btn btn-primary save-section">Save</button>
+                <button class="btn btn-success save-continue-section">Save & Continue</button>
+                <button class="btn btn-secondary clear-section">Clear</button>
+            </div>
+        `;
+        $(this).append(buttonGroup);
+    });
+
+    // Handle save section
+    $('.save-section').click(function() {
+        const section = $(this).closest('.proposal-section');
+        const sectionData = {};
+        
+        // Collect form data from the section
+        section.find('input, textarea').each(function() {
+            const field = $(this);
+            sectionData[field.attr('id')] = field.val();
+        });
+
+        // Check if we're updating an existing proposal
+        const urlParams = new URLSearchParams(window.location.search);
+        const proposalParam = urlParams.get('proposal');
+        const isUpdate = !!proposalParam;
+
+        if (isUpdate) {
+            const existingData = JSON.parse(decodeURIComponent(proposalParam));
+            sectionData._id = existingData._id;
+        }
+
+        saveProposal(sectionData, isUpdate);
+    });
+
+    // Handle save and continue
+    $('.save-continue-section').click(function() {
+        const section = $(this).closest('.proposal-section');
+        const sectionData = collectSectionData(section);
+        
+        // Check if we're updating an existing proposal
+        const urlParams = new URLSearchParams(window.location.search);
+        const proposalParam = urlParams.get('proposal');
+        const isUpdate = !!proposalParam;
+
+        if (isUpdate) {
+            const existingData = JSON.parse(decodeURIComponent(proposalParam));
+            sectionData._id = existingData._id;
+        }
+
+        saveProposal(sectionData, isUpdate, true);
+    });
+
+    // Handle clear section
+    $('.clear-section').click(function() {
+        if (confirm('Are you sure you want to clear this section? This will not affect saved data.')) {
+            const section = $(this).closest('.proposal-section');
+            section.find('input:not([type="button"]):not([type="submit"]):not([type="reset"])').val('');
+            section.find('textarea').val('');
+            section.find('.image-preview').empty().hide();
+        }
+    });
+
+    const API_BASE_URL = 'http://localhost:5000/api';
+
+    // Add saveProposal function if not exists or update existing one
+    function saveProposal(data, isUpdate = false, moveToNext = false) {
+        const method = isUpdate ? 'PUT' : 'POST';
+        const url = isUpdate ? `${API_BASE_URL}/proposals/${data._id}` : `${API_BASE_URL}/proposals`;
+        
+        // pull _id off and collect the rest into `payload`
+        const { _id, ...payload } = data;
+
+        return $.ajax({
+            url: url,
+            method: method,
+            crossDomain: true,
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            data: JSON.stringify(payload),
+            success: (response) => {
+                alert(isUpdate ? 'Proposal updated successfully!' : 'Proposal saved successfully!');
+                
+                if (moveToNext) {
+                    // Move to next section
+                    const currentSection = $('.proposal-section.active');
+                    const nextSection = currentSection.next('.proposal-section');
+                    if (nextSection.length) {
+                        // Update active section
+                        $('.proposal-section').removeClass('active');
+                        nextSection.addClass('active');
+                        
+                        // Update navigation
+                        const nextSectionId = nextSection.attr('id');
+                        $('#proposalSections a').removeClass('active');
+                        $(`#proposalSections a[href="#${nextSectionId}"]`).addClass('active');
+                        
+                        // Scroll to top of new section
+                        nextSection[0].scrollIntoView({ behavior: 'smooth' });
+                    }
+                }
+                
+                // Store proposal ID if it's a new proposal
+                if (!isUpdate && response._id) {
+                    const urlParams = new URLSearchParams(window.location.search);
+                    urlParams.set('proposal', JSON.stringify(response));
+                    window.history.replaceState({}, '', `${window.location.pathname}?${urlParams}`);
+                }
+                
+                return response;
+            },
+            error: function(xhr, status, error) {
+                console.error('Save Error:', { xhr, status, error });
+                alert('Failed to save proposal. Please try again.');
+            }
+        });
+    }
+
+    // Helper function to collect section data
+    function collectSectionData(section) {
+        const data = {};
+        
+        // Collect form data from the section
+        section.find('input, textarea, select').each(function() {
+            const field = $(this);
+            const id = field.attr('id');
+            if (id) {
+                if (field.attr('type') === 'checkbox') {
+                    data[id] = field.is(':checked');
+                } else {
+                    data[id] = field.val();
+                }
+            }
+        });
+        
+        // Add section identifier
+        data.section = section.attr('id');
+        data.status = 'draft';
+        
+        return data;
+    }
+
 });

@@ -459,26 +459,6 @@
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/docx/7.1.0/docx.min.js"></script>
     <script src="builder_scripts.js"></script>
-    <script>
-        // Add this at the beginning of your script
-        document.addEventListener('DOMContentLoaded', function() {
-            // Get proposal data from URL if exists
-            const urlParams = new URLSearchParams(window.location.search);
-            const proposalParam = urlParams.get('proposal');
-            
-            if (proposalParam) {
-                try {
-                    const proposalData = JSON.parse(decodeURIComponent(proposalParam));
-                    // Fill form fields with proposal data
-                    $('#proposalTitle').val(proposalData.title);
-                    $('#clientName').val(proposalData.client_name);
-                    $('#projectAddress').val(proposalData.project_address);
-                    // ... populate other fields as needed
-                } catch (e) {
-                    console.error('Error parsing proposal data:', e);
-                }
-            }
-        });
-    </script>
+    
 </body>
 </html>

@@ -41,7 +41,7 @@ def create_proposal_blueprint(db, fs):
     def update_proposal(proposal_id):
         data = request.get_json()
         # updated = proposal_service.update_proposal(proposal_id, data, str(current_user['_id']))
-        updated = proposal_service.update_proposal(proposal_id, data, "60f5a4f3a5c7e4a4f8b2b7b2")
+        updated = proposal_service.update_proposal(proposal_id, data)
         return jsonify({'success': updated}), 200
     
     @blueprint.route('/<proposal_id>', methods=['DELETE'])
