@@ -36,6 +36,7 @@ class Proposal:
 
     def delete(self, proposal_id):
         result = self.collection.delete_one({'_id': ObjectId(proposal_id)})
+        print(f"deleted processing : {result.deleted_count}")
         return result.deleted_count > 0
 
     def add_version(self, proposal_id, file_id, user_id):

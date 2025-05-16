@@ -8,6 +8,7 @@ class Config:
     # SECRET_KEY = os.getenv('SECRET_KEY', 'your-secret-key-here')
     # JWT_SECRET_KEY = os.getenv('JWT_SECRET_KEY', 'jwt-secret-key-here')
     UPLOAD_FOLDER = os.getenv('UPLOAD_FOLDER', 'uploads')
+    STATIC_FOLDER = os.getenv('STATIC_FOLDER', 'static')
     ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'docx'}
     
     @staticmethod

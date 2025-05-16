@@ -51,6 +51,7 @@ def create_proposal_blueprint(db, fs):
         data = request.get_json()
         # updated = proposal_service.update_proposal(proposal_id, data, str(current_user['_id']))
         deleted = proposal_service.delete_proposal(proposal_id)
+        print(f"deleted processing in controller: {deleted}")
         return jsonify({'success': deleted}), 200
 
     @blueprint.route('/<proposal_id>/team', methods=['POST'])
