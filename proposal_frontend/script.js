@@ -1,9 +1,161 @@
 const API_BASE_URL = 'http://localhost:5000/api';
 
+// Error handling utility function
+function handleApiError(xhr, status, error) {
+    console.error('API Error:', { xhr, status, error });
+    let errorMessage = 'An error occurred while processing your request.';
+    
+    if (xhr.responseJSON && xhr.responseJSON.error) {
+        errorMessage = xhr.responseJSON.error;
+    } else if (error) {
+        errorMessage = error;
+    }
+
+    // You can show this error in UI - adjust based on your needs
+    alert(errorMessage);
+}
+
+// Status badge utility function
+function getStatusBadgeClass(status) {
+    switch (status?.toLowerCase()) {
+        case 'draft':
+            return 'bg-secondary';
+        case 'pending':
+            return 'bg-warning';
+        case 'approved':
+            return 'bg-success';
+        case 'rejected':
+            return 'bg-danger';
+        case 'in review':
+            return 'bg-info';
+        default:
+            return 'bg-secondary';
+    }
+}
+
+// Utility functions
+function loadProposals() {
+    return $.ajax({
+        url: `${API_BASE_URL}/proposals`,
+        method: 'GET',
+        crossDomain: true,
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        success: (data) => {
+            const tbody = $('#proposalsTable tbody');
+            tbody.empty();
+            
+            if (!data || data.length === 0) {
+                $('#proposalsTableContainer').hide();
+                $('#proposalsAlert').removeClass('d-none').text('You have no proposals yet.');
+                return;
+            }
+            
+            $('#proposalsTableContainer').show();
+            $('#proposalsAlert').addClass('d-none');
+            
+            data.forEach(proposal => {
+                const row = `
+                    <tr>
+                        <td>${proposal.title}</td>
+                        <td>${proposal.client_name || 'N/A'}</td>
+                        <td><span class="badge ${getStatusBadgeClass(proposal.status)}">${proposal.status}</span></td>
+                        <td>${new Date(proposal.created_at).toLocaleString()}</td>
+                        <td>${new Date(proposal.updated_at).toLocaleString()}</td>
+                        <td>${proposal.current_version}</td>
+                        <td>
+                            <button class="btn btn-sm btn-primary load-proposal" data-id="${proposal._id}">
+                                <i class="fas fa-edit"></i> Edit
+                            </button>
+                            <button class="btn btn-sm btn-danger delete-proposal" data-id="${proposal._id}">
+                                <i class="fas fa-trash"></i> Delete
+                            </button>
+                        </td>
+                    </tr>
+                `;
+                tbody.append(row);
+            });
+        },
+        error: handleApiError
+    });
+}
+
+// Add this function after loadProposals()
+function loadProposal(proposalId) {
+    return $.ajax({
+        url: `${API_BASE_URL}/proposals/${proposalId}`,
+        method: 'GET',
+        crossDomain: true,
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        }
+    });
+}
+
+function deleteProposal(proposalId) {
+    console.log('Deleting proposal with ID:', proposalId);
+    return $.ajax({
+        url: `${API_BASE_URL}/proposals/${proposalId}`,
+        method: 'DELETE',
+        crossDomain: true,
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        }, 
+        data: JSON.stringify({}),               // empty JSON body
+        success: function(response) {
+            $('#confirmModal').modal('hide');
+            alert('Proposal deleted successfully!');
+            loadProposals(); // Reload the table
+        },
+        error: function(xhr, status, error) {
+            console.error('Delete Error:', { xhr, status, error });
+            let errorMessage = 'Failed to delete proposal.';
+            
+            if (xhr.responseJSON && xhr.responseJSON.error) {
+                errorMessage = xhr.responseJSON.error;
+            }
+            alert(errorMessage);
+        }
+    });
+}
+
+// Save proposal function
+function saveProposal(data, isUpdate = false) {
+    const method = isUpdate ? 'PUT' : 'POST';
+    const url = isUpdate ? `${API_BASE_URL}/proposals/${data._id}` : `${API_BASE_URL}/proposals`;
+    
+    return $.ajax({
+        url: url,
+        method: method,
+        crossDomain: true,
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        data: JSON.stringify(data),
+        success: (response) => {
+            alert(isUpdate ? 'Proposal updated successfully!' : 'Proposal saved successfully!');
+            return response;
+        },
+        error: handleApiError
+    });
+}
+
+function clearForm() {
+    $('input:not([type="button"]):not([type="submit"]):not([type="reset"])').val('');
+    $('textarea').val('');
+    $('.image-preview').empty().hide();
+}
+
 $(document).ready(function() {
     // Initialize sections
     $('.proposal-section').first().addClass('active');
     
+    loadProposals();
     // Navigation between sections
     $('#proposalSections a').click(function(e) {
         e.preventDefault();
@@ -188,6 +340,8 @@ $(document).ready(function() {
             $('.wysiwyg, input, textarea').off('input change', generatePreview);
         }
     });
+
+
     
     // Generate preview content
     function generatePreview() {
@@ -820,4 +974,82 @@ $(document).ready(function() {
             })
         ];
     }
+
+    // Add event handler for load proposal button
+    $(document).on('click', '.load-proposal', function() {
+        const proposalId = $(this).data('id');
+        loadProposal(proposalId).then(data => {
+            // Encode the proposal data to pass via URL
+            const encodedData = encodeURIComponent(JSON.stringify(data));
+            window.location.href = `BuilderPage.html?proposal=${encodedData}`;
+            
+        });
+    });
+
+    // Add event handler for delete proposal button
+    $(document).on('click', '.delete-proposal', function() {
+        const proposalId = $(this).data('id');
+        const title = $(this).closest('tr').find('td:first').text();
+        
+        // Show confirmation modal
+        $('#confirmModalTitle').text('Delete Proposal');
+        $('#confirmModalBody').text(`Are you sure you want to delete the proposal "${title}"?`);
+        $('#confirmActionBtn').data('id', proposalId).data('action', 'delete');
+        $('#confirmModal').modal('show');
+    });
+
+    // Handle confirmation modal action
+    $('#confirmActionBtn').click(function() {
+        const proposalId = $(this).data('id');
+        const action = $(this).data('action');
+        
+        if (action === 'delete') {
+            deleteProposal(proposalId);
+        }
+    });
+
+    // Add save and clear buttons to each section
+    $('.proposal-section').each(function() {
+        const buttonGroup = `
+            <div class="button-group mt-3">
+                <button class="btn btn-primary save-section">Save</button>
+                <button class="btn btn-secondary clear-section">Clear</button>
+            </div>
+        `;
+        $(this).append(buttonGroup);
+    });
+
+    // Handle save section
+    $('.save-section').click(function() {
+        const section = $(this).closest('.proposal-section');
+        const sectionData = {};
+        
+        // Collect form data from the section
+        section.find('input, textarea').each(function() {
+            const field = $(this);
+            sectionData[field.attr('id')] = field.val();
+        });
+
+        // Check if we're updating an existing proposal
+        const urlParams = new URLSearchParams(window.location.search);
+        const proposalParam = urlParams.get('proposal');
+        const isUpdate = !!proposalParam;
+
+        if (isUpdate) {
+            const existingData = JSON.parse(decodeURIComponent(proposalParam));
+            sectionData._id = existingData._id;
+        }
+
+        saveProposal(sectionData, isUpdate);
+    });
+
+    // Handle clear section
+    $('.clear-section').click(function() {
+        if (confirm('Are you sure you want to clear this section? This will not affect saved data.')) {
+            const section = $(this).closest('.proposal-section');
+            section.find('input:not([type="button"]):not([type="submit"]):not([type="reset"])').val('');
+            section.find('textarea').val('');
+            section.find('.image-preview').empty().hide();
+        }
+    });
 });
