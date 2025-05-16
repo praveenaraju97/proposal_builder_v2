@@ -1,4 +1,40 @@
 $(document).ready(function() {
+
+    // Initial proposal section selector
+    $('#sectionSelectForm').submit(function (e) {
+        e.preventDefault();
+
+        const selectedSections = [];
+        const sidebarList = $('#proposalSections');
+        sidebarList.empty();
+
+        // Clear previously shown sections
+        $('.proposal-section').removeClass('active').hide();
+
+        // Build sidebar and show only selected sections
+        $('.section-option:checked').each(function (index) {
+            const sectionId = $(this).val();
+            selectedSections.push(sectionId);
+
+            const sectionName = $(`#${sectionId} h2`).text() || sectionId.replace(/-/g, ' ');
+            sidebarList.append(`
+                <li class="nav-item">
+                    <a class="nav-link${index === 0 ? ' active' : ''}" href="#${sectionId}">${sectionName}</a>
+                </li>
+            `);
+
+            // Show only selected sections
+            $(`#${sectionId}`).addClass('active').show();
+        });
+
+        // Hide section selector
+        $('#sectionSelector').hide();
+
+        // Activate first section
+        $('.proposal-section').removeClass('active');
+        $(`#${selectedSections[0]}`).addClass('active');
+    });
+
     // Original code
     $('.proposal-section').first().addClass('active');
     

@@ -18,7 +18,41 @@
     </style>
 </head>
 <body>
+
     <div class="container-fluid">
+        <!-- Section Selector Panel -->
+    <div id="sectionSelector" class="container my-5">
+        <h2>Select Sections to Include</h2>
+        <form id="sectionSelectForm" class="mb-4">
+            <div class="form-check">
+                <input class="form-check-input section-option" type="checkbox" value="cover-section" checked>
+                <label class="form-check-label">Cover Page</label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input section-option" type="checkbox" value="agreement-section" checked>
+                <label class="form-check-label">Agreement Overview</label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input section-option" type="checkbox" value="documents-section" checked>
+                <label class="form-check-label">Constituent Documents</label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input section-option" type="checkbox" value="editable-design-payment-section" checked>
+                <label class="form-check-label">Design Payment Stages</label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input section-option" type="checkbox" value="editable-additional-rates-section" checked>
+                <label class="form-check-label">Additional Services (Design + Construction Rates)</label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input section-option" type="checkbox" value="man-month-section" checked>
+                <label class="form-check-label">Man Month Rates & Deployment</label>
+            </div>
+            <!-- Add more as needed -->
+
+            <button type="submit" class="btn btn-primary mt-3">Start Proposal</button>
+        </form>
+    </div>
         <div class="row">
             <!-- Sidebar Navigation -->
             <div class="col-md-3 sidebar">
@@ -26,7 +60,7 @@
                     <img src="logo.png" alt="Company Logo" class="company-logo">
                     <h3>Proposal Builder</h3>
                 </div>
-                <ul class="nav flex-column" id="proposalSections">
+                <!-- <ul class="nav flex-column" id="proposalSections">
                     <li class="nav-item"><a class="nav-link active" href="#cover-section">Cover Page</a></li>
                     <li class="nav-item"><a class="nav-link" href="#agreement-section">Agreement Overview</a></li>
                     <li class="nav-item"><a class="nav-link" href="#documents-section">Constituent Documents</a></li>
@@ -46,11 +80,14 @@
                     <li class="nav-item"><a class="nav-link" href="#timeline-section">Timeline</a></li>
                     <li class="nav-item"><a class="nav-link" href="#budget-section">Budget</a></li>
                     <li class="nav-item"><a class="nav-link" href="#terms-section">Terms</a></li>
-                    <!-- ✅ Newly added sections below -->
                     <li class="nav-item"><a class="nav-link" href="#man-month-section">Man Month Deployment</a></li>
                     <li class="nav-item"><a class="nav-link" href="#editable-design-payment-section">Design Payment Stages</a></li>
                     <li class="nav-item"><a class="nav-link" href="#editable-additional-rates-section">Additional Service Rates</a></li>
+                </ul> -->
+                <ul class="nav flex-column" id="proposalSections">
+                    <!-- Will be dynamically populated based on user selection -->
                 </ul>
+
                 <div class="sidebar-footer">
                     <button id="previewBtn" class="btn btn-primary">Preview Proposal</button>
                     <button id="downloadBtn" class="btn btn-success">Download Word</button>
@@ -72,9 +109,9 @@
                     </div>
                 </div>
 
-                <div class="proposal-container">
+                <div class="proposal-container" >
                     <!-- Original Sections -->
-                    <div id="cover-section" class="proposal-section active">
+                    <div id="cover-section" class="proposal-section" style="display: none;">
                         <!-- Original cover section content -->
                          <h2>Cover Page</h2>
                         <div class="form-group">
@@ -100,7 +137,7 @@
                         </div>
                     </div>
 
-                    <div id="intro-section" class="proposal-section">
+                    <div id="intro-section" class="proposal-section" style="display: none;">
                         <!-- Original introduction section -->
                          <h2>Introduction</h2>
                         <div class="form-group">
@@ -114,7 +151,7 @@
                     </div>
 
                     <!-- New Agreement Section -->
-                    <div id="agreement-section" class="proposal-section">
+                    <div id="agreement-section" class="proposal-section" style="display: none;">
                         <h2>Agreement Overview</h2>
                         <div class="row">
                             <div class="col-md-6">
@@ -176,7 +213,7 @@
                     </div>
 
                     <!-- New Constituent Documents Section -->
-                    <div id="documents-section" class="proposal-section">
+                    <div id="documents-section" class="proposal-section" style="display: none;">
                         <h2>Constituent Documents</h2>
                         <div class="form-group">
                             <div class="form-check">
@@ -212,7 +249,7 @@
                     </div>
 
                     <!-- Remaining sections (original and new) follow similar structure -->
-                     <div id="scope-section" class="proposal-section">
+                     <div id="scope-section" class="proposal-section" style="display: none;">
                         <h2>Project Scope</h2>
                         <div class="scope-items">
                             <div class="scope-item">
@@ -231,7 +268,7 @@
                     </div>
                     
                     <!-- Our Approach Section -->
-                    <div id="approach-section" class="proposal-section">
+                    <div id="approach-section" class="proposal-section" style="display: none;">
                         <h2>Our Approach</h2>
                         <div class="form-group">
                             <label>Design Philosophy</label>
@@ -252,7 +289,7 @@
                         </div>
                     </div>
 
-                    <div id="man-month-section" class="proposal-section">
+                    <div id="man-month-section" class="proposal-section" style="display: none;">
                     <h2>Man Month Rates and Proposed Deployment</h2>
                     <div class="man-month-entries">
                         <div class="man-month-entry row mb-3">
@@ -287,7 +324,7 @@
                 </div>
 
                     <!-- Editable Design Payment Stages -->
-                    <div id="editable-design-payment-section" class="proposal-section">
+                    <div id="editable-design-payment-section" class="proposal-section" style="display: none;">
                         <h2>Design Payment Stages</h2>
                         <div class="design-payment-stages">
                             <div class="design-payment-entry row mb-3">
@@ -316,7 +353,7 @@
                     </div>
 
                     <!-- Editable Additional Services Rates -->
-                    <div id="editable-additional-rates-section" class="proposal-section">
+                    <div id="editable-additional-rates-section" class="proposal-section" style="display: none;">
                     <h2>Schedule of Rates for Additional Service</h2>
 
                     <!-- Design Stage Rates -->
@@ -365,7 +402,7 @@
                     
                     
                     <!-- Our Team Section -->
-                    <div id="team-section" class="proposal-section">
+                    <div id="team-section" class="proposal-section" style="display: none;">
                         <h2>Our Team</h2>
                         <div class="team-members">
                             <div class="team-member">
@@ -400,7 +437,7 @@
                     </div>
                     
                     <!-- Timeline Section -->
-                    <div id="timeline-section" class="proposal-section">
+                    <div id="timeline-section" class="proposal-section" style="display: none;">
                         <h2>Project Timeline</h2>
                         <div class="form-group">
                             <label>Project Start Date</label>
@@ -445,7 +482,7 @@
                     </div>
                     
                     <!-- Budget Section -->
-                    <div id="budget-section" class="proposal-section">
+                    <div id="budget-section" class="proposal-section" style="display: none;">
                         <h2>Project Budget</h2>
                         <div class="form-group">
                             <label>Total Project Budget</label>
@@ -499,7 +536,7 @@
                     </div>
                     
                     <!-- Terms Section -->
-                    <div id="terms-section" class="proposal-section">
+                    <div id="terms-section" class="proposal-section" style="display: none;">
                         <h2>Terms & Conditions</h2>
                         <div class="form-group">
                             <label>Standard Terms</label>
