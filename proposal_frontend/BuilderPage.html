@@ -6,6 +6,7 @@
     <title>Architecture Proposal Builder</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="builder_styles.css" rel="stylesheet">
     <style>
         .button-group {
@@ -16,6 +17,9 @@
             margin-top: 20px;
         }
     </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
 <body>
 
@@ -37,6 +41,18 @@
                 <label class="form-check-label">Constituent Documents</label>
             </div>
             <div class="form-check">
+                <input class="form-check-input section-option" type="checkbox" value="general-scope-section" checked>
+                <label class="form-check-label">General Scope of Services</label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input section-option" type="checkbox" value="stages-deliverables-section" checked>
+                <label class="form-check-label">Stages and Deliverables</label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input section-option" type="checkbox" value="man-month-section" checked>
+                <label class="form-check-label">Man Month Rates & Deployment</label>
+            </div>
+            <div class="form-check">
                 <input class="form-check-input section-option" type="checkbox" value="editable-design-payment-section" checked>
                 <label class="form-check-label">Design Payment Stages</label>
             </div>
@@ -44,10 +60,12 @@
                 <input class="form-check-input section-option" type="checkbox" value="editable-additional-rates-section" checked>
                 <label class="form-check-label">Additional Services (Design + Construction Rates)</label>
             </div>
+            
             <div class="form-check">
-                <input class="form-check-input section-option" type="checkbox" value="man-month-section" checked>
-                <label class="form-check-label">Man Month Rates & Deployment</label>
+                <input class="form-check-input section-option" type="checkbox" value="terms-section" checked>
+                <label class="form-check-label">Terms & Conditions</label>
             </div>
+         
             <!-- Add more as needed -->
 
             <button type="submit" class="btn btn-primary mt-3">Start Proposal</button>
@@ -57,7 +75,7 @@
             <!-- Sidebar Navigation -->
             <div class="col-md-3 sidebar">
                 <div class="sidebar-header">
-                    <img src="logo.png" alt="Company Logo" class="company-logo">
+                    <img src=".\assets\pdf\archcorp logo.png" alt="Company Logo" class="company-logo">
                     <h3>Proposal Builder</h3>
                 </div>
                 <!-- <ul class="nav flex-column" id="proposalSections">
@@ -90,7 +108,7 @@
 
                 <div class="sidebar-footer">
                     <button id="previewBtn" class="btn btn-primary">Preview Proposal</button>
-                    <button id="downloadBtn" class="btn btn-success">Download Word</button>
+                    <button id="downloadBtn" class="btn btn-success">Download PDF</button>
                 </div>
             </div>
 
@@ -212,40 +230,130 @@
                         </div>
                     </div>
 
-                    <!-- New Constituent Documents Section -->
                     <div id="documents-section" class="proposal-section" style="display: none;">
                         <h2>Constituent Documents</h2>
                         <div class="form-group">
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" id="letterOffer" checked>
                                 <label class="form-check-label">Letter of Offer & Acceptance</label>
+                                <div class="mt-2">
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input doc-option" type="radio" name="letterOfferType" 
+                                            id="letterOfferDefault" value="default" checked>
+                                        <label class="form-check-label" for="letterOfferDefault">Use Default PDF</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input doc-option" type="radio" name="letterOfferType" 
+                                            id="letterOfferCustom" value="custom">
+                                        <label class="form-check-label" for="letterOfferCustom">Upload Custom File</label>
+                                    </div>
+                                    <div id="letterOfferUpload" class="mt-2" style="display: none;">
+                                        <input type="file" class="form-control" id="letterOfferFile" accept=".pdf">
+                                        <small class="text-muted">Accepted format: PDF only</small>
+                                        <div id="letterOfferFilePreview" class="file-preview-container mt-2"></div>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="form-check">
+                            
+                            <div class="form-check mt-3">
                                 <input class="form-check-input" type="checkbox" id="mainAgreement" checked>
                                 <label class="form-check-label">Main Agreement Body</label>
+                                <div class="mt-2">
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input doc-option" type="radio" name="mainAgreementType" 
+                                            id="mainAgreementDefault" value="default" checked>
+                                        <label class="form-check-label" for="mainAgreementDefault">Use Default PDF</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input doc-option" type="radio" name="mainAgreementType" 
+                                            id="mainAgreementCustom" value="custom">
+                                        <label class="form-check-label" for="mainAgreementCustom">Upload Custom File</label>
+                                    </div>
+                                    <div id="mainAgreementUpload" class="mt-2" style="display: none;">
+                                        <input type="file" class="form-control" id="mainAgreementFile" accept=".pdf">
+                                        <small class="text-muted">Accepted format: PDF only</small>
+                                        <div id="mainAgreementFilePreview" class="file-preview-container mt-2"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        
+                            <h4>Appendices</h4>
+                            <ul>
+                                <li>Appendix A: Scope of Services</li>
+                                <li>Appendix B: Remuneration and Payment</li>
+                                <li>Appendix C: Services of Others & Facilities</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- General Scope of Services Section -->
+                    <div id="general-scope-section" class="proposal-section" style="display: none;">
+                        <h2>General Scope of Services</h2>
+                        <div class="scope-services-entries">
+                            <div class="scope-service-entry row mb-3">
+                                <div class="col-md-3">
+                                    <label>Disciplines and Services</label>
+                                    <input type="text" class="form-control scope-discipline" placeholder="e.g., Architectural Design">
+                                </div>
+                                <div class="col-md-2">
+                                    <label>Service By</label>
+                                    <input type="text" class="form-control scope-service-by" placeholder="e.g., Archeorp, in house">
+                                </div>
+                                <div class="col-md-2">
+                                    <label>Inclusions</label>
+                                    <input type="text" class="form-control scope-inclusions" placeholder="e.g., Included">
+                                </div>
+                                <div class="col-md-4">
+                                    <label>Remarks</label>
+                                    <textarea class="form-control scope-remarks" placeholder="Additional remarks"></textarea>
+                                </div>
+                                <div class="col-md-1 d-flex align-items-end">
+                                    <button class="btn btn-sm btn-danger remove-scope-service">Remove</button>
+                                </div>
                             </div>
                         </div>
-                        <h4>Appendices</h4>
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div class="scope-item">
-                                    <h5>Appendix A</h5>
-                                    <p>Scope of Services</p>
+                        <button class="btn btn-primary add-scope-service">Add Service Entry</button>
+                    </div>
+
+                    <!-- Stages and Deliverables Section -->
+                    <div id="stages-deliverables-section" class="proposal-section" style="display: none;">
+                        <h2>Stages and Deliverables</h2>
+                        <div class="stage-entries">
+                            <div class="stage-entry mb-4">
+                                <div class="form-group">
+                                    <label>Stage Title</label>
+                                    <input type="text" class="form-control stage-title" placeholder="e.g., Outline Concept Design Stage">
                                 </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="scope-item">
-                                    <h5>Appendix B</h5>
-                                    <p>Remuneration and Payment</p>
+                                <div class="form-group">
+                                    <label>Tasks & Activities</label>
+                                    <textarea class="form-control stage-tasks" rows="3" placeholder="Describe tasks and activities"></textarea>
                                 </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="scope-item">
-                                    <h5>Appendix C</h5>
-                                    <p>Services of Others & Facilities</p>
+                                
+                                <h5>Deliverables</h5>
+                                <div class="deliverable-entries">
+                                    <div class="deliverable-entry row mb-2">
+                                        <div class="col-md-5">
+                                            <label>Deliverable</label>
+                                            <input type="text" class="form-control deliverable-name" placeholder="e.g., Site Plan">
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label>Format</label>
+                                            <input type="text" class="form-control deliverable-format" placeholder="e.g., A3 Size (Hardcopy)">
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label>Status</label>
+                                            <input type="text" class="form-control deliverable-status" placeholder="e.g., Completed">
+                                        </div>
+                                        <div class="col-md-1 d-flex align-items-end">
+                                            <button class="btn btn-sm btn-danger remove-deliverable">Remove</button>
+                                        </div>
+                                    </div>
                                 </div>
+                                <button class="btn btn-sm btn-secondary add-deliverable">Add Deliverable</button>
+                                <button class="btn btn-sm btn-danger remove-stage">Remove Stage</button>
                             </div>
                         </div>
+                        <button class="btn btn-primary add-stage">Add Stage</button>
                     </div>
 
                     <!-- Remaining sections (original and new) follow similar structure -->
@@ -570,7 +678,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary" id="downloadFromPreview">Download Word</button>
+                        <button type="button" class="btn btn-primary" id="downloadFromPreview">Download PDF</button>
                     </div>
                 </div>
             </div>

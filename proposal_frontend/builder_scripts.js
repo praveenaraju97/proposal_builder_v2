@@ -6,6 +6,7 @@ $(document).ready(function() {
 
         const selectedSections = [];
         const sidebarList = $('#proposalSections');
+        const filePreviews = {};
         sidebarList.empty();
 
         // Clear previously shown sections
@@ -39,7 +40,7 @@ $(document).ready(function() {
     $('.proposal-section').first().addClass('active');
     
     // Navigation between sections
-    $('#proposalSections a').click(function(e) {
+    $(document).on('click', '#proposalSections a', function(e) {
         e.preventDefault();
         const target = $(this).attr('href');
         $('.proposal-section').removeClass('active');
@@ -225,224 +226,169 @@ $(document).ready(function() {
         }
     });
 
+    function showPDFPreview(fileInput, previewContainer) {
+    const file = fileInput[0].files[0];
+    if (!file) return;
+
+    filePreviews[fileInput.attr('id')] = {
+        name: file.name,
+        type: file.type,
+        size: file.size
+    };
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        // Show PDF preview using object tag
+        previewContainer.html(`
+            <object data="${e.target.result}" type="application/pdf" width="100%" height="300px">
+                <p>PDF preview not available. <a href="${e.target.result}">Download file instead</a></p>
+            </object>
+            <div class="file-info mt-2">
+                <p class="file-name"><strong>${file.name}</strong></p>
+                <p class="file-size">${formatFileSize(file.size)}</p>
+            </div>
+        `);
+        previewContainer.show();
+    };
+    reader.readAsDataURL(file);
+}
+
+
     // Updated generatePreview()
     function generatePreview() {
-        let previewHtml = `
-            <div class="preview-header">
-                ${/* Original cover content */''}
-                <img src="logo.png" alt="Company Logo" class="preview-logo">
-                <h1>${$('#proposalTitle').val() || 'Architecture Proposal'}</h1>
-                <p>Prepared for: ${$('#clientName').val() || 'Client Name'}</p>
-                <p>Project Address: ${$('#projectAddress').val() || 'Not specified'}</p>
-                <p>Date: ${$('#proposalDate').val() || new Date().toLocaleDateString()}</p>
+        let previewHtml = '';
+        let pageNumber = 1;
+
+        // Cover Page
+        previewHtml += `
+            <div class="pdf-page">
+                <div class="section-content text-center">
+                    <img src=".\\assets\\pdf\\archcorp logo.png" alt="Company Logo" class="preview-logo mb-4">
+                    <h1 class="mb-4">${$('#proposalTitle').val() || 'Proposal'}</h1>
+                    <p class="mb-3">Prepared for: ${$('#clientName').val() || 'Client Name'}</p>
+                    <p class="mb-3">Project Address: ${$('#projectAddress').val() || 'Not specified'}</p>
+                    <p>Date: ${$('#proposalDate').val() || new Date().toLocaleDateString()}</p>
+                </div>
+                <div class="page-number">Page ${pageNumber++}</div>
             </div>
+        `;
 
-            <!-- New Agreement Overview -->
-            <h2>Agreement Overview</h2>
-            <div class="row">
-                <div class="col-md-6">
-                    <h3>Client Details</h3>
-                    <p><strong>Name:</strong> ${$('#clientNameFull').val()}</p>
-                    <p><strong>Representative:</strong> ${$('#clientRep').val()}</p>
-                    <p><strong>Email:</strong> ${$('#clientEmail').val()}</p>
+        // Agreement Overview
+        previewHtml += `
+            <div class="pdf-page">
+                <div class="section-header">
+                    <h2>Agreement Overview</h2>
                 </div>
-                <div class="col-md-6">
-                    <h3>Consultant Details</h3>
-                    <p><strong>Name:</strong> ${$('#consultantName').val()}</p>
-                    <p><strong>Representative:</strong> ${$('#consultantRep').val()}</p>
-                    <p><strong>Phone:</strong> ${$('#consultantPhone').val()}</p>
+                <div class="section-content">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h3>Client Details</h3>
+                            <p><strong>Name:</strong> ${$('#clientNameFull').val()}</p>
+                            <p><strong>Representative:</strong> ${$('#clientRep').val()}</p>
+                            <p><strong>Email:</strong> ${$('#clientEmail').val()}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h3>Consultant Details</h3>
+                            <p><strong>Name:</strong> ${$('#consultantName').val()}</p>
+                            <p><strong>Representative:</strong> ${$('#consultantRep').val()}</p>
+                            <p><strong>Phone:</strong> ${$('#consultantPhone').val()}</p>
+                        </div>
+                    </div>
                 </div>
+                <div class="page-number">Page ${pageNumber++}</div>
             </div>
-            <div class="row">
-                <div class="col-md-4">
-                    <p><strong>Date:</strong> 08 June 2023</p>
-                </div>
-                <div class="col-md-4">
-                    <p><strong>Project:</strong> BOB2 Jumeirah Garden City</p>
-                </div>
-                <div class="col-md-4">
-                    <p><strong>Plot No:</strong> 3347643</p>
-                </div>
-            </div>
-
-            <!-- Constituent Documents -->
-            <h2>Constituent Documents</h2>
-            <ul>
-                ${$('#letterOffer').is(':checked') ? '<li>Letter of Offer & Acceptance</li>' : ''}
-                ${$('#mainAgreement').is(':checked') ? '<li>Main Agreement Body</li>' : ''}
-                <li>Appendix A: Scope of Services</li>
-                <li>Appendix B: Remuneration and Payment</li>
-                <li>Appendix C: Services of Others & Facilities</li>
-            </ul>
-
-            ${/* Original preview content */''}
         `;
 
-        // Design Payment Stages Preview
-        previewHtml += `
-            <h2>Design Payment Stages</h2>
-            <table class="preview-table">
-                <thead>
-                    <tr>
-                        <th>Stage</th>
-                        <th>%age to be Paid</th>
-                        <th>On Submission</th>
-                        <th>On Approval</th>
-                    </tr>
-                </thead>
-                <tbody>
-        `;
-
-        $('.design-payment-entry').each(function() {
-            const stage = $(this).find('.design-stage').val() || '';
-            const percentage = $(this).find('.design-percentage').val() || '';
-            const submission = $(this).find('.design-submission').val() || '';
-            const approval = $(this).find('.design-approval').val() || '';
-
-            previewHtml += `
-                <tr>
-                    <td>${stage}</td>
-                    <td>${percentage}</td>
-                    <td>${submission}</td>
-                    <td>${approval}</td>
-                </tr>
-            `;
+        // Generate other sections with similar structure
+        $('.proposal-section:visible').each(function() {
+            const sectionId = $(this).attr('id');
+            if (sectionId !== 'cover-section' && sectionId !== 'agreement-section') {
+                previewHtml += `
+                    <div class="pdf-page">
+                        <div class="section-header">
+                            <h2>${$(this).find('h2').first().text()}</h2>
+                        </div>
+                        <div class="section-content">
+                            ${generateSectionContent($(this))}
+                        </div>
+                        <div class="page-number">Page ${pageNumber++}</div>
+                    </div>
+                `;
+            }
         });
-
-        previewHtml += `
-                </tbody>
-            </table>
-        `;
-
-        // // Additional Service Rates Preview
-        // previewHtml += `
-        //     <h2>Schedule of Rates for Additional Service</h2>
-        //     <table class="preview-table">
-        //         <thead>
-        //             <tr>
-        //                 <th>Position</th>
-        //                 <th>AED/Hour</th>
-        //                 <th>Construction Stage Role</th>
-        //             </tr>
-        //         </thead>
-        //         <tbody>
-        // `;
-
-        // $('.additional-rate-entry').each(function() {
-        //     const position = $(this).find('.rate-position').val() || '';
-        //     const hourly = $(this).find('.rate-hourly').val() || '';
-        //     const role = $(this).find('.rate-const-role').val() || '';
-
-        //     previewHtml += `
-        //         <tr>
-        //             <td>${position}</td>
-        //             <td>${hourly}</td>
-        //             <td>${role}</td>
-        //         </tr>
-        //     `;
-        // });
-
-        // previewHtml += `
-        //         </tbody>
-        //     </table>
-        // `;
-        previewHtml += `
-            <h2>Schedule of Rates for Additional Service</h2>
-
-            <h4>Design Stage</h4>
-            <table class="preview-table">
-                <thead>
-                    <tr>
-                        <th>Position</th>
-                        <th>AED/Hour</th>
-                    </tr>
-                </thead>
-                <tbody>
-        `;
-
-        $('.design-service-rates .additional-rate-entry').each(function () {
-            const position = $(this).find('.rate-position').val() || '';
-            const hourly = $(this).find('.rate-hourly').val() || '';
-            previewHtml += `
-                <tr>
-                    <td>${position}</td>
-                    <td>${hourly}</td>
-                </tr>
-            `;
-        });
-
-        previewHtml += `
-                </tbody>
-            </table>
-
-            <h4>Construction Stage</h4>
-            <table class="preview-table">
-                <thead>
-                    <tr>
-                        <th>Position</th>
-                        <th>AED/Hour</th>
-                    </tr>
-                </thead>
-                <tbody>
-        `;
-
-        $('.construction-service-rates .additional-rate-entry').each(function () {
-            const position = $(this).find('.rate-position').val() || '';
-            const hourly = $(this).find('.rate-hourly').val() || '';
-            previewHtml += `
-                <tr>
-                    <td>${position}</td>
-                    <td>${hourly}</td>
-                </tr>
-            `;
-        });
-        previewHtml += `
-                </tbody>
-            </table>
-        `;
-        // Man Month Deployment Preview
-        previewHtml += `
-            <h2>Man Month Rates and Proposed Deployment</h2>
-            <table class="preview-table">
-                <thead>
-                    <tr>
-                        <th>Position / Location</th>
-                        <th>Role</th>
-                        <th>Man Month Rate</th>
-                        <th>Allocation</th>
-                        <th>Proposed Monthly Fee</th>
-                        <th>Remarks</th>
-                    </tr>
-                </thead>
-                <tbody>
-        `;
-
-        $('.man-month-entry').each(function () {
-            const pos = $(this).find('.mm-position').val() || '';
-            const role = $(this).find('.mm-role').val() || '';
-            const rate = $(this).find('.mm-rate').val() || '';
-            const alloc = $(this).find('.mm-allocation').val() || '';
-            const fee = $(this).find('.mm-fee').val() || '';
-            const rem = $(this).find('.mm-remarks').val() || '';
-
-            previewHtml += `
-                <tr>
-                    <td>${pos}</td>
-                    <td>${role}</td>
-                    <td>${rate}</td>
-                    <td>${alloc}</td>
-                    <td>${fee}</td>
-                    <td>${rem}</td>
-                </tr>
-            `;
-        });
-        previewHtml += `
-                </tbody>
-            </table>
-        `;
 
         $('#previewContent').html(previewHtml);
+    }
 
+    // Helper function to generate section content
+    function generateSectionContent(section) {
+        const sectionId = section.attr('id');
+        let content = '';
+
+        switch(sectionId) {
+            case 'man-month-section':
+                content = generateManMonthTable();
+                break;
+            case 'editable-design-payment-section':
+                content = generateDesignPaymentTable();
+                break;
+            // Add more cases for other sections
+            default:
+                content = section.find('.section-content').html() || '';
+        }
+
+        return content;
+    }
+
+    // Update PDF generation
+    async function generatePDF() {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        
+        // Get all PDF pages
+        const pages = document.querySelectorAll('.pdf-page');
+        
+        // Convert each page to PDF
+        for (let i = 0; i < pages.length; i++) {
+            if (i > 0) doc.addPage();
+            
+            const canvas = await html2canvas(pages[i], {
+                scale: 2,
+                useCORS: true,
+                logging: false
+            });
+            
+            const imgData = canvas.toDataURL('image/jpeg', 1.0);
+            const pdfWidth = doc.internal.pageSize.getWidth();
+            const pdfHeight = doc.internal.pageSize.getHeight();
+            
+            doc.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight);
+        }
+        
+        // Merge with other PDFs if needed
+        const pdfsToMerge = await collectPDFs();
+        
+        if (pdfsToMerge.length > 0) {
+            const mergedPdf = await PDFLib.PDFDocument.create();
+            
+            // Add generated content
+            const generatedPdfBytes = doc.output('arraybuffer');
+            const generatedPdf = await PDFLib.PDFDocument.load(generatedPdfBytes);
+            const contentPages = await mergedPdf.copyPages(generatedPdf, generatedPdf.getPageIndices());
+            contentPages.forEach(page => mergedPdf.addPage(page));
+            
+            // Add other PDFs
+            for (const pdfBytes of pdfsToMerge) {
+                const pdf = await PDFLib.PDFDocument.load(pdfBytes);
+                const pages = await mergedPdf.copyPages(pdf, pdf.getPageIndices());
+                pages.forEach(page => mergedPdf.addPage(page));
+            }
+            
+            const mergedPdfBytes = await mergedPdf.save();
+            downloadPDF(mergedPdfBytes, 'proposal.pdf');
+        } else {
+            doc.save('proposal.pdf');
+        }
     }
 
     // Updated generateWordDocument()
@@ -895,6 +841,137 @@ $(document).ready(function() {
         }
     });
 
+    // Add Scope Service Entry
+    $('.add-scope-service').click(function() {
+        const newEntry = $('.scope-service-entry').first().clone();
+        newEntry.find('input, textarea').val('');
+        $('.scope-services-entries').append(newEntry);
+    });
+
+    // Remove Scope Service Entry
+    $(document).on('click', '.remove-scope-service', function() {
+        if ($('.scope-service-entry').length > 1) {
+            $(this).closest('.scope-service-entry').remove();
+        } else {
+            alert('At least one service entry is required.');
+        }
+    });
+
+    // Add Stage
+    $('.add-stage').click(function() {
+        const newStage = $('.stage-entry').first().clone();
+        newStage.find('input, textarea').val('');
+        $('.stage-entries').append(newStage);
+    });
+
+    // Remove Stage
+    $(document).on('click', '.remove-stage', function() {
+        if ($('.stage-entry').length > 1) {
+            $(this).closest('.stage-entry').remove();
+        } else {
+            alert('At least one stage is required.');
+        }
+    });
+
+    // Add Deliverable
+    $(document).on('click', '.add-deliverable', function() {
+        const newDeliverable = $('.deliverable-entry').first().clone();
+        newDeliverable.find('input').val('');
+        $(this).closest('.stage-entry').find('.deliverable-entries').append(newDeliverable);
+    });
+
+    // Remove Deliverable
+    $(document).on('click', '.remove-deliverable', function() {
+        if ($(this).closest('.stage-entry').find('.deliverable-entry').length > 1) {
+            $(this).closest('.deliverable-entry').remove();
+        } else {
+            alert('At least one deliverable is required.');
+        }
+    });
+
+      // Toggle file upload fields based on radio selection
+    $(document).on('change', '.doc-option', function() {
+        const containerId = $(this).closest('.form-check').find('.form-check-input').attr('id') + 'Upload';
+        if ($(this).val() === 'custom') {
+            $('#' + containerId).show();
+        } else {
+            $('#' + containerId).hide();
+            $('#' + containerId.replace('Upload', 'File')).val('');
+        }
+    });
+
+    // Store file data for preview
+    const filePreviews = {};
+
+    $(document).on('change', 'input[type="file"]', function() {
+        const fileInput = $(this);
+        const fileId = fileInput.attr('id');
+        const previewId = fileId + 'Preview';
+        const previewContainer = $('#' + previewId);
+        
+        if (fileInput[0].files && fileInput[0].files[0]) {
+            const file = fileInput[0].files[0];
+            filePreviews[fileId] = {
+                name: file.name,
+                type: file.type,
+                size: file.size
+            };
+            
+            // Show file info in preview
+            let iconClass = 'fa-file';
+            if (file.type.includes('pdf')) iconClass = 'fa-file-pdf';
+            else if (file.type.includes('word') || file.name.endsWith('.doc') || file.name.endsWith('.docx')) {
+                iconClass = 'fa-file-word';
+            }
+            
+            previewContainer.html(`
+                <div class="file-preview">
+                    <i class="fas ${iconClass} fa-3x"></i>
+                    <p class="file-name">${file.name}</p>
+                    <p class="file-size">${formatFileSize(file.size)}</p>
+                </div>
+            `);
+            previewContainer.show();
+        } else {
+            delete filePreviews[fileId];
+            previewContainer.empty().hide();
+        }
+    });
+    // Helper function to format file size
+    // Format file size
+    function formatFileSize(bytes) {
+        if (bytes === 0) return '0 Bytes';
+        const k = 1024;
+        const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    }
+
+    // Toggle file upload fields based on radio selection
+    $(document).on('change', '.doc-option', function() {
+        const containerId = $(this).closest('.form-check').find('.form-check-input').attr('id') + 'Upload';
+        if ($(this).val() === 'custom') {
+            $('#' + containerId).show();
+        } else {
+            $('#' + containerId).hide();
+            $('#' + containerId.replace('Upload', 'File')).val('');
+            $('#' + containerId.replace('Upload', 'FilePreview')).empty().hide();
+        }
+    });
+
+    // Toggle file upload fields based on radio selection
+    $(document).on('change', '.doc-option', function() {
+        const containerId = $(this).closest('.form-check').find('.form-check-input').attr('id') + 'Upload';
+        if ($(this).val() === 'custom') {
+            $('#' + containerId).show();
+        } else {
+            $('#' + containerId).hide();
+            $('#' + containerId.replace('Upload', 'File')).val('');
+            $('#' + containerId.replace('Upload', 'FilePreview')).empty().hide();
+        }
+    });
+
+
     // Extend collectSectionData to handle new sections
     function collectSectionData(section) {
         const data = {};
@@ -965,11 +1042,67 @@ $(document).ready(function() {
             });
         }
 
+        // Add these cases to the collectSectionData() function
+
+        if (section.attr('id') === 'general-scope-section') {
+            data.scopeServices = [];
+            $('.scope-service-entry').each(function() {
+                data.scopeServices.push({
+                    discipline: $(this).find('.scope-discipline').val(),
+                    serviceBy: $(this).find('.scope-service-by').val(),
+                    inclusions: $(this).find('.scope-inclusions').val(),
+                    remarks: $(this).find('.scope-remarks').val()
+                });
+            });
+        }
+
+        if (section.attr('id') === 'stages-deliverables-section') {
+            data.stagesDeliverables = [];
+            $('.stage-entry').each(function() {
+                const stage = {
+                    title: $(this).find('.stage-title').val(),
+                    tasks: $(this).find('.stage-tasks').val(),
+                    deliverables: []
+                };
+
+                $(this).find('.deliverable-entry').each(function() {
+                    stage.deliverables.push({
+                        name: $(this).find('.deliverable-name').val(),
+                        format: $(this).find('.deliverable-format').val(),
+                        status: $(this).find('.deliverable-status').val()
+                    });
+                });
+
+                data.stagesDeliverables.push(stage);
+            });
+        }
+
+        // Add to collectSectionData() for the documents section
+        if (section.attr('id') === 'documents-section') {
+            data.documents = {
+                letterOffer: {
+                    included: $('#letterOffer').is(':checked'),
+                    type: $('input[name="letterOfferType"]:checked').val(),
+                    file: filePreviews['letterOfferFile'] || null
+                },
+                mainAgreement: {
+                    included: $('#mainAgreement').is(':checked'),
+                    type: $('input[name="mainAgreementType"]:checked').val(),
+                    file: filePreviews['mainAgreementFile'] || null
+                },
+                appendixA: filePreviews['appendixAFile'] || null,
+                appendixB: filePreviews['appendixBFile'] || null,
+                appendixC: filePreviews['appendixCFile'] || null
+            };
+        }
+
 
         data.section = section.attr('id');
         data.status = 'draft';
         return data;
     }
+
+  
 
 
     // Helper function to collect section data
@@ -996,4 +1129,177 @@ $(document).ready(function() {
         return data;
     }
 
+});
+
+// Add after document.ready
+$(document).ready(function() {
+    // Handle document type selection
+    $('.doc-option').change(function() {
+        const documentType = $(this).attr('name').replace('Type', '');
+        const uploadDiv = $(`#${documentType}Upload`);
+        const previewDiv = $(`#${documentType}FilePreview`);
+        
+        if ($(this).val() === 'custom') {
+            uploadDiv.show();
+            previewDiv.empty();
+        } else {
+            uploadDiv.hide();
+            // Show default PDF
+            const defaultPdfPath = `assets/pdf/${documentType}_default.pdf`;
+            showPDFPreview(defaultPdfPath, previewDiv);
+        }
+    });
+
+    // Handle file uploads
+    $('input[type="file"][accept=".pdf"]').change(function() {
+        const file = this.files[0];
+        const previewDiv = $(this).siblings('.file-preview-container');
+        
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                showPDFPreview(e.target.result, previewDiv);
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    // Function to show PDF preview
+    function showPDFPreview(pdfSource, container) {
+        container.html(`
+            <div class="pdf-preview">
+                <object data="${pdfSource}" type="application/pdf" width="100%" height="500px">
+                    <p>Unable to display PDF. <a href="${pdfSource}" target="_blank">Download</a> instead.</p>
+                </object>
+            </div>
+        `);
+        container.show();
+    }
+
+    // Initialize document options
+    $('.doc-option[value="default"]:checked').each(function() {
+        const documentType = $(this).attr('name').replace('Type', '');
+        const previewDiv = $(`#${documentType}FilePreview`);
+        const defaultPdfPath = `assets/pdf/${documentType}_default.pdf`;
+        showPDFPreview(defaultPdfPath, previewDiv);
+    });
+
+});
+
+// Add these functions after the existing code
+async function generatePDF() {
+    // Create a new jsPDF instance
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    
+    // Get the preview content
+    const content = document.getElementById('previewContent');
+    
+    // Convert HTML to canvas
+    const canvas = await html2canvas(content);
+    const imgData = canvas.toDataURL('image/png');
+    
+    // Add the content to PDF
+    const pdfWidth = doc.internal.pageSize.getWidth();
+    const pdfHeight = doc.internal.pageSize.getHeight();
+    doc.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+    
+    // Get any uploaded or default PDFs
+    const pdfsToMerge = await collectPDFs();
+    
+    if (pdfsToMerge.length > 0) {
+        // Merge PDFs using PDF-lib
+        const mergedPdf = await PDFLib.PDFDocument.create();
+        
+        // First add the generated content
+        const generatedPdfBytes = doc.output('arraybuffer');
+        const generatedPdf = await PDFLib.PDFDocument.load(generatedPdfBytes);
+        const contentPages = await mergedPdf.copyPages(generatedPdf, generatedPdf.getPageIndices());
+        contentPages.forEach(page => mergedPdf.addPage(page));
+        
+        // Then add each collected PDF
+        for (const pdfBytes of pdfsToMerge) {
+            const pdf = await PDFLib.PDFDocument.load(pdfBytes);
+            const pages = await mergedPdf.copyPages(pdf, pdf.getPageIndices());
+            pages.forEach(page => mergedPdf.addPage(page));
+        }
+        
+        // Save the merged PDF
+        const mergedPdfBytes = await mergedPdf.save();
+        downloadPDF(mergedPdfBytes, 'proposal.pdf');
+    } else {
+        // If no PDFs to merge, just download the generated content
+        doc.save('proposal.pdf');
+    }
+}
+
+async function collectPDFs() {
+    const pdfs = [];
+    
+    // Check Letter of Offer
+    if ($('#letterOffer').is(':checked')) {
+        if ($('#letterOfferDefault').is(':checked')) {
+            const defaultPdfPath = 'assets/pdf/letterOffer_default.pdf';
+            const pdfBytes = await fetchPDF(defaultPdfPath);
+            pdfs.push(pdfBytes);
+        } else if ($('#letterOfferCustom').is(':checked')) {
+            const fileInput = document.getElementById('letterOfferFile');
+            if (fileInput.files[0]) {
+                const pdfBytes = await readFileAsArrayBuffer(fileInput.files[0]);
+                pdfs.push(pdfBytes);
+            }
+        }
+    }
+    
+    // Check Main Agreement
+    if ($('#mainAgreement').is(':checked')) {
+        if ($('#mainAgreementDefault').is(':checked')) {
+            const defaultPdfPath = 'assets/pdf/mainAgreement_default.pdf';
+            const pdfBytes = await fetchPDF(defaultPdfPath);
+            pdfs.push(pdfBytes);
+        } else if ($('#mainAgreementCustom').is(':checked')) {
+            const fileInput = document.getElementById('mainAgreementFile');
+            if (fileInput.files[0]) {
+                const pdfBytes = await readFileAsArrayBuffer(fileInput.files[0]);
+                pdfs.push(pdfBytes);
+            }
+        }
+    }
+    
+    return pdfs;
+}
+
+async function fetchPDF(url) {
+    const response = await fetch(url);
+    const arrayBuffer = await response.arrayBuffer();
+    return arrayBuffer;
+}
+
+function readFileAsArrayBuffer(file) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsArrayBuffer(file);
+    });
+}
+
+function downloadPDF(bytes, filename) {
+    const blob = new Blob([bytes], { type: 'application/pdf' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(link.href);
+}
+
+// Update the click handler for download button
+$('#downloadBtn').click(function() {
+    generatePDF();
+});
+
+$('#downloadFromPreview').click(function() {
+    generatePDF();
 });
