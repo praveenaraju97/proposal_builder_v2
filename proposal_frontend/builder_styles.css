@@ -311,13 +311,13 @@ body {
     page-break-after: auto;
 }
 
-.page-number {
+/* .page-number {
     position: absolute;
     bottom: 20px;
     right: 20px;
     font-size: 12px;
     color: #666;
-}
+} */
 
 .section-content {
     margin-bottom: 40px;
@@ -339,3 +339,79 @@ body {
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     margin-bottom: 40px;
 }
+
+/* Add these styles to ensure proper PDF layout */
+.pdf-page {
+    width: 210mm;
+    min-height: 297mm;
+    padding: 20mm;
+    margin: 10mm auto;
+    background: white;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    position: relative;
+    box-sizing: border-box;
+    page-break-after: always;
+}
+
+.pdf-page.temp-hide {
+    position: absolute;
+    left: -9999px;
+    visibility: hidden;
+}
+
+@media print {
+    .pdf-page {
+        margin: 0;
+        box-shadow: none;
+    }
+}
+
+.section-header h2 {
+    color: #2c3e50;
+    border-bottom: 2px solid #2c3e50;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+
+.section-content {
+    font-family: 'Times New Roman', serif;
+    font-size: 12pt;
+    line-height: 1.6;
+}
+
+.preview-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 15px 0;
+    font-size: 11pt;
+}
+
+.preview-table th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+    padding: 8px;
+    border: 1px solid #ddd;
+}
+
+.preview-table td {
+    padding: 8px;
+    border: 1px solid #ddd;
+}
+
+.page-number {
+    position: absolute;
+    bottom: 10mm;
+    right: 20mm;
+    font-size: 10pt;
+    color: #666;
+}
+
+.preview-logo-top-right {
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 40px;
+}
+
+
+

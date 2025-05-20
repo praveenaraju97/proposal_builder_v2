@@ -20,6 +20,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
 </head>
 <body>
 
@@ -121,17 +122,17 @@
                     <button class="btn btn-sm btn-outline-secondary" id="addTableBtn">
                         <i class="fas fa-table"></i> Add Table
                     </button>
-                    <div class="form-check form-switch">
-                        <input class="form-check-input" type="checkbox" id="togglePreview">
-                        <label class="form-check-label" for="togglePreview">Live Preview</label>
-                    </div>
                 </div>
 
                 <div class="proposal-container" >
                     <!-- Original Sections -->
                     <div id="cover-section" class="proposal-section" style="display: none;">
                         <!-- Original cover section content -->
-                         <h2>Cover Page</h2>
+                        <h2>Cover Page</h2>
+                        <div class="form-check form-switch mt-2">
+                            <input class="form-check-input section-live-preview" type="checkbox" id="livePreview-cover">
+                            <label class="form-check-label" for="livePreview-cover">Live Preview</label>
+                        </div>
                         <div class="form-group">
                             <label>Proposal Title</label>
                             <input type="text" class="form-control" id="proposalTitle" placeholder="Enter proposal title">
@@ -157,7 +158,11 @@
 
                     <div id="intro-section" class="proposal-section" style="display: none;">
                         <!-- Original introduction section -->
-                         <h2>Introduction</h2>
+                        <h2>Introduction</h2>
+                        <div class="form-check form-switch mt-2">
+                            <input class="form-check-input section-live-preview" type="checkbox" id="livePreview-intro">
+                            <label class="form-check-label" for="livePreview-intro">Live Preview</label>
+                        </div>
                         <div class="form-group">
                             <label>Company Overview</label>
                             <textarea class="form-control wysiwyg" id="companyOverview" rows="6" placeholder="Describe your company"></textarea>
@@ -171,6 +176,10 @@
                     <!-- New Agreement Section -->
                     <div id="agreement-section" class="proposal-section" style="display: none;">
                         <h2>Agreement Overview</h2>
+                        <div class="form-check form-switch mt-2">
+                            <input class="form-check-input section-live-preview" type="checkbox" id="livePreview-agreement">
+                            <label class="form-check-label" for="livePreview-agreement">Live Preview</label>
+                        </div>
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
@@ -232,6 +241,10 @@
 
                     <div id="documents-section" class="proposal-section" style="display: none;">
                         <h2>Constituent Documents</h2>
+                        <div class="form-check form-switch mt-2">
+                            <input class="form-check-input section-live-preview" type="checkbox" id="livePreview-documents">
+                            <label class="form-check-label" for="livePreview-documents">Live Preview</label>
+                        </div>
                         <div class="form-group">
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" id="letterOffer" checked>
@@ -289,6 +302,10 @@
                     <!-- General Scope of Services Section -->
                     <div id="general-scope-section" class="proposal-section" style="display: none;">
                         <h2>General Scope of Services</h2>
+                        <div class="form-check form-switch mt-2">
+                            <input class="form-check-input section-live-preview" type="checkbox" id="livePreview-general-scope">
+                            <label class="form-check-label" for="livePreview-general-scope">Live Preview</label>
+                        </div>
                         <div class="scope-services-entries">
                             <div class="scope-service-entry row mb-3">
                                 <div class="col-md-3">
@@ -318,6 +335,10 @@
                     <!-- Stages and Deliverables Section -->
                     <div id="stages-deliverables-section" class="proposal-section" style="display: none;">
                         <h2>Stages and Deliverables</h2>
+                        <div class="form-check form-switch mt-2">
+                            <input class="form-check-input section-live-preview" type="checkbox" id="livePreview-deliverables">
+                            <label class="form-check-label" for="livePreview-deliverables">Live Preview</label>
+                        </div>
                         <div class="stage-entries">
                             <div class="stage-entry mb-4">
                                 <div class="form-group">
@@ -357,8 +378,12 @@
                     </div>
 
                     <!-- Remaining sections (original and new) follow similar structure -->
-                     <div id="scope-section" class="proposal-section" style="display: none;">
+                    <div id="scope-section" class="proposal-section" style="display: none;">
                         <h2>Project Scope</h2>
+                        <div class="form-check form-switch mt-2">
+                            <input class="form-check-input section-live-preview" type="checkbox" id="livePreview-scope">
+                            <label class="form-check-label" for="livePreview-scope">Live Preview</label>
+                        </div>
                         <div class="scope-items">
                             <div class="scope-item">
                                 <div class="form-group">
@@ -378,6 +403,10 @@
                     <!-- Our Approach Section -->
                     <div id="approach-section" class="proposal-section" style="display: none;">
                         <h2>Our Approach</h2>
+                        <div class="form-check form-switch mt-2">
+                            <input class="form-check-input section-live-preview" type="checkbox" id="livePreview-approach">
+                            <label class="form-check-label" for="livePreview-approach">Live Preview</label>
+                        </div>
                         <div class="form-group">
                             <label>Design Philosophy</label>
                             <textarea class="form-control wysiwyg" id="designPhilosophy" rows="4" placeholder="Describe your design philosophy and approach"></textarea>
@@ -399,6 +428,10 @@
 
                     <div id="man-month-section" class="proposal-section" style="display: none;">
                     <h2>Man Month Rates and Proposed Deployment</h2>
+                    <div class="form-check form-switch mt-2">
+                            <input class="form-check-input section-live-preview" type="checkbox" id="livePreview-man-month">
+                            <label class="form-check-label" for="livePreview-man-month">Live Preview</label>
+                    </div>
                     <div class="man-month-entries">
                         <div class="man-month-entry row mb-3">
                             <div class="col-md-3">
@@ -431,38 +464,46 @@
                     <button class="btn btn-primary add-man-month">Add Deployment Entry</button>
                 </div>
 
-                    <!-- Editable Design Payment Stages -->
-                    <div id="editable-design-payment-section" class="proposal-section" style="display: none;">
-                        <h2>Design Payment Stages</h2>
-                        <div class="design-payment-stages">
-                            <div class="design-payment-entry row mb-3">
-                                <div class="col-md-3">
-                                    <label>Stage</label>
-                                    <input type="text" class="form-control design-stage" placeholder="e.g., Concept Design">
-                                </div>
-                                <div class="col-md-2">
-                                    <label>%age to be Paid</label>
-                                    <input type="text" class="form-control design-percentage" placeholder="e.g., 10%">
-                                </div>
-                                <div class="col-md-3">
-                                    <label>On Submission</label>
-                                    <input type="text" class="form-control design-submission" placeholder="e.g., 100%">
-                                </div>
-                                <div class="col-md-3">
-                                    <label>On Approval</label>
-                                    <input type="text" class="form-control design-approval" placeholder="e.g., 0%">
-                                </div>
-                                <div class="col-md-1 d-flex align-items-end">
-                                    <button class="btn btn-sm btn-danger remove-design-payment">Remove</button>
-                                </div>
+                <!-- Editable Design Payment Stages -->
+                <div id="editable-design-payment-section" class="proposal-section" style="display: none;">
+                    <h2>Design Payment Stages</h2>
+                    <div class="form-check form-switch mt-2">
+                        <input class="form-check-input section-live-preview" type="checkbox" id="livePreview-design-payment">
+                        <label class="form-check-label" for="livePreview-design-payment">Live Preview</label>
+                    </div>
+                    <div class="design-payment-stages">
+                        <div class="design-payment-entry row mb-3">
+                            <div class="col-md-3">
+                                <label>Stage</label>
+                                <input type="text" class="form-control design-stage" placeholder="e.g., Concept Design">
+                            </div>
+                            <div class="col-md-2">
+                                <label>%age to be Paid</label>
+                                <input type="text" class="form-control design-percentage" placeholder="e.g., 10%">
+                            </div>
+                            <div class="col-md-3">
+                                <label>On Submission</label>
+                                <input type="text" class="form-control design-submission" placeholder="e.g., 100%">
+                            </div>
+                            <div class="col-md-3">
+                                <label>On Approval</label>
+                                <input type="text" class="form-control design-approval" placeholder="e.g., 0%">
+                            </div>
+                            <div class="col-md-1 d-flex align-items-end">
+                                <button class="btn btn-sm btn-danger remove-design-payment">Remove</button>
                             </div>
                         </div>
-                        <button class="btn btn-primary add-design-payment">Add Payment Stage</button>
                     </div>
+                    <button class="btn btn-primary add-design-payment">Add Payment Stage</button>
+                </div>
 
-                    <!-- Editable Additional Services Rates -->
-                    <div id="editable-additional-rates-section" class="proposal-section" style="display: none;">
+                <!-- Editable Additional Services Rates -->
+                <div id="editable-additional-rates-section" class="proposal-section" style="display: none;">
                     <h2>Schedule of Rates for Additional Service</h2>
+                    <div class="form-check form-switch mt-2">
+                            <input class="form-check-input section-live-preview" type="checkbox" id="livePreview-additional-rates">
+                            <label class="form-check-label" for="livePreview-additional-rates">Live Preview</label>
+                    </div>
 
                     <!-- Design Stage Rates -->
                     <h4>Design Stage</h4>
@@ -481,7 +522,7 @@
                             </div>
                         </div>
                     </div>
-                    <button class="btn btn-primary add-design-rate">Add Design Stage Rate</button>
+                    
 
                     <hr>
 
@@ -509,157 +550,173 @@
 
                     
                     
-                    <!-- Our Team Section -->
-                    <div id="team-section" class="proposal-section" style="display: none;">
-                        <h2>Our Team</h2>
-                        <div class="team-members">
-                            <div class="team-member">
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label>Team Member Name</label>
-                                            <input type="text" class="form-control member-name" placeholder="Name">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label>Role</label>
-                                            <input type="text" class="form-control member-role" placeholder="Role">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label>Photo</label>
-                                            <input type="file" class="form-control member-photo" accept="image/*">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label>Bio/Experience</label>
-                                    <textarea class="form-control member-bio" rows="3" placeholder="Brief bio and relevant experience"></textarea>
-                                </div>
-                                <button class="btn btn-sm btn-danger remove-member">Remove</button>
-                            </div>
-                        </div>
-                        <button class="btn btn-primary add-member">Add Team Member</button>
+                <!-- Our Team Section -->
+                <div id="team-section" class="proposal-section" style="display: none;">
+                    <h2>Our Team</h2>
+                    <div class="form-check form-switch mt-2">
+                        <input class="form-check-input section-live-preview" type="checkbox" id="livePreview-teams">
+                        <label class="form-check-label" for="livePreview-teams">Live Preview</label>
                     </div>
+                    <div class="team-members">
+                        <div class="team-member">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Team Member Name</label>
+                                        <input type="text" class="form-control member-name" placeholder="Name">
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Role</label>
+                                        <input type="text" class="form-control member-role" placeholder="Role">
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Photo</label>
+                                        <input type="file" class="form-control member-photo" accept="image/*">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Bio/Experience</label>
+                                <textarea class="form-control member-bio" rows="3" placeholder="Brief bio and relevant experience"></textarea>
+                            </div>
+                            <button class="btn btn-sm btn-danger remove-member">Remove</button>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary add-member">Add Team Member</button>
+                </div>
                     
-                    <!-- Timeline Section -->
-                    <div id="timeline-section" class="proposal-section" style="display: none;">
-                        <h2>Project Timeline</h2>
-                        <div class="form-group">
-                            <label>Project Start Date</label>
-                            <input type="date" class="form-control" id="projectStartDate">
+                <!-- Timeline Section -->
+                <div id="timeline-section" class="proposal-section" style="display: none;">
+                    <h2>Project Timeline</h2>
+                    <div class="form-check form-switch mt-2">
+                        <input class="form-check-input section-live-preview" type="checkbox" id="livePreview-timeline">
+                        <label class="form-check-label" for="livePreview-timeline">Live Preview</label>
+                    </div>
+                    <div class="form-group">
+                        <label>Project Start Date</label>
+                        <input type="date" class="form-control" id="projectStartDate">
+                    </div>
+                    <div class="form-group">
+                        <label>Project Duration</label>
+                        <input type="text" class="form-control" id="projectDuration" placeholder="e.g., 6 months">
+                    </div>
+                    <div class="milestones">
+                        <div class="milestone">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>Milestone</label>
+                                        <input type="text" class="form-control milestone-name" placeholder="Milestone name">
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>Start Date</label>
+                                        <input type="date" class="form-control milestone-start">
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>End Date</label>
+                                        <input type="date" class="form-control milestone-end">
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>Deliverables</label>
+                                        <input type="text" class="form-control milestone-deliverables" placeholder="Key deliverables">
+                                    </div>
+                                </div>
+                            </div>
+                            <button class="btn btn-sm btn-danger remove-milestone">Remove</button>
                         </div>
-                        <div class="form-group">
-                            <label>Project Duration</label>
-                            <input type="text" class="form-control" id="projectDuration" placeholder="e.g., 6 months">
+                    </div>
+                    <button class="btn btn-primary add-milestone">Add Milestone</button>
+                </div>
+                    
+                <!-- Budget Section -->
+                <div id="budget-section" class="proposal-section" style="display: none;">
+                    <h2>Project Budget</h2>
+                    <div class="form-check form-switch mt-2">
+                        <input class="form-check-input section-live-preview" type="checkbox" id="livePreview-budget">
+                        <label class="form-check-label" for="livePreview-budget">Live Preview</label>
+                    </div>
+                    <div class="form-group">
+                        <label>Total Project Budget</label>
+                        <div class="input-group">
+                            <span class="input-group-text">$</span>
+                            <input type="number" class="form-control" id="totalBudget" placeholder="Total project budget">
                         </div>
-                        <div class="milestones">
-                            <div class="milestone">
-                                <div class="row">
-                                    <div class="col-md-3">
-                                        <div class="form-group">
-                                            <label>Milestone</label>
-                                            <input type="text" class="form-control milestone-name" placeholder="Milestone name">
-                                        </div>
+                    </div>
+                    <div class="budget-items">
+                        <div class="budget-item">
+                            <div class="row">
+                                <div class="col-md-5">
+                                    <div class="form-group">
+                                        <label>Item Description</label>
+                                        <input type="text" class="form-control budget-description" placeholder="Budget item description">
                                     </div>
-                                    <div class="col-md-3">
-                                        <div class="form-group">
-                                            <label>Start Date</label>
-                                            <input type="date" class="form-control milestone-start">
-                                        </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label>Quantity</label>
+                                        <input type="number" class="form-control budget-quantity" placeholder="Qty">
                                     </div>
-                                    <div class="col-md-3">
-                                        <div class="form-group">
-                                            <label>End Date</label>
-                                            <input type="date" class="form-control milestone-end">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <div class="form-group">
-                                            <label>Deliverables</label>
-                                            <input type="text" class="form-control milestone-deliverables" placeholder="Key deliverables">
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label>Unit Cost</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text">$</span>
+                                            <input type="number" class="form-control budget-unit-cost" placeholder="Unit cost">
                                         </div>
                                     </div>
                                 </div>
-                                <button class="btn btn-sm btn-danger remove-milestone">Remove</button>
-                            </div>
-                        </div>
-                        <button class="btn btn-primary add-milestone">Add Milestone</button>
-                    </div>
-                    
-                    <!-- Budget Section -->
-                    <div id="budget-section" class="proposal-section" style="display: none;">
-                        <h2>Project Budget</h2>
-                        <div class="form-group">
-                            <label>Total Project Budget</label>
-                            <div class="input-group">
-                                <span class="input-group-text">$</span>
-                                <input type="number" class="form-control" id="totalBudget" placeholder="Total project budget">
-                            </div>
-                        </div>
-                        <div class="budget-items">
-                            <div class="budget-item">
-                                <div class="row">
-                                    <div class="col-md-5">
-                                        <div class="form-group">
-                                            <label>Item Description</label>
-                                            <input type="text" class="form-control budget-description" placeholder="Budget item description">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <div class="form-group">
-                                            <label>Quantity</label>
-                                            <input type="number" class="form-control budget-quantity" placeholder="Qty">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <div class="form-group">
-                                            <label>Unit Cost</label>
-                                            <div class="input-group">
-                                                <span class="input-group-text">$</span>
-                                                <input type="number" class="form-control budget-unit-cost" placeholder="Unit cost">
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <div class="form-group">
-                                            <label>Total</label>
-                                            <div class="input-group">
-                                                <span class="input-group-text">$</span>
-                                                <input type="number" class="form-control budget-total" placeholder="Total" readonly>
-                                            </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label>Total</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text">$</span>
+                                            <input type="number" class="form-control budget-total" placeholder="Total" readonly>
                                         </div>
                                     </div>
                                 </div>
-                                <button class="btn btn-sm btn-danger remove-budget-item">Remove</button>
                             </div>
-                        </div>
-                        <button class="btn btn-primary add-budget-item">Add Budget Item</button>
-                        <div class="form-group mt-3">
-                            <label>Payment Schedule</label>
-                            <textarea class="form-control wysiwyg" id="paymentSchedule" rows="3" placeholder="Describe payment terms and schedule"></textarea>
+                            <button class="btn btn-sm btn-danger remove-budget-item">Remove</button>
                         </div>
                     </div>
+                    <button class="btn btn-primary add-budget-item">Add Budget Item</button>
+                    <div class="form-group mt-3">
+                        <label>Payment Schedule</label>
+                        <textarea class="form-control wysiwyg" id="paymentSchedule" rows="3" placeholder="Describe payment terms and schedule"></textarea>
+                    </div>
+                </div>
                     
-                    <!-- Terms Section -->
-                    <div id="terms-section" class="proposal-section" style="display: none;">
-                        <h2>Terms & Conditions</h2>
-                        <div class="form-group">
-                            <label>Standard Terms</label>
-                            <textarea class="form-control wysiwyg" id="standardTerms" rows="6" placeholder="Your standard terms and conditions"></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label>Additional Notes</label>
-                            <textarea class="form-control wysiwyg" id="additionalNotes" rows="4" placeholder="Any additional terms or notes"></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label>Signature</label>
-                            <input type="file" class="form-control" id="signatureImage" accept="image/*">
-                            <div id="signatureImagePreview" class="image-preview mt-2"></div>
-                        </div>
+                <!-- Terms Section -->
+                <div id="terms-section" class="proposal-section" style="display: none;">
+                    <h2>Terms & Conditions</h2>
+                    <div class="form-check form-switch mt-2">
+                        <input class="form-check-input section-live-preview" type="checkbox" id="livePreview-terms">
+                        <label class="form-check-label" for="livePreview-terms">Live Preview</label>
                     </div>
+                    <div class="form-group">
+                        <label>Standard Terms</label>
+                        <textarea class="form-control wysiwyg" id="standardTerms" rows="6" placeholder="Your standard terms and conditions"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Additional Notes</label>
+                        <textarea class="form-control wysiwyg" id="additionalNotes" rows="4" placeholder="Any additional terms or notes"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Signature</label>
+                        <input type="file" class="form-control" id="signatureImage" accept="image/*">
+                        <div id="signatureImagePreview" class="image-preview mt-2"></div>
+                    </div>
+                </div>
                 </div>
             </div>
         </div>
