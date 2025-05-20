@@ -182,6 +182,29 @@ function generateSectionContent(section) {
     let content = '';
 
     switch(sectionId) {
+
+        case 'agreement-section':
+            content = `
+                <div class="row">
+                <div class="col-6">
+                    <p><strong>Client:</strong> ${$('#clientNameFull').val() || '—'}</p>
+                    <p><strong>Representative:</strong> ${$('#clientRep').val() || '—'}</p>
+                    <p><strong>Email:</strong> ${$('#clientEmail').val() || '—'}</p>
+                </div>
+                <div class="col-6">
+                    <p><strong>Consultant:</strong> ${$('#consultantName').val() || '—'}</p>
+                    <p><strong>Rep.:</strong> ${$('#consultantRep').val() || '—'}</p>
+                    <p><strong>Tel.:</strong> ${$('#consultantPhone').val() || '—'}</p>
+                </div>
+                </div>
+                <div class="row mt-3">
+                <div class="col-4"><p><strong>Date of Agreement:</strong> ${$('input[readonly][value]').filter((i,el)=>el.parentNode.querySelector('label').textContent==='Date of Agreement').val() || '—'}</p></div>
+                <div class="col-4"><p><strong>Project:</strong> ${$('input[readonly][value]').filter((i,el)=>el.parentNode.querySelector('label').textContent==='Project').val() || '—'}</p></div>
+                <div class="col-4"><p><strong>Plot No:</strong> ${$('input[readonly][value]').filter((i,el)=>el.parentNode.querySelector('label').textContent==='Plot No').val() || '—'}</p></div>
+                </div>
+            `;
+            break;
+
         case 'man-month-section':
             content = `
                 <table class="preview-table">
@@ -1118,12 +1141,31 @@ $(document).ready(function() {
     $('#previewBtn').on('click', async function() {
         const $liveSecs = $('.section-live-preview:checked')
                             .closest('.proposal-section');
+
+
         let html = '';
         let pageNum = 1;
 
         for (const secEl of $liveSecs.toArray()) {
             const $sec   = $(secEl);
             const id     = $sec.attr('id');
+
+            // —— start cover-page special case ——
+            if (id === 'cover-section') {
+                html += `
+                    <div class="pdf-page text-center" data-sec="cover-section">
+                    <h1>${$('#proposalTitle').val() || 'Consultancy Services Proposal'}</h1>
+                    <p><strong>Prepared for:</strong> ${$('#clientName').val() || 'Client Name'}</p>
+                    <p><strong>Project Address:</strong> ${$('#projectAddress').val() || 'Project Address'}</p>
+                    <p><strong>Date:</strong> ${$('#proposalDate').val() || new Date().toLocaleDateString()}</p>
+                    </div>
+                `;
+                pageNum++;
+                continue;
+            }
+            
+
+
 
             // 1️⃣ Build the section’s own HTML page
             html += `
