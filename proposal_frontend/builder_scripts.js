@@ -1,41 +1,6 @@
 
 const API_BASE_URL = 'http://localhost:5000/api';
 // Function to collect PDFs to merge
-async function collectPDFs() {
-    const pdfs = [];
-    
-    // Check Letter of Offer
-    if ($('#letterOffer').is(':checked')) {
-        if ($('#letterOfferDefault').is(':checked')) {
-            const defaultPdfPath = 'assets/pdf/letterOffer_default.pdf';
-            const pdfBytes = await fetchPDF(defaultPdfPath);
-            pdfs.push(pdfBytes);
-        } else if ($('#letterOfferCustom').is(':checked')) {
-            const fileInput = document.getElementById('letterOfferFile');
-            if (fileInput.files[0]) {
-                const pdfBytes = await readFileAsArrayBuffer(fileInput.files[0]);
-                pdfs.push(pdfBytes);
-            }
-        }
-    }
-    
-    // Check Main Agreement
-    if ($('#mainAgreement').is(':checked')) {
-        if ($('#mainAgreementDefault').is(':checked')) {
-            const defaultPdfPath = 'assets/pdf/mainAgreement_default.pdf';
-            const pdfBytes = await fetchPDF(defaultPdfPath);
-            pdfs.push(pdfBytes);
-        } else if ($('#mainAgreementCustom').is(':checked')) {
-            const fileInput = document.getElementById('mainAgreementFile');
-            if (fileInput.files[0]) {
-                const pdfBytes = await readFileAsArrayBuffer(fileInput.files[0]);
-                pdfs.push(pdfBytes);
-            }
-        }
-    }
-    
-    return pdfs;
-}
 
 async function fetchPDF(url) {
     const response = await fetch(url);
@@ -222,6 +187,50 @@ function generateSectionContent(section) {
                 </div>
             `;
             break;
+        case 'intro-section':
+            const introHtml = introEditor ? introEditor.getData() : '';
+            // …and inject it directly (you can wrap in a div if you need CSS control)
+            content = `
+            <div class="intro-content">
+                ${introHtml}
+            </div>
+            `;
+            break;
+        case 'project-brief-section':
+            //const text = $('#projectBriefText').val().trim();
+            const text = projectBriefEditor
+                ? projectBriefEditor.getData().trim()
+                : $('#projectBriefText').val().trim();
+                
+            const fileInput = $('#projectBriefFile')[0];
+            let body = '';
+
+            if (text) {
+                body = `<p>${text}</p>`;
+            } else if (fileInput.files && fileInput.files[0]) {
+                const f = fileInput.files[0];
+                const url = URL.createObjectURL(f);
+
+                if (f.type.startsWith('image/')) {
+                body = `<img src="${url}" style="max-width:100%;height:auto;">`;
+                } else if (f.type === 'application/pdf') {
+                // live preview: show a note, actual merge happens later
+                body = `<p><em>Your uploaded PDF (“${f.name}”) will be appended in the final download.</em></p>`;
+                } else {
+                body = `<p><a href="${url}" target="_blank">${f.name}</a></p>`;
+                }
+            } else {
+                body = '<p><em>No brief or file provided.</em></p>';
+            }
+
+            content = `
+                <div class="project-brief-content">
+                ${body}
+                </div>
+            `;
+            break;
+
+        
 
         case 'man-month-section':
             content = `
@@ -278,26 +287,49 @@ function generateSectionContent(section) {
         case 'general-scope-section':
             content = `
                 <table class="preview-table">
-                    <thead>
+                <thead>
+                    <tr>
+                    <th>Service</th>
+                    <th>Mandatory</th>
+                    <th>Optional</th>
+                    <th>In-House</th>
+                    <th>External</th>
+                    <th>Authorized</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${$('.scope-service-entry').map(function() {
+                    const $r = $(this);
+                    const svc  = $r.find('.scope-service').val()       || '—';
+                    const mand = $r.find('.scope-mandatory').is(':checked')
+                                    ? '<span class="tick-green">✓</span>'
+                                    : '<span class="cross-red">✗</span>';
+                    const opt  = $r.find('.scope-optional').is(':checked')
+                                    ? '<span class="tick-green">✓</span>'
+                                    : '<span class="cross-red">✗</span>';
+                    const inh  = $r.find('.scope-inhouse').is(':checked')
+                                    ? '<span class="tick-green">✓</span>'
+                                    : '<span class="cross-red">✗</span>';
+                    const ext  = $r.find('.scope-external').is(':checked')
+                                    ? '<span class="tick-green">✓</span>'
+                                    : '<span class="cross-red">✗</span>';
+                    const appt = $r.find('.scope-appointed').val()     || '—';
+
+                    return `
                         <tr>
-                            <th>Disciplines and Services</th>
-                            <th>Service By</th>
-                            <th>Inclusions</th>
-                            <th>Remarks</th>
+                        <td>${svc}</td>
+                        <td class="text-center">${mand}</td>
+                        <td class="text-center">${opt}</td>
+                        <td class="text-center">${inh}</td>
+                        <td class="text-center">${ext}</td>
+                        <td>${appt}</td>
                         </tr>
-                    </thead>
-                    <tbody>
-                        ${$('.scope-service-entry').map(function() {
-                            return `<tr>
-                                <td>${$(this).find('.scope-discipline').val() || ''}</td>
-                                <td>${$(this).find('.scope-service-by').val() || ''}</td>
-                                <td>${$(this).find('.scope-inclusions').val() || ''}</td>
-                                <td>${$(this).find('.scope-remarks').val() || ''}</td>
-                            </tr>`;
-                        }).get().join('')}
-                    </tbody>
+                    `;
+                    }).get().join('')}
+                </tbody>
                 </table>`;
             break;
+
 
         case 'stages-deliverables-section':
             content = `
@@ -843,6 +875,7 @@ async function generatePDF() {
         const canvas = await html2canvas(pagesEls[i], {
             scale: 2, useCORS: true, windowWidth: 1024, windowHeight: 1448
         });
+
         const imgData = canvas.toDataURL('image/jpeg', 1.0);
         doc.addImage(imgData, 'JPEG', 15, 15, 180, 0, undefined, 'FAST');
         htmlPages.push(secId);
@@ -879,6 +912,13 @@ async function generatePDF() {
             }
             pdfList.push(bytes);
         }
+
+        const projInput = $('#projectBriefFile')[0];
+        if (projInput.files && projInput.files[0]) {
+            // read the array buffer of the uploaded file
+            const briefBytes = await readFileAsArrayBuffer(projInput.files[0]);
+            pdfList.push(briefBytes);
+        }
         return pdfList;
     }
 
@@ -888,6 +928,23 @@ async function generatePDF() {
         const [pg] = await merged.copyPages(base, [i]);
         merged.addPage(pg);
         pageIdx++;
+
+        // ─── NEW: after the “intro-section” page, append Project Brief PDF ─────────────────
+        if (htmlPages[i] === 'intro-section') {
+            const fileInput = $('#projectBriefFile')[0];
+        if (fileInput.files && fileInput.files[0] &&
+                fileInput.files[0].type === 'application/pdf') {
+                // load the uploaded PDF bytes
+                const briefBytes = await readFileAsArrayBuffer(fileInput.files[0]);
+                const srcPdf    = await PDFLib.PDFDocument.load(briefBytes);
+            // copy all its pages into our merged doc
+                const briefPages = await merged.copyPages(srcPdf, srcPdf.getPageIndices());
+                for (const p of briefPages) {
+                    merged.addPage(p);
+                    pageIdx++;
+            }
+            }
+        }
 
         // After the section that was just added, if that was before the skipped 'documents-section',
         // now append the constituent PDFs in their place.
@@ -952,6 +1009,7 @@ $(document).ready(function() {
 
         const selectedSections = [];
         const sidebarList = $('#proposalSections');
+
         const filePreviews = {};
         sidebarList.empty();
 
@@ -997,6 +1055,35 @@ $(document).ready(function() {
         $(this).addClass('active');
     });
 
+    $('#projectBriefFile').on('change', function() {
+        const file = this.files[0];
+        const preview = $('#projectBriefFilePreview');
+        preview.empty();
+
+        if (!file) {
+            preview.hide();
+            return;
+        }
+
+        const url = URL.createObjectURL(file);
+        let html = '';
+
+        if (file.type.startsWith('image/')) {
+            html = `<img src="${url}" alt="${file.name}" style="max-width:100%;">`;
+        } else if (file.type === 'application/pdf') {
+            html = `
+            <object data="${url}"
+                    type="application/pdf"
+                    width="100%" height="300px">
+                <p>Download: <a href="${url}">${file.name}</a></p>
+            </object>`;
+        } else {
+            html = `<p><a href="${url}" download="${file.name}">${file.name}</a></p>`;
+        }
+
+        preview.html(html).show();
+        });
+
     // Original add/remove item functions
     // ...
     // Add scope item
@@ -1015,6 +1102,17 @@ $(document).ready(function() {
             alert('You need at least one scope item.');
         }
     });
+
+    // Add a new Project Brief row
+    $('.add-brief-entry').click(function() {
+    const newRow = $('.project-brief-entry').first().clone();
+    newRow.find('input').each(function() {
+        if (this.type === 'checkbox') this.checked = false;
+        else this.value = '';
+    });
+    $('.project-brief-entries').append(newRow);
+    });
+
 
     // Add team member
     $('.add-member').click(function() {

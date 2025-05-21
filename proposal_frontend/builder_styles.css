@@ -1,5 +1,5 @@
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: Arial, 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background-color: #f8f9fa;
     margin: 0;
     padding: 0;
@@ -96,7 +96,7 @@ body {
 
 /* Preview styling */
 #previewContent {
-    font-family: 'Times New Roman', Times, serif;
+    font-family: Arial,'Times New Roman', Times, serif;
     line-height: 1.6;
 }
 
@@ -374,7 +374,7 @@ body {
 }
 
 .section-content {
-    font-family: 'Times New Roman', serif;
+    font-family: Arial,'Times New Roman', serif;
     font-size: 12pt;
     line-height: 1.6;
 }
@@ -503,4 +503,5 @@ body {
     border-radius: 0;
     box-shadow: none;
 }
+
 

@@ -8,6 +8,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="builder_styles.css" rel="stylesheet">
+     <script src="https://cdn.ckeditor.com/ckeditor5/36.0.0/classic/ckeditor.js"></script>
     <style>
         .button-group {
             display: flex;
@@ -32,6 +33,15 @@
             <div class="form-check">
                 <input class="form-check-input section-option" type="checkbox" value="cover-section" checked>
                 <label class="form-check-label">Cover Page</label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input section-option" type="checkbox" value="intro-section" checked>
+                <label class="form-check-label">Introduction</label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input section-option" type="checkbox"
+                        value="project-brief-section" checked>
+                <label class="form-check-label">Project Brief</label>
             </div>
             
             <div class="form-check">
@@ -162,17 +172,75 @@
                         <h2>Introduction</h2>
                         <div class="form-check form-switch mt-2">
                             <input class="form-check-input section-live-preview" type="checkbox" id="livePreview-intro">
-                            <label class="form-check-label" for="livePreview-intro">Live Preview</label>
+                            <label class="form-check-label" for="livePreview-intro">Live Preview</label><br><br>
                         </div>
                         <div class="form-group">
+                            <div id="editor">   </div>
+                            <script>
+                            // Step 1: declare a global to hold the editor
+                            let introEditor;
+
+                            ClassicEditor
+                                .create(document.querySelector('#editor'), {
+                                licenseKey: 'GPL'
+                                })
+                                .then(editor => {
+                                introEditor = editor;    // ← store the instance
+                                })
+                                .catch(error => {
+                                console.error(error);
+                                });
+                            </script>
+                             
+                        </div>
+                        <!-- <div class="form-group">
                             <label>Company Overview</label>
                             <textarea class="form-control wysiwyg" id="companyOverview" rows="6" placeholder="Describe your company"></textarea>
+                        </div> -->
+                         
+                    </div>
+
+                    <!-- Project Brief Section -->
+                    
+                    <div id="project-brief-section" class="proposal-section" style="display: none;">
+                        <h2>Project Brief</h2>
+                        <div class="form-check form-switch mt-2">
+                            <input class="form-check-input section-live-preview" type="checkbox" id="livePreview-project-brief">
+                            <label class="form-check-label" for="livePreview-project-brief">Live Preview</label>
                         </div>
-                        <div class="form-group">
-                            <label>Project Understanding</label>
-                            <textarea class="form-control wysiwyg" id="projectUnderstanding" rows="6" placeholder="Describe your understanding of the project"></textarea>
+                        <div class="form-group mt-3">
+                            <label for="projectBriefText"><b>Brief Text</b></label><br>
+                            <textarea id="projectBriefText"
+                                    class="form-control"
+                                    placeholder="Enter your project brief here"></textarea>
+                            <script>
+                            // Declare a global to hold the editor instance
+                            let projectBriefEditor;
+
+                            ClassicEditor
+                                .create(document.querySelector('#projectBriefText'), {
+                                licenseKey: 'GPL'
+                                })
+                                .then(editor => {
+                                projectBriefEditor = editor;   // Store the instance for later
+                                })
+                                .catch(error => {
+                                console.error(error);
+                                });
+                            </script>
+                        </div>
+
+                        <div class="form-group mt-3">
+                            <label for="projectBriefFile"><b>Or upload file (image/pdf/word)</b></label>
+                            <input type="file"
+                                id="projectBriefFile"
+                                class="form-control"
+                                accept="image/*,.pdf,.doc,.docx">
+                            <div id="projectBriefFilePreview" class="mt-2"></div>
                         </div>
                     </div>
+
+
 
                     <!-- New Agreement Section -->
                     <div id="agreement-section" class="proposal-section" style="display: none;">
@@ -291,12 +359,12 @@
                                 </div>
                             </div>
                         
-                            <h4>Appendices</h4>
+                            <!-- <h4>Appendices</h4>
                             <ul>
                                 <li>Appendix A: Scope of Services</li>
                                 <li>Appendix B: Remuneration and Payment</li>
                                 <li>Appendix C: Services of Others & Facilities</li>
-                            </ul>
+                            </ul> -->
                         </div>
                     </div>
 
@@ -304,34 +372,69 @@
                     <div id="general-scope-section" class="proposal-section" style="display: none;">
                         <h2>General Scope of Services</h2>
                         <div class="form-check form-switch mt-2">
-                            <input class="form-check-input section-live-preview" type="checkbox" id="livePreview-general-scope">
-                            <label class="form-check-label" for="livePreview-general-scope">Live Preview</label>
+                            <input class="form-check-input section-live-preview"
+                                type="checkbox"
+                                id="livePreview-general-scope">
+                            <label class="form-check-label"
+                                for="livePreview-general-scope">
+                            Live Preview
+                            </label>
                         </div>
-                        <div class="scope-services-entries">
-                            <div class="scope-service-entry row mb-3">
-                                <div class="col-md-3">
-                                    <label>Disciplines and Services</label>
-                                    <input type="text" class="form-control scope-discipline" placeholder="e.g., Architectural Design">
-                                </div>
-                                <div class="col-md-2">
-                                    <label>Service By</label>
-                                    <input type="text" class="form-control scope-service-by" placeholder="e.g., Archeorp, in house">
-                                </div>
-                                <div class="col-md-2">
-                                    <label>Inclusions</label>
-                                    <input type="text" class="form-control scope-inclusions" placeholder="e.g., Included">
-                                </div>
-                                <div class="col-md-4">
-                                    <label>Remarks</label>
-                                    <textarea class="form-control scope-remarks" placeholder="Additional remarks"></textarea>
-                                </div>
-                                <div class="col-md-1 d-flex align-items-end">
-                                    <button class="btn btn-sm btn-danger remove-scope-service">Remove</button>
-                                </div>
-                            </div>
+
+                        <table class="preview-table mt-3">
+                            <thead>
+                            <tr>
+                                <th>Service</th>
+                                <th>Mandatory</th>
+                                <th>Optional</th>
+                                <th>In-House</th>
+                                <th>External</th>
+                                <th>Authorized</th>
+                                <th> </th>
+                            </tr>
+                            </thead>
+                            <tbody class="scope-services-entries">
+                            <tr class="scope-service-entry">
+                                <td>
+                                <input type="text"
+                                        class="form-control scope-service"
+                                        placeholder="e.g. Architectural Design">
+                                </td>
+                                <td class="text-center">
+                                <input type="checkbox"
+                                        class="scope-mandatory">
+                                </td>
+                                <td class="text-center">
+                                <input type="checkbox"
+                                        class="scope-optional">
+                                </td>
+                                <td class="text-center">
+                                <input type="checkbox"
+                                        class="scope-inhouse">
+                                </td>
+                                <td class="text-center">
+                                <input type="checkbox"
+                                        class="scope-external">
+                                </td>
+                                <td>
+                                <input type="text"
+                                        class="form-control scope-appointed"
+                                        placeholder="Name">
+                                </td>
+                                <td class="text-center align-middle">
+                                <button class="btn btn-sm btn-danger remove-scope-service">
+                                    Remove
+                                </button>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+
+                        <button type="button"
+                                class="btn btn-sm btn-secondary mt-2 add-scope-service">
+                            + Add Service Entry
+                        </button>
                         </div>
-                        <button class="btn btn-primary add-scope-service">Add Service Entry</button>
-                    </div>
 
                     <!-- Stages and Deliverables Section -->
                     <div id="stages-deliverables-section" class="proposal-section" style="display: none;">
@@ -370,7 +473,7 @@
                     </div>
 
                     <!-- Remaining sections (original and new) follow similar structure -->
-                    <div id="scope-section" class="proposal-section" style="display: none;">
+                    <!-- <div id="scope-section" class="proposal-section" style="display: none;">
                         <h2>Project Scope</h2>
                         <div class="form-check form-switch mt-2">
                             <input class="form-check-input section-live-preview" type="checkbox" id="livePreview-scope">
@@ -390,10 +493,10 @@
                             </div>
                         </div>
                         <button class="btn btn-primary add-scope">Add Scope Item</button>
-                    </div>
+                    </div> -->
                     
                     <!-- Our Approach Section -->
-                    <div id="approach-section" class="proposal-section" style="display: none;">
+                    <!-- <div id="approach-section" class="proposal-section" style="display: none;">
                         <h2>Our Approach</h2>
                         <div class="form-check form-switch mt-2">
                             <input class="form-check-input section-live-preview" type="checkbox" id="livePreview-approach">
@@ -416,7 +519,7 @@
                             <input type="file" class="form-control" id="processImage" accept="image/*">
                             <div id="processImagePreview" class="image-preview mt-2"></div>
                         </div>
-                    </div>
+                    </div> -->
 
                     <div id="man-month-section" class="proposal-section" style="display: none;">
                     <h2>Man Month Rates and Proposed Deployment</h2>
@@ -541,7 +644,7 @@
 
                     
                     
-                <!-- Our Team Section -->
+                <!-- Our Team Section
                 <div id="team-section" class="proposal-section" style="display: none;">
                     <h2>Our Team</h2>
                     <div class="form-check form-switch mt-2">
@@ -578,10 +681,10 @@
                         </div>
                     </div>
                     <button class="btn btn-primary add-member">Add Team Member</button>
-                </div>
+                </div> -->
                     
                 <!-- Timeline Section -->
-                <div id="timeline-section" class="proposal-section" style="display: none;">
+                <!-- <div id="timeline-section" class="proposal-section" style="display: none;">
                     <h2>Project Timeline</h2>
                     <div class="form-check form-switch mt-2">
                         <input class="form-check-input section-live-preview" type="checkbox" id="livePreview-timeline">
@@ -627,10 +730,10 @@
                         </div>
                     </div>
                     <button class="btn btn-primary add-milestone">Add Milestone</button>
-                </div>
+                </div> -->
                     
                 <!-- Budget Section -->
-                <div id="budget-section" class="proposal-section" style="display: none;">
+                <!-- <div id="budget-section" class="proposal-section" style="display: none;">
                     <h2>Project Budget</h2>
                     <div class="form-check form-switch mt-2">
                         <input class="form-check-input section-live-preview" type="checkbox" id="livePreview-budget">
@@ -685,7 +788,7 @@
                         <label>Payment Schedule</label>
                         <textarea class="form-control wysiwyg" id="paymentSchedule" rows="3" placeholder="Describe payment terms and schedule"></textarea>
                     </div>
-                </div>
+                </div> -->
                     
                 <!-- Terms Section -->
                 <div id="terms-section" class="proposal-section" style="display: none;">
