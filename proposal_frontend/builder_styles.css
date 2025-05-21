@@ -413,5 +413,94 @@ body {
   height: 40px;
 }
 
+.stages-deliverables-table input,
+.stages-deliverables-table textarea {
+    width: 100%;
+    border: none;
+    background: transparent;
+    padding: 8px;
+}
 
+.stages-deliverables-table input:focus,
+.stages-deliverables-table textarea:focus {
+    outline: none;
+    background: #f8f9fa;
+}
+
+.stages-deliverables-table td {
+    vertical-align: top;
+    padding: 0;
+}
+
+.stages-deliverables-table textarea {
+    resize: vertical;
+    min-height: 60px;
+}
+/* Auto-expanding textareas */
+.auto-expand {
+    resize: none;
+    overflow: hidden;
+    min-height: 38px; /* Match Bootstrap form-control height */
+    width: 100%;
+    border: none;
+    padding: 8px;
+    background: transparent;
+}
+.auto-expand:focus {
+    outline: none;
+    background: #f8f9fa;
+}
+
+.stages-deliverables-table .form-control {
+    border-radius: 0;
+    box-shadow: none;
+}
+
+/* Preserve whitespace in preview */
+.preserve-whitespace {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+/* 1) Prevent any scrollbars from showing up in your .pdf-page containers */
+.pdf-page, 
+#previewContent, 
+#pdf-container {
+  overflow: hidden !important;       /* turn off scrollbars */
+}
+
+/* 2) Also explicitly hide any WebKit/Firefox scrollbars just in case */
+#previewContent::-webkit-scrollbar,
+#pdf-container::-webkit-scrollbar,
+.pdf-page::-webkit-scrollbar {
+  display: none !important;
+}
+#previewContent, #pdf-container {
+  -ms-overflow-style: none;  /* IE 10+ */
+  scrollbar-width: none;     /* Firefox */
+}
+.man-month-table textarea {
+    resize: none;
+    overflow: hidden;
+    min-height: 38px;
+    width: 100%;
+    border: none;
+    padding: 8px;
+    background: transparent;
+}
+
+.man-month-table textarea:focus {
+    outline: none;
+    background: #f8f9fa;
+}
+
+.man-month-table td {
+    vertical-align: top;
+    padding: 0;
+}
+
+.man-month-table .form-control {
+    border-radius: 0;
+    box-shadow: none;
+}
 

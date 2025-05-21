@@ -340,42 +340,33 @@
                             <input class="form-check-input section-live-preview" type="checkbox" id="livePreview-deliverables">
                             <label class="form-check-label" for="livePreview-deliverables">Live Preview</label>
                         </div>
-                        <div class="stage-entries">
-                            <div class="stage-entry mb-4">
-                                <div class="form-group">
-                                    <label>Stage Title</label>
-                                    <input type="text" class="form-control stage-title" placeholder="e.g., Outline Concept Design Stage">
-                                </div>
-                                <div class="form-group">
-                                    <label>Tasks & Activities</label>
-                                    <textarea class="form-control stage-tasks" rows="3" placeholder="Describe tasks and activities"></textarea>
-                                </div>
-                                
-                                <h5>Deliverables</h5>
-                                <div class="deliverable-entries">
-                                    <div class="deliverable-entry row mb-2">
-                                        <div class="col-md-5">
-                                            <label>Deliverable</label>
-                                            <input type="text" class="form-control deliverable-name" placeholder="e.g., Site Plan">
-                                        </div>
-                                        <div class="col-md-3">
-                                            <label>Format</label>
-                                            <input type="text" class="form-control deliverable-format" placeholder="e.g., A3 Size (Hardcopy)">
-                                        </div>
-                                        <div class="col-md-3">
-                                            <label>Status</label>
-                                            <input type="text" class="form-control deliverable-status" placeholder="e.g., Completed">
-                                        </div>
-                                        <div class="col-md-1 d-flex align-items-end">
-                                            <button class="btn btn-sm btn-danger remove-deliverable">Remove</button>
-                                        </div>
-                                    </div>
-                                </div>
-                                <button class="btn btn-sm btn-secondary add-deliverable">Add Deliverable</button>
-                                <button class="btn btn-sm btn-danger remove-stage">Remove Stage</button>
-                            </div>
+                        <div class="table-responsive">
+                            <table class="table table-bordered stages-deliverables-table">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 15%">Stage</th>
+                                        <th style="width: 25%">Tasks & Activities</th>
+                                        <th style="width: 20%">Deliverables</th>
+                                        <th style="width: 15%">Format</th>
+                                        <th style="width: 15%">Timelines</th>
+                                        <th style="width: 10%">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="stages-deliverables-entries">
+                                    <tr class="stage-deliverable-entry">
+                                        <td><textarea class="form-control auto-expand stage-title" placeholder="Stage name" rows="1"></textarea></td>
+                                        <td><textarea class="form-control auto-expand stage-tasks" placeholder="Tasks & activities" rows="1"></textarea></td>
+                                        <td><textarea class="form-control auto-expand deliverable-name" placeholder="Deliverables" rows="1"></textarea></td>
+                                        <td><textarea class="form-control auto-expand deliverable-format" placeholder="Format" rows="1"></textarea></td>
+                                        <td><textarea class="form-control auto-expand deliverable-timeline" placeholder="Timeline" rows="1"></textarea></td>
+                                        <td class="text-center align-middle">
+                                            <button class="btn btn-sm btn-danger remove-stage-deliverable">Remove</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
-                        <button class="btn btn-primary add-stage">Add Stage</button>
+                        <button class="btn btn-primary add-stage-deliverable mt-3">Add Stage</button>
                     </div>
 
                     <!-- Remaining sections (original and new) follow similar structure -->
@@ -430,39 +421,38 @@
                     <div id="man-month-section" class="proposal-section" style="display: none;">
                     <h2>Man Month Rates and Proposed Deployment</h2>
                     <div class="form-check form-switch mt-2">
-                            <input class="form-check-input section-live-preview" type="checkbox" id="livePreview-man-month">
-                            <label class="form-check-label" for="livePreview-man-month">Live Preview</label>
+                        <input class="form-check-input section-live-preview" type="checkbox" id="livePreview-man-month">
+                        <label class="form-check-label" for="livePreview-man-month">Live Preview</label>
                     </div>
-                    <div class="man-month-entries">
-                        <div class="man-month-entry row mb-3">
-                            <div class="col-md-3">
-                                <label>Position / Location</label>
-                                <input type="text" class="form-control mm-position" placeholder="e.g., Resident Engineer / Site Based">
-                            </div>
-                            <div class="col-md-3">
-                                <label>Role</label>
-                                <input type="text" class="form-control mm-role" placeholder="e.g., Technical coordination...">
-                            </div>
-                            <div class="col-md-2">
-                                <label>Man Month Rate</label>
-                                <input type="text" class="form-control mm-rate" placeholder="e.g., 45000">
-                            </div>
-                            <div class="col-md-2">
-                                <label>Allocation</label>
-                                <input type="text" class="form-control mm-allocation" placeholder="e.g., 60%">
-                            </div>
-                            <div class="col-md-2">
-                                <label>Monthly Fee</label>
-                                <input type="text" class="form-control mm-fee" placeholder="e.g., 27000">
-                            </div>
-                            <div class="col-md-12 mt-2">
-                                <label>Remarks</label>
-                                <textarea class="form-control mm-remarks" placeholder="e.g., 3 Full days / week"></textarea>
-                                <button class="btn btn-sm btn-danger mt-2 remove-man-month">Remove</button>
-                            </div>
-                        </div>
+                    <div class="table-responsive">
+                        <table class="table table-bordered man-month-table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 20%">Position/Location</th>
+                                    <th style="width: 20%">Role</th>
+                                    <th style="width: 15%">Man Month Rate</th>
+                                    <th style="width: 10%">Allocation</th>
+                                    <th style="width: 15%">Monthly Fee</th>
+                                    <th style="width: 15%">Remarks</th>
+                                    <th style="width: 5%">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody class="man-month-entries">
+                                <tr class="man-month-entry">
+                                    <td><textarea class="form-control auto-expand mm-position" placeholder="Position/Location" rows="1"></textarea></td>
+                                    <td><textarea class="form-control auto-expand mm-role" placeholder="Role description" rows="1"></textarea></td>
+                                    <td><textarea class="form-control auto-expand mm-rate" placeholder="Rate" rows="1"></textarea></td>
+                                    <td><textarea class="form-control auto-expand mm-allocation" placeholder="Allocation %" rows="1"></textarea></td>
+                                    <td><textarea class="form-control auto-expand mm-fee" placeholder="Monthly fee" rows="1"></textarea></td>
+                                    <td><textarea class="form-control auto-expand mm-remarks" placeholder="Remarks" rows="1"></textarea></td>
+                                    <td class="text-center align-middle">
+                                        <button class="btn btn-sm btn-danger remove-man-month">Remove</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
-                    <button class="btn btn-primary add-man-month">Add Deployment Entry</button>
+                    <button class="btn btn-primary add-man-month mt-3">Add Deployment Entry</button>
                 </div>
 
                 <!-- Editable Design Payment Stages -->

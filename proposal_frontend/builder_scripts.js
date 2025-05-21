@@ -90,6 +90,24 @@ function showPDFPreview(fileInput, previewContainer) {
     reader.readAsDataURL(file);
 }
 
+
+function adjustTextareaHeight(textarea) {
+    textarea.style.height = 'auto';
+    textarea.style.height = (textarea.scrollHeight) + 'px';
+}
+
+$(document).on('input', '.auto-expand', function() {
+    adjustTextareaHeight(this);
+});
+
+// Initialize textarea heights on load and when adding new entries
+function initTextareas() {
+    $('.auto-expand').each(function() {
+        adjustTextareaHeight(this);
+    });
+}
+
+
 // Updated generatePreview()
 function generatePreview(livePreviewOnly = false) {
     let previewHtml = '';
@@ -210,7 +228,7 @@ function generateSectionContent(section) {
                 <table class="preview-table">
                     <thead>
                         <tr>
-                            <th>Position / Location</th>
+                            <th>Position/Location</th>
                             <th>Role</th>
                             <th>Man Month Rate</th>
                             <th>Allocation</th>
@@ -221,12 +239,12 @@ function generateSectionContent(section) {
                     <tbody>
                         ${$('.man-month-entry').map(function() {
                             return `<tr>
-                                <td>${$(this).find('.mm-position').val() || ''}</td>
-                                <td>${$(this).find('.mm-role').val() || ''}</td>
-                                <td>${$(this).find('.mm-rate').val() || ''}</td>
-                                <td>${$(this).find('.mm-allocation').val() || ''}</td>
-                                <td>${$(this).find('.mm-fee').val() || ''}</td>
-                                <td>${$(this).find('.mm-remarks').val() || ''}</td>
+                                <td class="preserve-whitespace">${$(this).find('.mm-position').val() || '—'}</td>
+                                <td class="preserve-whitespace">${$(this).find('.mm-role').val() || '—'}</td>
+                                <td class="preserve-whitespace">${$(this).find('.mm-rate').val() || '—'}</td>
+                                <td class="preserve-whitespace">${$(this).find('.mm-allocation').val() || '—'}</td>
+                                <td class="preserve-whitespace">${$(this).find('.mm-fee').val() || '—'}</td>
+                                <td class="preserve-whitespace">${$(this).find('.mm-remarks').val() || '—'}</td>
                             </tr>`;
                         }).get().join('')}
                     </tbody>
@@ -282,31 +300,29 @@ function generateSectionContent(section) {
             break;
 
         case 'stages-deliverables-section':
-            content = $('.stage-entry').map(function() {
-                return `
-                    <div class="stage-block mb-4">
-                        <h3>${$(this).find('.stage-title').val() || 'Stage'}</h3>
-                        <p><strong>Tasks & Activities:</strong> ${$(this).find('.stage-tasks').val() || ''}</p>
-                        <table class="preview-table">
-                            <thead>
-                                <tr>
-                                    <th>Deliverable</th>
-                                    <th>Format</th>
-                                    <th>Status</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                ${$(this).find('.deliverable-entry').map(function() {
-                                    return `<tr>
-                                        <td>${$(this).find('.deliverable-name').val() || ''}</td>
-                                        <td>${$(this).find('.deliverable-format').val() || ''}</td>
-                                        <td>${$(this).find('.deliverable-status').val() || ''}</td>
-                                    </tr>`;
-                                }).get().join('')}
-                            </tbody>
-                        </table>
-                    </div>`;
-            }).get().join('');
+            content = `
+                <table class="preview-table">
+                    <thead>
+                        <tr>
+                            <th>Stage</th>
+                            <th>Tasks & Activities</th>
+                            <th>Deliverables</th>
+                            <th>Format</th>
+                            <th>Timelines</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${$('.stage-deliverable-entry').map(function() {
+                            return `<tr>
+                                <td class="preserve-whitespace">${$(this).find('.stage-title').val() || '—'}</td>
+                                <td class="preserve-whitespace">${$(this).find('.stage-tasks').val() || '—'}</td>
+                                <td class="preserve-whitespace">${$(this).find('.deliverable-name').val() || '—'}</td>
+                                <td class="preserve-whitespace">${$(this).find('.deliverable-format').val() || '—'}</td>
+                                <td class="preserve-whitespace">${$(this).find('.deliverable-timeline').val() || '—'}</td>
+                            </tr>`;
+                        }).get().join('')}
+                    </tbody>
+                </table>`;
             break;
 
         case 'editable-additional-rates-section':
@@ -711,8 +727,7 @@ function collectSectionData(section) {
     }
     if (section.attr('id') === 'man-month-section') {
         data.manMonthRates = [];
-
-        $('.man-month-entry').each(function () {
+        $('.man-month-entry').each(function() {
             data.manMonthRates.push({
                 position: $(this).find('.mm-position').val(),
                 role: $(this).find('.mm-role').val(),
@@ -738,24 +753,16 @@ function collectSectionData(section) {
         });
     }
 
-    if (section.attr('id') === 'stages-deliverables-section') {
+   if (section.attr('id') === 'stages-deliverables-section') {
         data.stagesDeliverables = [];
-        $('.stage-entry').each(function() {
-            const stage = {
-                title: $(this).find('.stage-title').val(),
+        $('.stage-deliverable-entry').each(function() {
+            data.stagesDeliverables.push({
+                stage: $(this).find('.stage-title').val(),
                 tasks: $(this).find('.stage-tasks').val(),
-                deliverables: []
-            };
-
-            $(this).find('.deliverable-entry').each(function() {
-                stage.deliverables.push({
-                    name: $(this).find('.deliverable-name').val(),
-                    format: $(this).find('.deliverable-format').val(),
-                    status: $(this).find('.deliverable-status').val()
-                });
+                deliverables: $(this).find('.deliverable-name').val(),
+                format: $(this).find('.deliverable-format').val(),
+                timeline: $(this).find('.deliverable-timeline').val()
             });
-
-            data.stagesDeliverables.push(stage);
         });
     }
 
@@ -815,6 +822,8 @@ function collectSectionData(section) {
 async function generatePDF() {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+
+    
 
     // 1️⃣ Render all HTML proposal sections to images/pages, except documents-section
     const pagesEls = document.querySelectorAll('.pdf-page');
@@ -946,6 +955,8 @@ $(document).ready(function() {
         const filePreviews = {};
         sidebarList.empty();
 
+        initTextareas();
+
         // Clear previously shown sections
         $('.proposal-section').removeClass('active').hide();
 
@@ -1053,6 +1064,25 @@ $(document).ready(function() {
             alert('You need at least one budget item.');
         }
     });
+   
+    // Add Stage Deliverable Entry
+    $('.add-stage-deliverable').click(function() {
+        const newEntry = $('.stage-deliverable-entry').first().clone();
+        newEntry.find('textarea').val('');
+        $('.stages-deliverables-entries').append(newEntry);
+        initTextareas(); // Initialize the new textareas
+    });
+
+    // Remove Stage Deliverable Entry
+    $(document).on('click', '.remove-stage-deliverable', function() {
+        if ($('.stage-deliverable-entry').length > 1) {
+            $(this).closest('.stage-deliverable-entry').remove();
+        } else {
+            alert('At least one stage is required.');
+        }
+    });
+
+
 
     // Calculate budget totals
     $(document).on('input', '.budget-quantity, .budget-unit-cost', function() {
@@ -1399,15 +1429,16 @@ $(document).ready(function() {
         }
     });
 
-    // Add Man Month entry
-    $('.add-man-month').click(function () {
+    // Add Man Month Entry
+    $('.add-man-month').click(function() {
         const newEntry = $('.man-month-entry').first().clone();
-        newEntry.find('input, textarea').val('');
+        newEntry.find('textarea').val('');
         $('.man-month-entries').append(newEntry);
+        initTextareas(); // Initialize the new textareas
     });
 
-    // Remove Man Month entry
-    $(document).on('click', '.remove-man-month', function () {
+    // Remove Man Month Entry
+    $(document).on('click', '.remove-man-month', function() {
         if ($('.man-month-entry').length > 1) {
             $(this).closest('.man-month-entry').remove();
         } else {
