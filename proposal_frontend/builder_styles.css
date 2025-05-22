@@ -466,7 +466,8 @@ body {
 .pdf-page, 
 #previewContent, 
 #pdf-container {
-  overflow: hidden !important;       /* turn off scrollbars */
+  /*overflow: hidden !important;  */     /* turn off scrollbars */
+  overflow: visible !important;
 }
 
 /* 2) Also explicitly hide any WebKit/Firefox scrollbars just in case */

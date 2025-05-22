@@ -855,6 +855,9 @@ async function generatePDF() {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
 
+    const MARGIN     = 15;                               // [mm] adjust as desired
+    const pageWidth  = doc.internal.pageSize.getWidth(); // 210mm for A4-portrait
+    const pageHeight = doc.internal.pageSize.getHeight();// 297mm for A4-portrait
     
 
     // 1️⃣ Render all HTML proposal sections to images/pages, except documents-section
@@ -872,13 +875,34 @@ async function generatePDF() {
         }
 
         if (htmlPages.length > 0) doc.addPage();
-        const canvas = await html2canvas(pagesEls[i], {
-            scale: 2, useCORS: true, windowWidth: 1024, windowHeight: 1448
-        });
+         // Capture the full contents of this “page” element
+    const canvas = await html2canvas(pagesEls[i], {
+        scale: 2,
+       useCORS: true,
+        width:  pagesEls[i].scrollWidth,
+        height: pagesEls[i].scrollHeight
+    });
 
-        const imgData = canvas.toDataURL('image/jpeg', 1.0);
-        doc.addImage(imgData, 'JPEG', 15, 15, 180, 0, undefined, 'FAST');
+    // Convert to PNG data for jsPDF
+    const imgData = canvas.toDataURL('image/png');
+
+    // Compute image dimensions so we don’t pass `undefined` to jsPDF.scale
+    const imgProps  = doc.getImageProperties(imgData);
+    const imgWidth  = pageWidth - 2 * MARGIN;                // full printable width
+    const imgHeight = (imgProps.height * imgWidth) / imgProps.width;
+
+    doc.addImage(
+        imgData,
+        'PNG',
+        MARGIN,         // x
+        MARGIN,         // y
+        imgWidth,       // width in mm
+        imgHeight,      // height in mm (maintains aspect ratio)
+        undefined,
+        'FAST'
+        );
         htmlPages.push(secId);
+
     }
 
     // 2️⃣ Load into PDF-Lib for merging and inserting constituent PDFs
@@ -1002,6 +1026,7 @@ function showPDFPreview(pdfSource, container) {
 $(document).ready(function() {
 
     $('.section-live-preview').prop('checked', true).trigger('change');
+
 
     // Initial proposal section selector
     $('#sectionSelectForm').submit(function (e) {
