@@ -188,47 +188,71 @@ function generateSectionContent(section) {
             `;
             break;
         case 'intro-section':
-            const introHtml = introEditor ? introEditor.getData() : '';
-            // …and inject it directly (you can wrap in a div if you need CSS control)
+           
+            // 1. Grab the raw HTML from CKEditor…
+            let introHtml = introEditor ? introEditor.getData() : '';
+            // 2. Inject our preview-table class into every <table>
+            introHtml = introHtml.replace(
+                /<table(?![^>]*\bpreview-table\b)/g,
+                '<table class="preview-table"'
+            );
+            // 3. Wrap it for rendering
             content = `
-            <div class="intro-content">
-                ${introHtml}
-            </div>
-            `;
+                <div class="intro-content">
+                    ${introHtml}
+                </div>
+                    `;
             break;
         case 'project-brief-section':
-            //const text = $('#projectBriefText').val().trim();
-            const text = projectBriefEditor
+            // 1. Get the raw HTML from CKEditor (if initialized)
+            let rawHtml = projectBriefEditor
                 ? projectBriefEditor.getData().trim()
-                : $('#projectBriefText').val().trim();
-                
+                : '';
+
+            // 2. Inject our preview-table class into any <table> tags
+            if (rawHtml) {
+                rawHtml = rawHtml.replace(
+                    /<table(?![^>]*\bpreview-table\b)/g,
+                    '<table class="preview-table"'
+                );
+            }
+
+            // 3. Grab the file input for fallback
             const fileInput = $('#projectBriefFile')[0];
             let body = '';
 
-            if (text) {
-                body = `<p>${text}</p>`;
-            } else if (fileInput.files && fileInput.files[0]) {
-                const f = fileInput.files[0];
+            // 4. Decide what to render
+            if (rawHtml) {
+                // Use the rich‐text content (with tables already tagged)
+                body = rawHtml;
+            }
+            else if (fileInput.files && fileInput.files[0]) {
+                const f   = fileInput.files[0];
                 const url = URL.createObjectURL(f);
 
                 if (f.type.startsWith('image/')) {
-                body = `<img src="${url}" style="max-width:100%;height:auto;">`;
-                } else if (f.type === 'application/pdf') {
-                // live preview: show a note, actual merge happens later
-                body = `<p><em>Your uploaded PDF (“${f.name}”) will be appended in the final download.</em></p>`;
-                } else {
-                body = `<p><a href="${url}" target="_blank">${f.name}</a></p>`;
+                    body = `<img src="${url}" style="max-width:100%;height:auto;">`;
                 }
-            } else {
+                else if (f.type === 'application/pdf') {
+                    // live preview note; actual merge in PDF happens later
+                    body = `<p><em>Your uploaded PDF (“${f.name}”) will be appended in the final download.</em></p>`;
+                }
+                else {
+                    body = `<p><a href="${url}" target="_blank">${f.name}</a></p>`;
+                }
+            }
+            else {
                 body = '<p><em>No brief or file provided.</em></p>';
             }
 
+            // 5. Wrap it all in your container
             content = `
                 <div class="project-brief-content">
-                ${body}
+                    ${body}
                 </div>
             `;
             break;
+        
 
         
 
@@ -346,31 +370,26 @@ function generateSectionContent(section) {
 
 
 
-        case 'stages-deliverables-section':
-            content = `
-                <table class="preview-table">
-                    <thead>
-                        <tr>
-                            <th>Stage</th>
-                            <th>Tasks & Activities</th>
-                            <th>Deliverables</th>
-                            <th>Format</th>
-                            <th>Timelines</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${$('.stage-deliverable-entry').map(function() {
-                            return `<tr>
-                                <td class="preserve-whitespace">${$(this).find('.stage-title').val() || '—'}</td>
-                                <td class="preserve-whitespace">${$(this).find('.stage-tasks').val() || '—'}</td>
-                                <td class="preserve-whitespace">${$(this).find('.deliverable-name').val() || '—'}</td>
-                                <td class="preserve-whitespace">${$(this).find('.deliverable-format').val() || '—'}</td>
-                                <td class="preserve-whitespace">${$(this).find('.deliverable-timeline').val() || '—'}</td>
-                            </tr>`;
-                        }).get().join('')}
-                    </tbody>
-                </table>`;
-            break;
+        case 'stages-deliverables-section': 
+            // Pull the entire table HTML straight from CKEditor
+            let raw = window.deliverablesEditor
+                ? window.deliverablesEditor.getData().trim()
+                : '';
+
+            if (raw) {
+                // Ensure our <table> gets the preview-table class
+                raw = raw.replace(
+                  /<table(?![^>]*\bpreview-table\b)/g,
+                  '<table class="preview-table"'
+                );
+            } else {
+                raw = '<p><em>No stages & deliverables defined.</em></p>';
+            }
+
+            // Use the editor’s HTML directly for both preview and PDF
+            content = raw;
+        break;
+
 
         case 'editable-additional-rates-section':
             content = `
@@ -875,7 +894,6 @@ async function generatePDF() {
     const MARGIN     = 15;                               // [mm] adjust as desired
     const pageWidth  = doc.internal.pageSize.getWidth(); // 210mm for A4-portrait
     const pageHeight = doc.internal.pageSize.getHeight();// 297mm for A4-portrait
-    
 
     // 1️⃣ Render all HTML proposal sections to images/pages, except documents-section
     const pagesEls = document.querySelectorAll('.pdf-page');
@@ -887,50 +905,67 @@ async function generatePDF() {
         const secId = pagesEls[i].dataset.sec;
         if (secId === 'documents-section') {
             docSectionIndex = i;
-            // Do not render this section as a page, skip
-            continue;
+            continue;  // skip rendering this as a standalone page
         }
 
+        // ── TABLE SECTION ──
+        // 1️⃣ Find ALL preview-table elements inside this section
+        const tableEls = pagesEls[i].querySelectorAll('.preview-table');
+        if (tableEls.length > 0) {
+            if (htmlPages.length > 0) doc.addPage();
+
+            for (const table of tableEls) {
+                doc.autoTable({
+                    html: table,
+                    startY: MARGIN,
+                    margin: { left: MARGIN, right: MARGIN },
+                    styles: { overflow: 'linebreak' }
+                });
+            }
+
+            htmlPages.push(secId);
+            continue; // ✅ Skip html2canvas for this section
+        }
+
+
+        // ── FALLBACK IMAGE CAPTURE ──
         if (htmlPages.length > 0) doc.addPage();
-            // Capture the full contents of this “page” element
+
         const canvas = await html2canvas(pagesEls[i], {
             scale: 2,
-        useCORS: true,
+            useCORS: true,
             width:  pagesEls[i].scrollWidth,
             height: pagesEls[i].scrollHeight
         });
 
-        // Convert to PNG data for jsPDF
-        const imgData = canvas.toDataURL('image/png');
-
-        // Compute image dimensions so we don’t pass `undefined` to jsPDF.scale
+        const imgData   = canvas.toDataURL('image/png');
         const imgProps  = doc.getImageProperties(imgData);
-        const imgWidth  = pageWidth - 2 * MARGIN;                // full printable width
+        const imgWidth  = pageWidth  - 2 * MARGIN;
         const imgHeight = (imgProps.height * imgWidth) / imgProps.width;
 
         doc.addImage(
             imgData,
             'PNG',
-            MARGIN,         // x
-            MARGIN,         // y
-            imgWidth,       // width in mm
-            imgHeight,      // height in mm (maintains aspect ratio)
+            MARGIN,    // x
+            MARGIN,    // y
+            imgWidth,  // width in mm
+            imgHeight, // height in mm (maintains aspect ratio)
             undefined,
             'FAST'
-            );
-            htmlPages.push(secId);
+        );
 
+        htmlPages.push(secId);
     }
 
     // 2️⃣ Load into PDF-Lib for merging and inserting constituent PDFs
     const merged = await PDFLib.PDFDocument.create();
-    const raw = await doc.output('arraybuffer');
-    const base = await PDFLib.PDFDocument.load(raw);
+    const raw    = await doc.output('arraybuffer');
+    const base   = await PDFLib.PDFDocument.load(raw);
 
     // Preload logo image
-    const logoUrl = 'assets/pdf/archcorp logo.png';
+    const logoUrl   = 'assets/pdf/archcorp logo.png';
     const logoBytes = await fetch(logoUrl).then(r => r.arrayBuffer());
-    const logoImg = await merged.embedPng(logoBytes);
+    const logoImg   = await merged.embedPng(logoBytes);
 
     // Helper: Get all constituent PDFs
     async function getConstituentPDFs() {
@@ -956,44 +991,40 @@ async function generatePDF() {
 
         const projInput = $('#projectBriefFile')[0];
         if (projInput.files && projInput.files[0]) {
-            // read the array buffer of the uploaded file
             const briefBytes = await readFileAsArrayBuffer(projInput.files[0]);
             pdfList.push(briefBytes);
         }
         return pdfList;
     }
 
+    // Merge pages from the base PDF and then insert uploads where needed
     let pageIdx = 0;
     for (let i = 0; i < htmlPages.length; i++) {
-        // Always add the page from the base PDF
         const [pg] = await merged.copyPages(base, [i]);
         merged.addPage(pg);
         pageIdx++;
 
-        // ─── NEW: after the “intro-section” page, append Project Brief PDF ─────────────────
+        // After intro-section, insert the project brief PDF if uploaded
         if (htmlPages[i] === 'intro-section') {
             const fileInput = $('#projectBriefFile')[0];
-        if (fileInput.files && fileInput.files[0] &&
+            if (fileInput.files && fileInput.files[0] &&
                 fileInput.files[0].type === 'application/pdf') {
-                // load the uploaded PDF bytes
+
                 const briefBytes = await readFileAsArrayBuffer(fileInput.files[0]);
-                const srcPdf    = await PDFLib.PDFDocument.load(briefBytes);
-            // copy all its pages into our merged doc
+                const srcPdf     = await PDFLib.PDFDocument.load(briefBytes);
                 const briefPages = await merged.copyPages(srcPdf, srcPdf.getPageIndices());
                 for (const p of briefPages) {
                     merged.addPage(p);
                     pageIdx++;
-            }
+                }
             }
         }
 
-        // After the section that was just added, if that was before the skipped 'documents-section',
-        // now append the constituent PDFs in their place.
+        // Where the skipped 'documents-section' belonged, insert checked PDFs
         if (i === docSectionIndex - 1 || (docSectionIndex === 0 && i === 0)) {
-            // Insert PDFs here
-            let pdfBytesList = await getConstituentPDFs();
+            const pdfBytesList = await getConstituentPDFs();
             for (const pdfBytes of pdfBytesList) {
-                const srcPdf = await PDFLib.PDFDocument.load(pdfBytes);
+                const srcPdf    = await PDFLib.PDFDocument.load(pdfBytes);
                 const partPages = await merged.copyPages(srcPdf, srcPdf.getPageIndices());
                 for (const p of partPages) {
                     merged.addPage(p);
@@ -1003,18 +1034,24 @@ async function generatePDF() {
         }
     }
 
-    // 3️⃣ Stamp logo & page number on every page, including appended ones
+    // 3️⃣ Stamp logo & page number on every page
     const allPages = merged.getPages();
     for (let idx = 0; idx < allPages.length; idx++) {
         const page = allPages[idx];
         const { width, height } = page.getSize();
+
         // Logo at top right
         page.drawImage(logoImg, {
-            x: width - 60, y: height - 50, width: 40,
+            x: width - 60,
+            y: height - 50,
+            width: 40,
         });
+
         // Page number at bottom right
         page.drawText(`Page ${idx + 1}`, {
-            x: width - 70, y: 30, size: 10,
+            x: width - 70,
+            y: 30,
+            size: 10,
             color: PDFLib.rgb(0.4, 0.4, 0.4),
         });
     }
@@ -1023,6 +1060,7 @@ async function generatePDF() {
     const out = await merged.save();
     downloadPDF(out, 'proposal.pdf');
 }
+
 
 
 // Function to show PDF preview
