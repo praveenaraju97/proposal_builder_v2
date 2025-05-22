@@ -140,7 +140,7 @@ body {
 }
 
 /* Tables in preview */
-.preview-table {
+/* .preview-table {
     width: 100%;
     border-collapse: collapse;
     margin: 15px 0;
@@ -154,7 +154,24 @@ body {
 
 .preview-table th {
     background-color: #f2f2f2;
+} */
+
+/* 1) Keep header text all on one line */
+.preview-table thead th {
+  white-space: nowrap;
+  font-weight: 600;
+  padding: 8px;
+  border-bottom: 2px solid #ccc;
+  text-align: left;
 }
+
+/* 2) Cell padding and borders */
+.preview-table td,
+.preview-table th {
+  padding: 8px;
+  border: 1px solid #e0e0e0;
+}
+
 
 .table-caption {
     font-style: italic;
@@ -165,4 +182,18 @@ body {
 .budget-total-row {
     font-weight: bold;
     background-color: #f2f2f2;
+}
+/* 3) Tick & cross colors */
+.tick-green {
+  color: green; /* bootstrap success green */
+  font-weight: bold;
+}
+.cross-red {
+  color: red; /* bootstrap danger red */
+  font-weight: bold;
+}
+
+/* 4) Bold Yes/No cells */
+.preview-table td.yes {
+  font-weight: 700;
 }

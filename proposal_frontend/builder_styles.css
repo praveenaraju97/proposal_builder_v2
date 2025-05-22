@@ -141,7 +141,7 @@ body {
 }
 
 /* Tables in preview */
-.preview-table {
+/* .preview-table {
     width: 100%;
     border-collapse: collapse;
     margin: 15px 0;
@@ -155,6 +155,22 @@ body {
 
 .preview-table th {
     background-color: #f2f2f2;
+} */
+
+/* 1) Keep header text all on one line */
+.preview-table thead th {
+  white-space: nowrap;
+  font-weight: 600;
+  padding: 8px;
+  border-bottom: 2px solid #ccc;
+  text-align: left;
+}
+
+/* 2) Cell padding and borders */
+.preview-table td,
+.preview-table th {
+  padding: 8px;
+  border: 1px solid #e0e0e0;
 }
 
 .table-caption {
@@ -367,8 +383,8 @@ body {
 }
 
 .section-header h2 {
-    color: #2c3e50;
-    border-bottom: 2px solid #2c3e50;
+    color: #000000;
+    border-bottom: 2px solid #000000;
     padding-bottom: 10px;
     margin-bottom: 20px;
 }
@@ -410,7 +426,7 @@ body {
   position: absolute;
   top: 0;
   right: 0;
-  height: 40px;
+  height: 20px;
 }
 
 .stages-deliverables-table input,
@@ -505,4 +521,18 @@ body {
     box-shadow: none;
 }
 
+/* 3) Tick & cross colors */
+.tick-green {
+  color: #28a745; /* bootstrap success green */
+  /* font-weight: bold; */
+}
+.cross-red {
+  color: grey; /* bootstrap danger red */
+  /* font-weight: bold; */
+}
+
+/* 4) Bold Yes/No cells */
+.preview-table td.yes {
+  font-weight: 900;
+}
 

@@ -12,6 +12,7 @@
    <script src="https://cdn.jsdelivr.net/npm/ckeditor5-build-classic-base64-upload@27.0.2/build/ckeditor.js"></script> 
    <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.plugin.html.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
 
  
     <style>
@@ -395,7 +396,8 @@
                                 <th>Optional</th>
                                 <th>In-House</th>
                                 <th>External</th>
-                                <th>Authorized</th>
+                                <th>Appointed By Archcorp</th>
+                                <th>Appointed By Client</th>
                                 <th> </th>
                             </tr>
                             </thead>
@@ -423,9 +425,16 @@
                                         class="scope-external">
                                 </td>
                                 <td>
-                                <input type="text"
-                                        class="form-control scope-appointed"
-                                        placeholder="Name">
+                                    <select class="form-control scope-appointed-achcorp">
+                                    <option value="Yes">Yes</option>
+                                    <option value="No" selected>No</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <select class="form-control scope-appointed-client">
+                                    <option value="Yes">Yes</option>
+                                    <option value="No" selected>No</option>
+                                    </select>
                                 </td>
                                 <td class="text-center align-middle">
                                 <button class="btn btn-sm btn-danger remove-scope-service">

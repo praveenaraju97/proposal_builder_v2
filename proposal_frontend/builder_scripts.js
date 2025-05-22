@@ -286,49 +286,64 @@ function generateSectionContent(section) {
 
         case 'general-scope-section':
             content = `
-                <table class="preview-table">
+            <table class="preview-table">
                 <thead>
-                    <tr>
+                <tr>
                     <th>Service</th>
                     <th>Mandatory</th>
                     <th>Optional</th>
                     <th>In-House</th>
                     <th>External</th>
-                    <th>Authorized</th>
-                    </tr>
+                    <th>Appointed By Archcorp</th>
+                    <th>Appointed By Client</th>
+                </tr>
                 </thead>
                 <tbody>
-                    ${$('.scope-service-entry').map(function() {
+                ${$('.scope-service-entry').map(function() {
                     const $r = $(this);
-                    const svc  = $r.find('.scope-service').val()       || '—';
+                    const svc = $r.find('.scope-service').val() || '—';
+
+                    // □-boxed symbols: ☑ = checked, ☒ = unchecked
                     const mand = $r.find('.scope-mandatory').is(':checked')
-                                    ? '<span class="tick-green">✓</span>'
-                                    : '<span class="cross-red">✗</span>';
+                    ? '<i class="fas fa-check-square tick-green"></i>'
+                    : '<i class="fas fa-times-square cross-red"></i>';
                     const opt  = $r.find('.scope-optional').is(':checked')
-                                    ? '<span class="tick-green">✓</span>'
-                                    : '<span class="cross-red">✗</span>';
+                    ? '<i class="fas fa-check-square tick-green"></i>'
+                    : '<i class="fas fa-times-square cross-red"></i>';
                     const inh  = $r.find('.scope-inhouse').is(':checked')
-                                    ? '<span class="tick-green">✓</span>'
-                                    : '<span class="cross-red">✗</span>';
+                    ? '<i class="fas fa-check-square tick-green"></i>'
+                    : '<i class="fas fa-times-square cross-red"></i>';
                     const ext  = $r.find('.scope-external').is(':checked')
-                                    ? '<span class="tick-green">✓</span>'
-                                    : '<span class="cross-red">✗</span>';
-                    const appt = $r.find('.scope-appointed').val()     || '—';
+                    ? '<i class="fas fa-check-square tick-green"></i>'
+                    : '<i class="fas fa-times-square cross-red"></i>';
+
+                    // Only bold "Yes"; leave "No" unbolded
+                    const apptArch   = $r.find('.scope-appointed-achcorp').val() || 'No';
+                    const archCell   = apptArch === 'Yes'
+                    ? '<td class="text-center"><strong>Yes</strong></td>'
+                    : '<td class="text-center">No</td>';
+
+                    const apptClient = $r.find('.scope-appointed-client').val() || 'No';
+                    const clientCell = apptClient === 'Yes'
+                    ? '<td class="text-center"><strong>Yes</strong></td>'
+                    : '<td class="text-center">No</td>';
 
                     return `
-                        <tr>
+                    <tr>
                         <td>${svc}</td>
                         <td class="text-center">${mand}</td>
                         <td class="text-center">${opt}</td>
                         <td class="text-center">${inh}</td>
                         <td class="text-center">${ext}</td>
-                        <td>${appt}</td>
-                        </tr>
+                        ${archCell}
+                        ${clientCell}
+                    </tr>
                     `;
-                    }).get().join('')}
+                }).get().join('')}
                 </tbody>
-                </table>`;
+            </table>`;
             break;
+
 
 
         case 'stages-deliverables-section':
@@ -780,7 +795,9 @@ function collectSectionData(section) {
                 discipline: $(this).find('.scope-discipline').val(),
                 serviceBy: $(this).find('.scope-service-by').val(),
                 inclusions: $(this).find('.scope-inclusions').val(),
-                remarks: $(this).find('.scope-remarks').val()
+                remarks: $(this).find('.scope-remarks').val(),
+                archcorp:   $(this).find('.scope-appointed-achcorp').val() || 'No',
+                client:   $(this).find('.scope-appointed-client').val() || 'No',
             });
         });
     }
@@ -875,33 +892,33 @@ async function generatePDF() {
         }
 
         if (htmlPages.length > 0) doc.addPage();
-         // Capture the full contents of this “page” element
-    const canvas = await html2canvas(pagesEls[i], {
-        scale: 2,
-       useCORS: true,
-        width:  pagesEls[i].scrollWidth,
-        height: pagesEls[i].scrollHeight
-    });
+            // Capture the full contents of this “page” element
+        const canvas = await html2canvas(pagesEls[i], {
+            scale: 2,
+        useCORS: true,
+            width:  pagesEls[i].scrollWidth,
+            height: pagesEls[i].scrollHeight
+        });
 
-    // Convert to PNG data for jsPDF
-    const imgData = canvas.toDataURL('image/png');
+        // Convert to PNG data for jsPDF
+        const imgData = canvas.toDataURL('image/png');
 
-    // Compute image dimensions so we don’t pass `undefined` to jsPDF.scale
-    const imgProps  = doc.getImageProperties(imgData);
-    const imgWidth  = pageWidth - 2 * MARGIN;                // full printable width
-    const imgHeight = (imgProps.height * imgWidth) / imgProps.width;
+        // Compute image dimensions so we don’t pass `undefined` to jsPDF.scale
+        const imgProps  = doc.getImageProperties(imgData);
+        const imgWidth  = pageWidth - 2 * MARGIN;                // full printable width
+        const imgHeight = (imgProps.height * imgWidth) / imgProps.width;
 
-    doc.addImage(
-        imgData,
-        'PNG',
-        MARGIN,         // x
-        MARGIN,         // y
-        imgWidth,       // width in mm
-        imgHeight,      // height in mm (maintains aspect ratio)
-        undefined,
-        'FAST'
-        );
-        htmlPages.push(secId);
+        doc.addImage(
+            imgData,
+            'PNG',
+            MARGIN,         // x
+            MARGIN,         // y
+            imgWidth,       // width in mm
+            imgHeight,      // height in mm (maintains aspect ratio)
+            undefined,
+            'FAST'
+            );
+            htmlPages.push(secId);
 
     }
 
@@ -1006,7 +1023,6 @@ async function generatePDF() {
     const out = await merged.save();
     downloadPDF(out, 'proposal.pdf');
 }
-
 
 
 // Function to show PDF preview
