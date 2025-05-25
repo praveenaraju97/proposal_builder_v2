@@ -1,538 +1,83 @@
+/* pdf_styles.css */
 body {
-    font-family: Arial, 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #f8f9fa;
-    margin: 0;
-    padding: 0;
-}
-
-.sidebar {
-    background-color: #2c3e50;
-    color: white;
-    height: 100vh;
-    position: fixed;
-    padding: 20px;
-    box-shadow: 2px 0 5px rgba(0,0,0,0.1);
-}
-
-.sidebar-header {
-    text-align: center;
-    margin-bottom: 30px;
-}
-
-.company-logo {
-    max-width: 80%;
-    margin-bottom: 15px;
-}
-
-.nav-link {
-    color: #ecf0f1;
-    margin-bottom: 5px;
-    border-radius: 5px;
-    padding: 10px 15px;
-}
-
-.nav-link:hover, .nav-link.active {
-    background-color: #34495e;
-    color: white;
-}
-
-.main-content {
-    margin-left: 25%;
-    padding: 20px;
-}
-
-.toolbar {
-    background-color: white;
-    padding: 10px;
-    border-radius: 5px;
-    margin-bottom: 20px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-}
-
-.proposal-section {
-    background-color: white;
-    padding: 20px;
-    border-radius: 5px;
-    margin-bottom: 20px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-    display: none;
-}
-
-.proposal-section.active {
-    display: block;
-}
-
-/* ... (rest of original CSS remains unchanged) ... */
-.form-group {
-    margin-bottom: 15px;
-}
-
-.scope-item, .team-member, .milestone, .budget-item {
-    background-color: #f8f9fa;
-    padding: 15px;
-    border-radius: 5px;
-    margin-bottom: 15px;
-    border-left: 4px solid #3498db;
-}
-
-.add-scope, .add-member, .add-milestone, .add-budget-item {
-    margin-top: 10px;
-}
-
-.remove-scope, .remove-member, .remove-milestone, .remove-budget-item {
-    margin-top: 10px;
-}
-
-.sidebar-footer {
-    position: absolute;
-    bottom: 20px;
-    width: calc(100% - 40px);
-}
-
-.sidebar-footer .btn {
-    width: 100%;
-    margin-bottom: 10px;
-}
-
-/* Preview styling */
-#previewContent {
-    font-family: Arial,'Times New Roman', Times, serif;
+    font-family: 'Roboto', sans-serif;
     line-height: 1.6;
+    color: #333;
 }
 
-.preview-header {
-    text-align: center;
-    margin-bottom: 40px;
+h1, h2, h3 {
+    color: #2c3e50;
+    margin-top: 1.5em;
+    margin-bottom: 0.5em;
 }
 
-.preview-footer {
-    margin-top: 40px;
-    padding-top: 20px;
-    border-top: 1px solid #ddd;
-    font-size: 0.9em;
-    color: #666;
+h2 {
+    border-bottom: 2px solid #3498db;
+    padding-bottom: 0.3em;
+    page-break-after: avoid;
 }
 
-.preview-logo {
-    max-height: 80px;
-    margin-bottom: 20px;
-}
-
-/* WYSIWYG editor-like textarea */
-.wysiwyg {
-    min-height: 150px;
-    border: 1px solid #ddd;
-    padding: 10px;
-    border-radius: 4px;
-}
-
-/* Image preview */
-.image-preview {
-    max-width: 200px;
-    max-height: 200px;
-    border: 1px dashed #ccc;
-    padding: 5px;
-    display: none;
-}
-
-.image-preview img {
-    max-width: 100%;
-    max-height: 100%;
-}
-
-/* Tables in preview */
-/* .preview-table {
+table {
     width: 100%;
+    margin: 1em 0;
     border-collapse: collapse;
-    margin: 15px 0;
+    page-break-inside: avoid;
 }
 
-.preview-table th, .preview-table td {
-    border: 1px solid #ddd;
-    padding: 8px;
+th {
+    background-color: #3498db;
+    color: white;
+    padding: 10px;
     text-align: left;
 }
 
-.preview-table th {
-    background-color: #f2f2f2;
-} */
-
-/* 1) Keep header text all on one line */
-.preview-table thead th {
-  white-space: nowrap;
-  font-weight: 600;
-  padding: 8px;
-  border-bottom: 2px solid #ccc;
-  text-align: left;
-}
-
-/* 2) Cell padding and borders */
-.preview-table td,
-.preview-table th {
-  padding: 8px;
-  border: 1px solid #e0e0e0;
-}
-
-.table-caption {
-    font-style: italic;
-    margin-bottom: 10px;
-}
-
-/* Budget totals */
-.budget-total-row {
-    font-weight: bold;
-    background-color: #f2f2f2;
-}
-
-/* File upload preview styling */
-.file-preview {
-    margin-top: 10px;
-    padding: 10px;
-    background-color: #f8f9fa;
-    border-radius: 4px;
-    border: 1px dashed #dee2e6;
-}
-
-.file-preview p {
-    margin-bottom: 5px;
-}
-
-.file-preview .file-name {
-    font-weight: bold;
-}
-
-.file-preview .file-size {
-    color: #6c757d;
-    font-size: 0.9em;
-}
-
-/* Add to builder_styles.css */
-.file-preview-container {
-    border: 1px dashed #ddd;
-    padding: 10px;
-    border-radius: 4px;
-    margin-top: 5px;
-}
-
-.file-preview {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-}
-
-.file-preview .file-name {
-    font-weight: bold;
-    margin-top: 5px;
-}
-
-.file-preview .file-size {
-    color: #666;
-    font-size: 0.8em;
-}
-
-.fa-file-pdf {
-    color: #d33;
-}
-
-.fa-file-word {
-    color: #2b579a;
-}
-
-.file-preview-container {
-    border: 1px dashed #ddd;
-    padding: 10px;
-    border-radius: 4px;
-    margin-top: 5px;
-}
-
-.file-preview {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-}
-
-.file-preview .file-name {
-    font-weight: bold;
-    margin-top: 5px;
-}
-
-.file-preview .file-size {
-    color: #666;
-    font-size: 0.8em;
-}
-
-.fa-file-pdf {
-    color: #d33;
-}
-
-.fa-file-word {
-    color: #2b579a;
-}
-
-.file-preview-container {
-    border: 1px dashed #ddd;
-    padding: 10px;
-    border-radius: 4px;
-    margin-top: 5px;
-}
-
-.pdf-preview {
-    margin: 15px 0;
+td {
+    padding: 8px;
     border: 1px solid #ddd;
-    border-radius: 4px;
-    overflow: hidden;
-}
-
-.pdf-preview object {
-    border: none;
-}
-
-.file-upload-section {
-    margin: 15px 0;
-    padding: 15px;
-    background: #f8f9fa;
-    border-radius: 4px;
-}
-
-.file-info {
-    padding: 5px;
-    background: #f5f5f5;
-    border-radius: 4px;
-}
-
-.file-name {
-    font-weight: bold;
-    margin-bottom: 0;
-}
-
-.file-size {
-    color: #666;
-    font-size: 0.8em;
-    margin-bottom: 0;
-}
-
-/* PDF Page Styling */
-.pdf-page {
-    padding: 40px;
-    margin-bottom: 30px;
-    page-break-after: always;
-    position: relative;
-    min-height: 1056px; /* Standard US Letter size */
-    border-bottom: 1px dashed #ccc;
-}
-
-.pdf-page:last-child {
-    page-break-after: auto;
-}
-
-/* .page-number {
-    position: absolute;
-    bottom: 20px;
-    right: 20px;
-    font-size: 12px;
-    color: #666;
-} */
-
-.section-content {
-    margin-bottom: 40px;
-}
-
-.section-header {
-    margin-bottom: 30px;
-    padding-bottom: 15px;
-    border-bottom: 2px solid #eee;
-}
-
-/* Preview Modal Adjustments */
-#previewContent {
-    padding: 20px;
-}
-
-#previewContent .pdf-page {
-    background: white;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    margin-bottom: 40px;
-}
-
-/* Add these styles to ensure proper PDF layout */
-.pdf-page {
-    width: 210mm;
-    min-height: 297mm;
-    padding: 20mm;
-    margin: 10mm auto;
-    background: white;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    position: relative;
-    box-sizing: border-box;
-    page-break-after: always;
-}
-
-.pdf-page.temp-hide {
-    position: absolute;
-    left: -9999px;
-    visibility: hidden;
-}
-
-@media print {
-    .pdf-page {
-        margin: 0;
-        box-shadow: none;
-    }
-}
-
-.section-header h2 {
-    color: #000000;
-    border-bottom: 2px solid #000000;
-    padding-bottom: 10px;
-    margin-bottom: 20px;
-}
-
-.section-content {
-    font-family: Arial,'Times New Roman', serif;
-    font-size: 12pt;
-    line-height: 1.6;
 }
 
 .preview-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin: 15px 0;
-    font-size: 11pt;
+    margin: 1em 0;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12);
 }
 
-.preview-table th {
-    background-color: #f2f2f2;
-    font-weight: bold;
-    padding: 8px;
-    border: 1px solid #ddd;
+.image-preview {
+    margin: 1em 0;
+    text-align: center;
 }
 
-.preview-table td {
-    padding: 8px;
-    border: 1px solid #ddd;
+.image-preview img {
+    max-width: 80%;
+    height: auto;
+    margin: 0 auto;
 }
 
-.page-number {
-    position: absolute;
-    bottom: 10mm;
-    right: 20mm;
-    font-size: 10pt;
-    color: #666;
+.section-header {
+    page-break-before: always;
+    padding-top: 2em;
 }
 
-.preview-logo-top-right {
-  position: absolute;
-  top: 0;
-  right: 0;
-  height: 20px;
+.keep-together {
+    page-break-inside: avoid;
 }
 
-.stages-deliverables-table input,
-.stages-deliverables-table textarea {
-    width: 100%;
-    border: none;
-    background: transparent;
-    padding: 8px;
+.page-break {
+    page-break-before: always;
 }
 
-.stages-deliverables-table input:focus,
-.stages-deliverables-table textarea:focus {
-    outline: none;
-    background: #f8f9fa;
+@page {
+    size: A4;
+    margin: 20mm 15mm;
+    
+    @top-center {
+        content: "Architecture Proposal";
+        font-size: 12pt;
+        color: #666;
+    }
+    
+    @bottom-right {
+        content: "Page " counter(page) " of " counter(pages);
+        font-size: 10pt;
+        color: #666;
+    }
 }
-
-.stages-deliverables-table td {
-    vertical-align: top;
-    padding: 0;
-}
-
-.stages-deliverables-table textarea {
-    resize: vertical;
-    min-height: 60px;
-}
-/* Auto-expanding textareas */
-.auto-expand {
-    resize: none;
-    overflow: hidden;
-    min-height: 38px; /* Match Bootstrap form-control height */
-    width: 100%;
-    border: none;
-    padding: 8px;
-    background: transparent;
-}
-.auto-expand:focus {
-    outline: none;
-    background: #f8f9fa;
-}
-
-.stages-deliverables-table .form-control {
-    border-radius: 0;
-    box-shadow: none;
-}
-
-/* Preserve whitespace in preview */
-.preserve-whitespace {
-    white-space: pre-wrap;
-    word-wrap: break-word;
-}
-
-/* 1) Prevent any scrollbars from showing up in your .pdf-page containers */
-.pdf-page, 
-#previewContent, 
-#pdf-container {
-  /*overflow: hidden !important;  */     /* turn off scrollbars */
-  overflow: visible !important;
-}
-
-/* 2) Also explicitly hide any WebKit/Firefox scrollbars just in case */
-#previewContent::-webkit-scrollbar,
-#pdf-container::-webkit-scrollbar,
-.pdf-page::-webkit-scrollbar {
-  display: none !important;
-}
-#previewContent, #pdf-container {
-  -ms-overflow-style: none;  /* IE 10+ */
-  scrollbar-width: none;     /* Firefox */
-}
-.man-month-table textarea {
-    resize: none;
-    overflow: hidden;
-    min-height: 38px;
-    width: 100%;
-    border: none;
-    padding: 8px;
-    background: transparent;
-}
-
-.man-month-table textarea:focus {
-    outline: none;
-    background: #f8f9fa;
-}
-
-.man-month-table td {
-    vertical-align: top;
-    padding: 0;
-}
-
-.man-month-table .form-control {
-    border-radius: 0;
-    box-shadow: none;
-}
-
-/* 3) Tick & cross colors */
-.tick-green {
-  color: #28a745; /* bootstrap success green */
-  /* font-weight: bold; */
-}
-.cross-red {
-  color: grey; /* bootstrap danger red */
-  /* font-weight: bold; */
-}
-
-/* 4) Bold Yes/No cells */
-.preview-table td.yes {
-  font-weight: 900;
-}
-
