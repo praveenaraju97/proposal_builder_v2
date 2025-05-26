@@ -936,12 +936,14 @@
 document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('downloadBtn').addEventListener('click', function() {
         console.log('Generating PDF...');
-        generatePDF()
+        //generatePDF()
+        submitProposalForPdfMerge()
         // Call your actual generatePDF function here.
     });
     document.getElementById('downloadFromPreview').addEventListener('click', function() {
         console.log('Generating PDF from preview...');
-        generatePDF()
+        //generatePDF()
+        submitProposalForPdfMerge()
         // Call your actual generatePDF function here.
     });
 });

@@ -65,3 +65,8 @@ DELETE /api/templates/<template_id> - Delete template
 
 
 =============================================
+
+npm install pdf-lib
+npm install multer
+pdfjs-dist
+pdfjs-dist

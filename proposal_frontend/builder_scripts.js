@@ -18,6 +18,17 @@ function readFileAsArrayBuffer(file) {
     });
 }
 
+// Helper function to format file size
+// Format file size
+function formatFileSize(bytes) {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+}
+
+
 function downloadPDF(bytes, filename) {
     const blob = new Blob([bytes], { type: 'application/pdf' });
     const link = document.createElement('a');
@@ -204,55 +215,65 @@ function generateSectionContent(section) {
                 </div>
                     `;
             break;
-        case 'project-brief-section':
-            // 1. Get the raw HTML from CKEditor (if initialized)
-            let rawHtml = projectBriefEditor
-                ? projectBriefEditor.getData().trim()
-                : '';
-
-            // 2. Inject our preview-table class into any <table> tags
-            if (rawHtml) {
-                rawHtml = rawHtml.replace(
-                    /<table(?![^>]*\bpreview-table\b)/g,
-                    '<table class="preview-table"'
-                );
-            }
-
-            // 3. Grab the file input for fallback
-            const fileInput = $('#projectBriefFile')[0];
-            let body = '';
-
-            // 4. Decide what to render
-            if (rawHtml) {
-                // Use the rich‐text content (with tables already tagged)
-                body = rawHtml;
-            }
-            else if (fileInput.files && fileInput.files[0]) {
-                const f   = fileInput.files[0];
-                const url = URL.createObjectURL(f);
-
-                if (f.type.startsWith('image/')) {
-                    body = `<img src="${url}" style="max-width:100%;height:auto;">`;
+        
+            case 'project-brief-section':
+                // 1. Get the raw HTML from CKEditor (if initialized)
+                let rawHtml = projectBriefEditor
+                    ? projectBriefEditor.getData().trim()
+                    : '';
+            
+                // 2. Inject our preview-table class into any <table> tags
+                if (rawHtml) {
+                    rawHtml = rawHtml.replace(
+                        /<table(?![^>]*\bpreview-table\b)/g,
+                        '<table class="preview-table"'
+                    );
                 }
-                else if (f.type === 'application/pdf') {
-                    // live preview note; actual merge in PDF happens later
-                    body = `<p><em>Your uploaded PDF (“${f.name}”) will be appended in the final download.</em></p>`;
+            
+                // 3. Grab the file input for fallback
+                const fileInput = $('#projectBriefFile')[0];
+                let body = '';
+            
+                // 4. Decide what to render
+                if (rawHtml) {
+                    // Use the rich‐text content (with tables already tagged)
+                    body = rawHtml;
+                }
+                else if (fileInput && fileInput.files && fileInput.files[0]) {
+                    const f   = fileInput.files[0];
+                    const url = URL.createObjectURL(f);
+            
+                    if (f.type.startsWith('image/')) {
+                        body = `<img src="${url}" style="max-width:100%;height:auto;">`;
+                    }
+                    else if (f.type === 'application/pdf') {
+                        // 🟢 Show PDF inline in browser preview!
+                        body = `
+                            <object data="${url}" type="application/pdf" width="100%" height="500px">
+                                <p>PDF preview not available. <a href="${url}" target="_blank">Download file instead</a></p>
+                            </object>
+                            <div class="file-info mt-2">
+                                <p class="file-name"><strong>${f.name}</strong></p>
+                                <p class="file-size">${formatFileSize(f.size)}</p>
+                            </div>
+                        `;
+                    }
+                    else {
+                        body = `<p><a href="${url}" target="_blank">${f.name}</a></p>`;
+                    }
                 }
                 else {
-                    body = `<p><a href="${url}" target="_blank">${f.name}</a></p>`;
+                    body = '<p><em>No brief or file provided.</em></p>';
                 }
-            }
-            else {
-                body = '<p><em>No brief or file provided.</em></p>';
-            }
-
-            // 5. Wrap it all in your container
-            content = `
-                <div class="project-brief-content">
-                    ${body}
-                </div>
-            `;
-            break;
+            
+                // 5. Wrap it all in your container
+                content = `
+                    <div class="project-brief-content">
+                        ${body}
+                    </div>
+                `;
+                break;
+            
         
 
         
@@ -1277,7 +1298,7 @@ function replaceImgSrcWithBase64(html) {
 // }
 
 function buildProposalHtml() {
-    // Get all included sections (with .section-live-preview checked)
+    // Get all proposal sections that should be included
     const includedSections = Array.from(document.querySelectorAll('.proposal-section')).filter(section => {
         const cb = section.querySelector('.section-live-preview');
         return cb && cb.checked;
@@ -1286,27 +1307,45 @@ function buildProposalHtml() {
     let htmlSections = '';
 
     includedSections.forEach((section, idx) => {
-        const $section = $(section);
-        const titleEl = section.querySelector('h2, h1');
-        const sectionTitle = titleEl ? titleEl.innerText : 'Section';
-        const sectionContent = generateSectionContent($section);
+        const id = section.id;
+        const h2 = section.querySelector('h2, h1');
+        const sectionTitle = h2 ? h2.textContent.trim() : id.replace(/-/g, ' ').toUpperCase();
+        let sectionContent = '';
+        if (typeof generateSectionContent === "function") {
+            sectionContent = generateSectionContent($(section));
+        } else {
+            const clone = section.cloneNode(true);
+            clone.querySelectorAll('input,button,select,textarea,label').forEach(e => e.remove());
+            sectionContent = clone.innerHTML;
+        }
 
-        // Cover Page
-        if (idx === 0 && section.id === 'cover-section') {
+        // === INSERT MARKER DIV FOR PROJECT BRIEF ===
+        if (id === 'project-brief-section') {
+            htmlSections += `<div data-section="project-brief-section">___MARKER_project-brief-section___</div>\n`;
+        }
+        // If you want to add more mergeable sections in the future:
+        // else if (id === 'constituent-section') {
+        //     htmlSections += `<div data-section="constituent-section">___MARKER_constituent-section___</div>\n`;
+        // }
+        else {
+            // For other sections: use standard marker (empty or with their id, as desired)
+            htmlSections += `<div data-section="${id}"></div>\n`;
+        }
+
+        // === SECTION CONTENT ===
+        if (id === 'cover-section') {
             htmlSections += `
                 <div class="section pdf-section cover-page" style="text-align:center; padding-top:120px;">
-                    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAACkAAAAHACAYAAABHGawxAAABgGlDQ1BJQ0MgUHJvZmlsZQAASImVlwdUU0kYx9+9R8QvQ0NJCQhJSopCglJTWmUlJSqIqKCgoIwoKSmpKQhKSEpMRGBiAgkKwIv6+rs6hASlO+/nvWfnfuO/55z7zr3nHu43aP9HnZDLgjA0KgmCTUGkOQ8ThBJqEImJACJKoiESdRkwlNjoAiIxSwSBUQu7AfRk2xnJMjDsODzTjxA4Q83JnLuikxiVIsA1EIfUlfAvkBvPZQFkItKqQ7IkMwR2wtKi+hEZbA1AfwtyzxWm7GhQHctJjPVBBkJUuBkiFiiw6iy+I3yj1Z4qlrRL3iN8O9EomU8IFC7f8U4gAEswA8cLP9uxHGHif9ItJ+92ByADwL8BZZs4STVQp3iEc74Tu9bHyv0q6jP54vwDwBhR0QPpU4+E4nOV5ZJm7wrnHGRMu+F05PdSt5o5i7hrNxJ04tID4CB+AFDhMR4OxkN8AAAAJcEhZcwAALiMAAC4jAXilP3YAAAJXSURBVHhe7drRDYJAEAXg6xny62nY9RcbDkS0JkCTssPMEAAAAAAADw7DLs8Yay6EmQlvuyc2M0kY4+jfaG14SlZtFJckZrhtxf/66l5VtUSxA2Zwq5ykhnLUaS4vAXG9DJc3IVR9hhkUS7TgJQ7RmsyNOoRUqSn+f8EptkUwT8YkeS/A/H/EblBaMZEoAOVyrE5ylZ7qSqkFwPhZK83Ag+XitvFKKheALlqL0L0swSUZpYTkKQYrBJi+v+yKBRVSBSlBoRYrpNLko6R4CBTlEKQ9TPwYFJl5ojAfEuUgpCkOdYAUapPkFzCGI/wA5lhIAelJQmlKaFAcOKULZSGgFP4FCoQkVU4jAog+BUvhwAot4iKQZBTiFwOAIj7L3NL5/gmnKooMoJSf8yZmyYED9CGP6h5BTnoAAAAAAAAAAAAAAOB4B4FSAAE/6qx2AAAAAElFTkSuQmCC"
-                        class="logo" />
-                    <div style="font-size:2.5rem; margin-top:80px;">${section.querySelector('#proposalTitle') ? section.querySelector('#proposalTitle').value : 'Proposal'}</div>
+                    <img src="data:image/png;base64,..." class="logo" />
+                    <div style="font-size:2.5rem; margin-top:80px;">${document.querySelector('#proposalTitle')?.value || 'Proposal'}</div>
                     <div style="margin-top:40px; font-size:1.2rem;">
-                        <b>Prepared for:</b> ${section.querySelector('#clientName') ? section.querySelector('#clientName').value : ''}<br>
-                        <b>Project Address:</b> ${section.querySelector('#projectAddress') ? section.querySelector('#projectAddress').value : ''}<br>
-                        <b>Date:</b> ${section.querySelector('#proposalDate') ? section.querySelector('#proposalDate').value : ''}
+                        <b>Prepared for:</b> ${document.querySelector('#clientName')?.value || ''}<br>
+                        <b>Project Address:</b> ${document.querySelector('#projectAddress')?.value || ''}<br>
+                        <b>Date:</b> ${document.querySelector('#proposalDate')?.value || ''}
                     </div>
                 </div>
             `;
         } else {
-            // Other sections
             htmlSections += `
                 <div class="section pdf-section">
                     <div class="section-title">${sectionTitle}</div>
@@ -1316,119 +1355,86 @@ function buildProposalHtml() {
             `;
         }
 
-        // Add page break if not the last included section
+        // Add page break after each section except the last
         if (idx < includedSections.length - 1) {
-            htmlSections += `<div class="page-break"></div>`;
+            htmlSections += `<div class="page-break"></div>\n`;
         }
     });
 
-    // Compose final HTML
+    // Wrap in HTML
     return `
         <html>
         <head>
-        <style>
-            body { 
-                font-family: 'Georgia', serif; 
-                color: #333;
-                line-height: 1.6;
-                margin: 0;
-                padding: 40px 0;
-            }
-            .cover-page {
-                min-height: 100vh;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                justify-content: center;
-                padding: 60px 0;
-                border-bottom: 1px solid #eee;
-            }
-            .section-title {
-                font-size: 1.8rem;
-                font-weight: 600;
-                color: #2c3e50;
-                margin-bottom: 1.2rem;
-                padding-bottom: 0.4rem;
-                border-bottom: 2px solid #3498db;
-                text-transform: uppercase;
-                letter-spacing: 1px;
-            }
-            .logo { 
-                margin-bottom: 40px;
-                width: 150px;
-                opacity: 0.9;
-            }
-            .section.pdf-section {
-                max-width: 680px;
-                margin: 0 auto;
-                padding: 40px 0;
-            }
-            .section-content {
-                font-size: 1rem;
-                text-align: justify;
-            }
-            .hr {
-                border: none;
-                border-top: 1px solid #ddd;
-                margin: 2rem 0;
-            }
-            
-            table {
-                width: 100%;
-                border-collapse: collapse;
-                margin: 1.5rem 0;
-                box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-            }
-            th {
-                background-color: #2c3e50;
-                color: white;
-                padding: 0.8rem;
-                text-align: left;
-                font-weight: 600;
-            }
-            td {
-                padding: 0.8rem;
-                border-bottom: 1px solid #ecf0f1;
-                vertical-align: top;
-            }
-            tr:nth-child(even) {
-                background-color: #f8f9fa;
-            }
-            .cover-title {
-                font-size: 2.8rem;
-                color: #2c3e50;
-                margin-bottom: 1.5rem;
-                text-align: center;
-                line-height: 1.2;
-                font-weight: 300;
-            }
-            .client-info {
-                margin-top: 3rem;
-                font-size: 1.1rem;
-                text-align: center;
-                line-height: 1.8;
-            }
-            .client-info strong {
-                color: #2c3e50;
-                font-weight: 600;
-            }
-            .project-details {
-                margin-top: 4rem;
-                font-size: 1.05rem;
-            }
-            @page {
-                size: A4;
-                margin: 20mm;
-            }
-        </style>
+            <meta charset="utf-8">
+            <style>
+                body { font-family: 'Georgia', serif; color: #333; line-height: 1.6; margin: 0; padding: 40px 0; }
+                .cover-page { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 60px 0; border-bottom: 1px solid #eee; }
+                .section-title { font-size: 1.8rem; font-weight: 600; color: #2c3e50; margin-bottom: 1.2rem; padding-bottom: 0.4rem; border-bottom: 2px solid #3498db; text-transform: uppercase; letter-spacing: 1px; }
+                .logo { margin-bottom: 40px; width: 150px; opacity: 0.9; }
+                .section.pdf-section { max-width: 680px; margin: 0 auto; padding: 40px 0; }
+                .section-content { font-size: 1rem; text-align: justify; }
+                .hr { border: none; border-top: 1px solid #ddd; margin: 2rem 0; }
+                table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+                th { background-color: #2c3e50; color: white; padding: 0.8rem; text-align: left; font-weight: 600; }
+                td { padding: 0.8rem; border-bottom: 1px solid #ecf0f1; vertical-align: top; }
+                tr:nth-child(even) { background-color: #f8f9fa; }
+                .cover-title { font-size: 2.8rem; color: #2c3e50; margin-bottom: 1.5rem; text-align: center; line-height: 1.2; font-weight: 300; }
+                .client-info { margin-top: 3rem; font-size: 1.1rem; text-align: center; line-height: 1.8; }
+                .client-info strong { color: #2c3e50; font-weight: 600; }
+                .project-details { margin-top: 4rem; font-size: 1.05rem; }
+                @page { size: A4; margin: 20mm; }
+                .page-break { page-break-after: always; }
+            </style>
         </head>
         <body>
-        ${htmlSections}
+            ${htmlSections}
         </body>
         </html>
-        `;
-
+    `;
 }
+
+
+
+
+
+
+
+async function submitProposalForPdfMerge() {
+    // Build proposal HTML (see your buildProposalHtml())
+    const mainHtml = buildProposalHtml();
+
+    // Get files from section inputs (example ids)
+    const projectBriefInput = document.getElementById('projectBriefFile');
+    const documentsInput = document.getElementById('documentsFile');
+    const projectBriefFile = projectBriefInput ? projectBriefInput.files[0] : null;
+    const documentsFile = documentsInput ? documentsInput.files[0] : null;
+
+    const formData = new FormData();
+    formData.append('mainHtml', mainHtml);
+    if (projectBriefFile) formData.append('uploads[project-brief-section]', projectBriefFile);
+    if (documentsFile) formData.append('uploads[documents-section]', documentsFile);
+
+    const response = await fetch('http://localhost:8000/api/merge-pdf', {
+        method: 'POST',
+        body: formData,
+    });
+
+    if (!response.ok) {
+        alert('PDF merge failed');
+        return;
+    }
+    // Download the result
+    const blob = await response.blob();
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'final-proposal.pdf';
+    document.body.appendChild(a);
+    a.click();
+    window.URL.revokeObjectURL(url);
+    a.remove();
+}
+
 
 function generatePDF() {
     // 1. Get included sections (those with checked 'Include in Proposal')
@@ -1465,7 +1471,7 @@ function generatePDF() {
     const printHtml = buildProposalHtml();
 
     // 3. POST to Puppeteer server
-    fetch('http://localhost:5000/api/generate-pdf', {
+    fetch('http://localhost:8000/api/merge-pdf', {
         method: 'POST',
         headers: { 'Content-Type': 'text/html' },
         body: printHtml
@@ -2152,16 +2158,7 @@ $(document).ready(function() {
             previewContainer.empty().hide();
         }
     });
-    // Helper function to format file size
-    // Format file size
-    function formatFileSize(bytes) {
-        if (bytes === 0) return '0 Bytes';
-        const k = 1024;
-        const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-        const i = Math.floor(Math.log(bytes) / Math.log(k));
-        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-    }
-
+    
     // Toggle file upload fields based on radio selection
     $(document).on('change', '.doc-option', function() {
         const containerId = $(this).closest('.form-check').find('.form-check-input').attr('id') + 'Upload';
