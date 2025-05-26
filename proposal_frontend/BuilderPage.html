@@ -19,6 +19,9 @@
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.plugin.html.min.js"></script> -->
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<!-- excel uploading -->
+<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+
 
 
 
@@ -42,63 +45,6 @@
 <body>
 
     <div class="container-fluid">
-        <!-- Section Selector Panel -->
-    <!-- <div id="sectionSelector" class="container my-5">
-        <h2>Select Sections to Include</h2>
-        <form id="sectionSelectForm" class="mb-4">
-            <div class="form-check">
-                <input class="form-check-input section-option" type="checkbox" value="cover-section" checked>
-                <label class="form-check-label">Cover Page</label>
-            </div>
-            <div class="form-check">
-                <input class="form-check-input section-option" type="checkbox" value="intro-section" checked>
-                <label class="form-check-label">Introduction</label>
-            </div>
-            <div class="form-check">
-                <input class="form-check-input section-option" type="checkbox"
-                        value="project-brief-section" checked>
-                <label class="form-check-label">Project Brief</label>
-            </div>
-            
-            <div class="form-check">
-                <input class="form-check-input section-option" type="checkbox" value="agreement-section" checked>
-                <label class="form-check-label">Agreement Overview</label>
-            </div>
-            <div class="form-check">
-                <input class="form-check-input section-option" type="checkbox" value="documents-section" checked>
-                <label class="form-check-label">Constituent Documents</label>
-            </div>
-            <div class="form-check">
-                <input class="form-check-input section-option" type="checkbox" value="general-scope-section" checked>
-                <label class="form-check-label">General Scope of Services</label>
-            </div>
-            <div class="form-check">
-                <input class="form-check-input section-option" type="checkbox" value="stages-deliverables-section" checked>
-                <label class="form-check-label">Stages and Deliverables</label>
-            </div>
-            <div class="form-check">
-                <input class="form-check-input section-option" type="checkbox" value="man-month-section" checked>
-                <label class="form-check-label">Man Month Rates & Deployment</label>
-            </div>
-            <div class="form-check">
-                <input class="form-check-input section-option" type="checkbox" value="editable-design-payment-section" checked>
-                <label class="form-check-label">Design Payment Stages</label>
-            </div>
-            <div class="form-check">
-                <input class="form-check-input section-option" type="checkbox" value="editable-additional-rates-section" checked>
-                <label class="form-check-label">Additional Services (Design + Construction Rates)</label>
-            </div>
-            
-            <div class="form-check">
-                <input class="form-check-input section-option" type="checkbox" value="terms-section" checked>
-                <label class="form-check-label">Terms & Conditions</label>
-            </div>
-         
-         
-
-            <button type="submit" class="btn btn-primary mt-3">Start Proposal</button>
-        </form>
-    </div> -->
         <div class="row">
             <!-- Sidebar Navigation -->
             <div class="col-md-3 sidebar">
@@ -240,13 +186,12 @@
                                     <script>
                             // Declare a global to hold the editor instance
                             let projectBriefEditor;
-
                             ClassicEditor
                                 .create(document.querySelector('#projectBriefText'), {
                                 licenseKey: 'GPL',
                                 })
                                 .then(editor => {
-                                projectBriefEditor = editor;   // Store the instance for later
+                                projectBriefEditor = editor;   // Store the instance for later, use window to make absolutely global
 
                                 // 🛠 Inject the preview-table class into CKEditor tables
                                 editor.model.document.on('change:data', () => {
@@ -267,7 +212,7 @@
                             <input type="file"
                                 id="projectBriefFile"
                                 class="form-control"
-                                accept="image/*,.pdf,.doc,.docx">
+                                accept="image/*,.pdf">
                             <div id="projectBriefFilePreview" class="mt-2"></div>
                         </div>
                     </div>

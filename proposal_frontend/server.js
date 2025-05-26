@@ -39,7 +39,7 @@ app.post('/api/generate-pdf', async (req, res) => {
             displayHeaderFooter: true,
             margin: { top: '80px', bottom: '80px', left: '30px', right: '30px' },
             headerTemplate: `
-              <div style="font-size:17px;text-align:center;">
+              <div style="font-size:12px;text-align:center;color:#444;">
                 <span>Archcorp Architectural Engineering</span>
               </div>
             `,

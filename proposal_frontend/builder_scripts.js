@@ -310,6 +310,15 @@ function generateSectionContent(section) {
             break;
 
         case 'general-scope-section':
+            // Define Unicode tick and cross with inline color styling
+            // const tick = '<span style="color:green;font-weight:bold;font-size:1.4em;">&#9745;</span>';
+            //const tick = '<span style="font-size:1.25em;">✅</span>'; // green tick in box
+            // const cross = '<span style="color:red;font-weight:bold;font-size:1.4em;">&#9746;</span>';
+            //const cross = '<span style="font-size:1.25em; color: #888;">❎</span>';
+
+            const tick ='<span style="font-size:0.9em;">☑️</span>';
+            const cross = '<span style="color: #dc3545; font-size: 1.2em;">⨯</span>'; // Red mathematical cross
+
             content = `
             <table class="preview-table">
                 <thead>
@@ -328,19 +337,11 @@ function generateSectionContent(section) {
                     const $r = $(this);
                     const svc = $r.find('.scope-service').val() || '—';
 
-                    // □-boxed symbols: ☑ = checked, ☒ = unchecked
-                    const mand = $r.find('.scope-mandatory').is(':checked')
-                    ? '<i class="fas fa-check-square tick-green"></i>'
-                    : '<i class="fas fa-times-square cross-red"></i>';
-                    const opt  = $r.find('.scope-optional').is(':checked')
-                    ? '<i class="fas fa-check-square tick-green"></i>'
-                    : '<i class="fas fa-times-square cross-red"></i>';
-                    const inh  = $r.find('.scope-inhouse').is(':checked')
-                    ? '<i class="fas fa-check-square tick-green"></i>'
-                    : '<i class="fas fa-times-square cross-red"></i>';
-                    const ext  = $r.find('.scope-external').is(':checked')
-                    ? '<i class="fas fa-check-square tick-green"></i>'
-                    : '<i class="fas fa-times-square cross-red"></i>';
+                    // Use Unicode symbols for tick and cross with inline color
+                    const mand = $r.find('.scope-mandatory').is(':checked') ? tick : cross;
+                    const opt  = $r.find('.scope-optional').is(':checked') ? tick : cross;
+                    const inh  = $r.find('.scope-inhouse').is(':checked') ? tick : cross;
+                    const ext  = $r.find('.scope-external').is(':checked') ? tick : cross;
 
                     // Only bold "Yes"; leave "No" unbolded
                     const apptArch   = $r.find('.scope-appointed-achcorp').val() || 'No';
@@ -1326,27 +1327,99 @@ function buildProposalHtml() {
         <html>
         <head>
         <style>
-            body { font-family: 'Arial', sans-serif; color: #222; margin: 0; }
-            .section-title { font-size: 2rem; font-weight: 400; margin-bottom: 0.5em; }
-            .logo { position: absolute; right: 40px; top: 40px; width: 110px; }
-            .section.pdf-section {
-                max-width: 750px;
-                margin: 0 auto 1.5em auto;
-                padding: 30px 0 0 0;
-                /* No min-height */
+            body { 
+                font-family: 'Georgia', serif; 
+                color: #333;
+                line-height: 1.6;
+                margin: 0;
+                padding: 40px 0;
             }
-            .section-content, .pdf-section, .intro-content, .terms-content, .project-brief-content {
+            .cover-page {
+                min-height: 100vh;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                padding: 60px 0;
+                border-bottom: 1px solid #eee;
+            }
+            .section-title {
+                font-size: 1.8rem;
+                font-weight: 600;
+                color: #2c3e50;
+                margin-bottom: 1.2rem;
+                padding-bottom: 0.4rem;
+                border-bottom: 2px solid #3498db;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+            }
+            .logo { 
+                margin-bottom: 40px;
+                width: 150px;
+                opacity: 0.9;
+            }
+            .section.pdf-section {
+                max-width: 680px;
+                margin: 0 auto;
+                padding: 40px 0;
+            }
+            .section-content {
+                font-size: 1rem;
                 text-align: justify;
             }
-            .hr { border: none; border-top: 2px solid #222; margin: 1em 0; }
-            .page-break {
-                page-break-after: always;
-                margin: 0;
-                height: 0;
+            .hr {
+                border: none;
+                border-top: 1px solid #ddd;
+                margin: 2rem 0;
             }
-            table { width: 100%; border-collapse: collapse; margin-top: 1em; }
-            th, td { border: 1px solid #bbb; padding: 0.5em; font-size: 1rem; }
-            th { background: #f7f7f7; }
+            
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                margin: 1.5rem 0;
+                box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            }
+            th {
+                background-color: #2c3e50;
+                color: white;
+                padding: 0.8rem;
+                text-align: left;
+                font-weight: 600;
+            }
+            td {
+                padding: 0.8rem;
+                border-bottom: 1px solid #ecf0f1;
+                vertical-align: top;
+            }
+            tr:nth-child(even) {
+                background-color: #f8f9fa;
+            }
+            .cover-title {
+                font-size: 2.8rem;
+                color: #2c3e50;
+                margin-bottom: 1.5rem;
+                text-align: center;
+                line-height: 1.2;
+                font-weight: 300;
+            }
+            .client-info {
+                margin-top: 3rem;
+                font-size: 1.1rem;
+                text-align: center;
+                line-height: 1.8;
+            }
+            .client-info strong {
+                color: #2c3e50;
+                font-weight: 600;
+            }
+            .project-details {
+                margin-top: 4rem;
+                font-size: 1.05rem;
+            }
+            @page {
+                size: A4;
+                margin: 20mm;
+            }
         </style>
         </head>
         <body>
@@ -2112,6 +2185,39 @@ $(document).ready(function() {
             $('#' + containerId.replace('Upload', 'FilePreview')).empty().hide();
         }
     });
+
+    // document.getElementById('importToCKEditor').addEventListener('click', function() {
+    //     const fileInput = document.getElementById('projectBriefFile');
+    //     const file = fileInput.files[0];
+    //     if (!file) {
+    //         alert("Please select a file first.");
+    //         return;
+    //     }
+
+    //     // Detect Excel/CSV files
+    //     if (/\.(xlsx|xls|csv)$/i.test(file.name)) {
+    //         const reader = new FileReader();
+    //         reader.onload = function(e) {
+    //             const data = new Uint8Array(e.target.result);
+    //             const workbook = XLSX.read(data, { type: 'array' });
+    //             const firstSheetName = workbook.SheetNames[0];
+    //             const worksheet = workbook.Sheets[firstSheetName];
+    //             const htmlTable = XLSX.utils.sheet_to_html(worksheet);
+
+    //             // Insert table HTML into CKEditor 5
+    //             if (window.projectBriefEditor) {
+    //                 window.projectBriefEditor.setData(htmlTable);
+    //             } else {
+    //                 alert('CKEditor not ready!');
+    //             }
+    //         };
+    //         reader.readAsArrayBuffer(file);
+    //     } else {
+    //         alert("This action only works for Excel or CSV files.");
+    //         // You can add your non-table file handling here.
+    //     }
+    // });
+
 
 
     
