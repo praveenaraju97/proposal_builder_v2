@@ -2,6 +2,7 @@
 const API_BASE_URL = 'http://localhost:5000/api';
 // Function to collect PDFs to merge
 
+
 async function fetchPDF(url) {
     const response = await fetch(url);
     const arrayBuffer = await response.arrayBuffer();
@@ -430,12 +431,15 @@ function generateSectionContent(section) {
             break;
 
         case 'terms-section':
+            let standardHtml = TermsEditor ? TermsEditor.getData() : '';
+            // 2. Inject our preview-table class into every <table>
+            standardHtml = standardHtml.replace(
+                /<table(?![^>]*\bpreview-table\b)/g,
+                '<table class="preview-table"'
+            );
             content = `
                 <div class="terms-content">
-                    <h4>Standard Terms</h4>
-                    <p>${$('#standardTerms').val() || ''}</p>
-                    <h4>Additional Notes</h4>
-                    <p>${$('#additionalNotes').val() || ''}</p>
+                    ${standardHtml}
                 </div>`;
             break;
     }
@@ -887,179 +891,523 @@ function collectSectionData(section) {
 }
 
 // Updated PDF generation function
-async function generatePDF() {
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+// async function generatePDF() {
+//     const { jsPDF } = window.jspdf;
+//     const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
 
-    const MARGIN     = 15;                               // [mm] adjust as desired
-    const pageWidth  = doc.internal.pageSize.getWidth(); // 210mm for A4-portrait
-    const pageHeight = doc.internal.pageSize.getHeight();// 297mm for A4-portrait
+//     const MARGIN     = 15;                               // [mm] adjust as desired
+//     const pageWidth  = doc.internal.pageSize.getWidth(); // 210mm for A4-portrait
+//     const pageHeight = doc.internal.pageSize.getHeight();// 297mm for A4-portrait
 
-    // 1️⃣ Render all HTML proposal sections to images/pages, except documents-section
-    const pagesEls = document.querySelectorAll('.pdf-page');
-    let htmlPages = [];
-    let docSectionIndex = -1;
+//     // 1️⃣ Render all HTML proposal sections to images/pages, except documents-section
+//     const pagesEls = document.querySelectorAll('.pdf-page');
+//     let htmlPages = [];
+//     let docSectionIndex = -1;
 
-    // Track section order and identify where "documents-section" occurs
-    for (let i = 0; i < pagesEls.length; i++) {
-        const secId = pagesEls[i].dataset.sec;
-        if (secId === 'documents-section') {
-            docSectionIndex = i;
-            continue;  // skip rendering this as a standalone page
-        }
+//     // Track section order and identify where "documents-section" occurs
+//     for (let i = 0; i < pagesEls.length; i++) {
+//         const secId = pagesEls[i].dataset.sec;
+//         if (secId === 'documents-section') {
+//             docSectionIndex = i;
+//             continue;  // skip rendering this as a standalone page
+//         }
 
-        // ── TABLE SECTION ──
-        // 1️⃣ Find ALL preview-table elements inside this section
-        const tableEls = pagesEls[i].querySelectorAll('.preview-table');
-        if (tableEls.length > 0) {
-            if (htmlPages.length > 0) doc.addPage();
+//         // ── TABLE SECTION ──
+//         // 1️⃣ Find ALL preview-table elements inside this section
+//         const tableEls = pagesEls[i].querySelectorAll('.preview-table');
+//         if (tableEls.length > 0) {
+//             if (htmlPages.length > 0) doc.addPage();
+        
+//             const canvas = await html2canvas(pagesEls[i], {
+//                 scale: 2,
+//                 useCORS: true,
+//                 width: pagesEls[i].scrollWidth,
+//                 height: pagesEls[i].scrollHeight
+//             });
+        
+//             const imgData = canvas.toDataURL('image/png');
+//             const imgProps = doc.getImageProperties(imgData);
+//             const imgWidth = pageWidth - 2 * MARGIN;
+//             const imgHeight = (imgProps.height * imgWidth) / imgProps.width;
+        
+//             doc.addImage(imgData, 'PNG', MARGIN, MARGIN, imgWidth, imgHeight, undefined, 'FAST');
+        
+//             htmlPages.push(secId);
+//             continue;
+//         }
+        
 
-            for (const table of tableEls) {
-                doc.autoTable({
-                    html: table,
-                    startY: MARGIN,
-                    margin: { left: MARGIN, right: MARGIN },
-                    styles: { overflow: 'linebreak' }
-                });
-            }
 
-            htmlPages.push(secId);
-            continue; // ✅ Skip html2canvas for this section
-        }
+//         // ── FALLBACK IMAGE CAPTURE ──
+//         if (htmlPages.length > 0) doc.addPage();
+
+//         const canvas = await html2canvas(pagesEls[i], {
+//             scale: 2,
+//             useCORS: true,
+//             width:  pagesEls[i].scrollWidth,
+//             height: pagesEls[i].scrollHeight
+//         });
+
+//         const imgData   = canvas.toDataURL('image/png');
+//         const imgProps  = doc.getImageProperties(imgData);
+//         const imgWidth  = pageWidth  - 2 * MARGIN;
+//         const imgHeight = (imgProps.height * imgWidth) / imgProps.width;
+
+//         doc.addImage(
+//             imgData,
+//             'PNG',
+//             MARGIN,    // x
+//             MARGIN,    // y
+//             imgWidth,  // width in mm
+//             imgHeight, // height in mm (maintains aspect ratio)
+//             undefined,
+//             'FAST'
+//         );
+
+//         htmlPages.push(secId);
+//     }
+
+//     // 2️⃣ Load into PDF-Lib for merging and inserting constituent PDFs
+//     const merged = await PDFLib.PDFDocument.create();
+//     const raw    = await doc.output('arraybuffer');
+//     const base   = await PDFLib.PDFDocument.load(raw);
+
+//     // Preload logo image
+//     const logoUrl   = 'assets/pdf/archcorp logo.png';
+//     const logoBytes = await fetch(logoUrl).then(r => r.arrayBuffer());
+//     const logoImg   = await merged.embedPng(logoBytes);
+
+//     // Helper: Get all constituent PDFs
+//     async function getConstituentPDFs() {
+//         let pdfList = [];
+//         if ($('#letterOffer').is(':checked')) {
+//             let bytes;
+//             if ($('#letterOfferDefault').is(':checked')) {
+//                 bytes = await fetchPDF('assets/pdf/letterOffer_default.pdf');
+//             } else {
+//                 bytes = await readFileAsArrayBuffer($('#letterOfferFile')[0].files[0]);
+//             }
+//             pdfList.push(bytes);
+//         }
+//         if ($('#mainAgreement').is(':checked')) {
+//             let bytes;
+//             if ($('#mainAgreementDefault').is(':checked')) {
+//                 bytes = await fetchPDF('assets/pdf/mainAgreement_default.pdf');
+//             } else {
+//                 bytes = await readFileAsArrayBuffer($('#mainAgreementFile')[0].files[0]);
+//             }
+//             pdfList.push(bytes);
+//         }
+
+//         const projInput = $('#projectBriefFile')[0];
+//         if (projInput.files && projInput.files[0]) {
+//             const briefBytes = await readFileAsArrayBuffer(projInput.files[0]);
+//             pdfList.push(briefBytes);
+//         }
+//         return pdfList;
+//     }
+
+//     // Merge pages from the base PDF and then insert uploads where needed
+//     let pageIdx = 0;
+//     for (let i = 0; i < htmlPages.length; i++) {
+//         const [pg] = await merged.copyPages(base, [i]);
+//         merged.addPage(pg);
+//         pageIdx++;
+
+//         // After intro-section, insert the project brief PDF if uploaded
+//         if (htmlPages[i] === 'intro-section') {
+//             const fileInput = $('#projectBriefFile')[0];
+//             if (fileInput.files && fileInput.files[0] &&
+//                 fileInput.files[0].type === 'application/pdf') {
+
+//                 const briefBytes = await readFileAsArrayBuffer(fileInput.files[0]);
+//                 const srcPdf     = await PDFLib.PDFDocument.load(briefBytes);
+//                 const briefPages = await merged.copyPages(srcPdf, srcPdf.getPageIndices());
+//                 for (const p of briefPages) {
+//                     merged.addPage(p);
+//                     pageIdx++;
+//                 }
+//             }
+//         }
+
+//         // Where the skipped 'documents-section' belonged, insert checked PDFs
+//         if (i === docSectionIndex - 1 || (docSectionIndex === 0 && i === 0)) {
+//             const pdfBytesList = await getConstituentPDFs();
+//             for (const pdfBytes of pdfBytesList) {
+//                 const srcPdf    = await PDFLib.PDFDocument.load(pdfBytes);
+//                 const partPages = await merged.copyPages(srcPdf, srcPdf.getPageIndices());
+//                 for (const p of partPages) {
+//                     merged.addPage(p);
+//                     pageIdx++;
+//                 }
+//             }
+//         }
+//     }
+
+//     // 3️⃣ Stamp logo & page number on every page
+//     const allPages = merged.getPages();
+//     for (let idx = 0; idx < allPages.length; idx++) {
+//         const page = allPages[idx];
+//         const { width, height } = page.getSize();
 
 
-        // ── FALLBACK IMAGE CAPTURE ──
-        if (htmlPages.length > 0) doc.addPage();
+//         // Page number at bottom right
+//         page.drawText(`Page ${idx + 1}`, {
+//             x: width - 70,
+//             y: 30,
+//             size: 10,
+//             color: PDFLib.rgb(0.4, 0.4, 0.4),
+//         });
+//     }
 
-        const canvas = await html2canvas(pagesEls[i], {
-            scale: 2,
-            useCORS: true,
-            width:  pagesEls[i].scrollWidth,
-            height: pagesEls[i].scrollHeight
-        });
+//     // 4️⃣ Save and trigger download
+//     const out = await merged.save();
+//     downloadPDF(out, 'proposal.pdf');
+// }
 
-        const imgData   = canvas.toDataURL('image/png');
-        const imgProps  = doc.getImageProperties(imgData);
-        const imgWidth  = pageWidth  - 2 * MARGIN;
-        const imgHeight = (imgProps.height * imgWidth) / imgProps.width;
-
-        doc.addImage(
-            imgData,
-            'PNG',
-            MARGIN,    // x
-            MARGIN,    // y
-            imgWidth,  // width in mm
-            imgHeight, // height in mm (maintains aspect ratio)
-            undefined,
-            'FAST'
-        );
-
-        htmlPages.push(secId);
-    }
-
-    // 2️⃣ Load into PDF-Lib for merging and inserting constituent PDFs
-    const merged = await PDFLib.PDFDocument.create();
-    const raw    = await doc.output('arraybuffer');
-    const base   = await PDFLib.PDFDocument.load(raw);
-
-    // Preload logo image
-    const logoUrl   = 'assets/pdf/archcorp logo.png';
-    const logoBytes = await fetch(logoUrl).then(r => r.arrayBuffer());
-    const logoImg   = await merged.embedPng(logoBytes);
-
-    // Helper: Get all constituent PDFs
-    async function getConstituentPDFs() {
-        let pdfList = [];
-        if ($('#letterOffer').is(':checked')) {
-            let bytes;
-            if ($('#letterOfferDefault').is(':checked')) {
-                bytes = await fetchPDF('assets/pdf/letterOffer_default.pdf');
-            } else {
-                bytes = await readFileAsArrayBuffer($('#letterOfferFile')[0].files[0]);
-            }
-            pdfList.push(bytes);
-        }
-        if ($('#mainAgreement').is(':checked')) {
-            let bytes;
-            if ($('#mainAgreementDefault').is(':checked')) {
-                bytes = await fetchPDF('assets/pdf/mainAgreement_default.pdf');
-            } else {
-                bytes = await readFileAsArrayBuffer($('#mainAgreementFile')[0].files[0]);
-            }
-            pdfList.push(bytes);
-        }
-
-        const projInput = $('#projectBriefFile')[0];
-        if (projInput.files && projInput.files[0]) {
-            const briefBytes = await readFileAsArrayBuffer(projInput.files[0]);
-            pdfList.push(briefBytes);
-        }
-        return pdfList;
-    }
-
-    // Merge pages from the base PDF and then insert uploads where needed
-    let pageIdx = 0;
-    for (let i = 0; i < htmlPages.length; i++) {
-        const [pg] = await merged.copyPages(base, [i]);
-        merged.addPage(pg);
-        pageIdx++;
-
-        // After intro-section, insert the project brief PDF if uploaded
-        if (htmlPages[i] === 'intro-section') {
-            const fileInput = $('#projectBriefFile')[0];
-            if (fileInput.files && fileInput.files[0] &&
-                fileInput.files[0].type === 'application/pdf') {
-
-                const briefBytes = await readFileAsArrayBuffer(fileInput.files[0]);
-                const srcPdf     = await PDFLib.PDFDocument.load(briefBytes);
-                const briefPages = await merged.copyPages(srcPdf, srcPdf.getPageIndices());
-                for (const p of briefPages) {
-                    merged.addPage(p);
-                    pageIdx++;
-                }
-            }
-        }
-
-        // Where the skipped 'documents-section' belonged, insert checked PDFs
-        if (i === docSectionIndex - 1 || (docSectionIndex === 0 && i === 0)) {
-            const pdfBytesList = await getConstituentPDFs();
-            for (const pdfBytes of pdfBytesList) {
-                const srcPdf    = await PDFLib.PDFDocument.load(pdfBytes);
-                const partPages = await merged.copyPages(srcPdf, srcPdf.getPageIndices());
-                for (const p of partPages) {
-                    merged.addPage(p);
-                    pageIdx++;
-                }
-            }
-        }
-    }
-
-    // 3️⃣ Stamp logo & page number on every page
-    const allPages = merged.getPages();
-    for (let idx = 0; idx < allPages.length; idx++) {
-        const page = allPages[idx];
-        const { width, height } = page.getSize();
-
-        // Logo at top right
-        page.drawImage(logoImg, {
-            x: width - 60,
-            y: height - 50,
-            width: 40,
-        });
-
-        // Page number at bottom right
-        page.drawText(`Page ${idx + 1}`, {
-            x: width - 70,
-            y: 30,
-            size: 10,
-            color: PDFLib.rgb(0.4, 0.4, 0.4),
-        });
-    }
-
-    // 4️⃣ Save and trigger download
-    const out = await merged.save();
-    downloadPDF(out, 'proposal.pdf');
+function replaceImgSrcWithBase64(html) {
+    // Only for your specific logo path; can be extended for more images.
+    const logoDataURL = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAACkAAAAHACAYAAABHGawxAAABgGlDQ1BJQ0MgUHJvZmlsZQAASImVlwdUU0kYx9+9R8QvQ0NJCQhJSopCglJTWmUlJSqIqKCgoIwoKSmpKQhKSEpMRGBiAgkKwIv6+rs6hASlO+/nvWfnfuO/55z7zr3nHu43aP9HnZDLgjA0KgmCTUGkOQ8ThBJqEImJACJKoiESdRkwlNjoAiIxSwSBUQu7AfRk2xnJMjDsODzTjxA4Q83JnLuikxiVIsA1EIfUlfAvkBvPZQFkItKqQ7IkMwR2wtKi+hEZbA1AfwtyzxWm7GhQHctJjPVBBkJUuBkiFiiw6iy+I3yj1Z4qlrRL3iN8O9EomU8IFC7f8U4gAEswA8cLP9uxHGHif9ItJ+92ByADwL8BZZs4STVQp3iEc74Tu9bHyv0q6jP54vwDwBhR0QPpU4+E4nOV5ZJm7wrnHGRMu+F05PdSt5o5i7hrNxJ04tID4CB+AFDhMR4OxkN8AAAAJcEhZcwAALiMAAC4jAXilP3YAAAJXSURBVHhe7drRDYJAEAXg6xny62nY9RcbDkS0JkCTssPMEAAAAAAADw7DLs8Yay6EmQlvuyc2M0kY4+jfaG14SlZtFJckZrhtxf/66l5VtUSxA2Zwq5ykhnLUaS4vAXG9DJc3IVR9hhkUS7TgJQ7RmsyNOoRUqSn+f8EptkUwT8YkeS/A/H/EblBaMZEoAOVyrE5ylZ7qSqkFwPhZK83Ag+XitvFKKheALlqL0L0swSUZpYTkKQYrBJi+v+yKBRVSBSlBoRYrpNLko6R4CBTlEKQ9TPwYFJl5ojAfEuUgpCkOdYAUapPkFzCGI/wA5lhIAelJQmlKaFAcOKULZSGgFP4FCoQkVU4jAog+BUvhwAot4iKQZBTiFwOAIj7L3NL5/gmnKooMoJSf8yZmyYED9CGP6h5BTnoAAAAAAAAAAAAAAOB4B4FSAAE/6qx2AAAAAElFTkSuQmCC'; // your base64 here
+    return html.replace(/<img[^>]+src=['"]\.\/assets\/pdf\/archcorp logo\.png['"][^>]*>/g,
+                        `<img src="${logoDataURL}" class="preview-logo-top-right" alt="Logo">`);
 }
+
+
+// function generatePDF() {
+//     console.log('Entered to PDF...');
+//     // ensure we have HTML in #previewContent
+//   generatePreview(false);
+//   // 1️⃣ Grab the HTML of the rendered proposal preview
+//   let html = document.getElementById('previewContent').innerHTML;
+//   html = replaceImgSrcWithBase64(html);
+//   console.log('--- BEFORE SANITIZE ---');
+//   console.log('HTML to convert:', html);
+
+// // Remove all input, button, select, textarea, object, form tags
+// html = html.replace(/<(input|button|select|textarea|object|form)[^>]*?>.*?<\/\1>/gi, '');
+// html = html.replace(/<(input|button|select|textarea|object|form)[^>]*?>/gi, ''); // self-closing
+
+// // You can also use DOM manipulation for better precision, e.g.:
+// const temp = document.createElement('div');
+// temp.innerHTML = html;
+// [...temp.querySelectorAll('input,button,select,textarea,object,form')].forEach(el => el.remove());
+// html = temp.innerHTML;
+
+//     console.log('--- AFTER SANITIZE ---');
+//     console.log(html);
+//   // 2️⃣ Convert to pdfMake document-definition content
+//   const pdfContent = htmlToPdfmake(html, {
+//     tableAutoSize: true,
+//     defaultStyles: {
+//       fontSize: 12,
+//       lineHeight: 1.4
+//     }
+//   });
+//   console.log('pdfContent:', pdfContent);
+//   // 3️⃣ Build the document definition
+//   const docDefinition = {
+//     pageSize: 'A4',
+//     pageMargins: [20, 80, 20, 60], // left, top, right, bottom
+//     header: {
+//       margin: [20, 20, 20, 0],
+//       columns: [
+//         { text: 'Archcorp Architectural Engineering', alignment: 'center', fontSize: 14, bold: true }
+//       ]
+//     },
+//     footer: (currentPage, pageCount) => {
+//       return {
+//         margin: [20, 0, 20, 20],
+//         columns: [
+//           { text: `Page ${currentPage} of ${pageCount}`, alignment: 'right', fontSize: 10 }
+//         ]
+//       };
+//     },
+//     content: pdfContent,
+//     styles: {
+//       h1: { fontSize: 18, bold: true, margin: [0, 0, 0, 10] },
+//       h2: { fontSize: 14, bold: true, margin: [0, 20, 0, 6] },
+//       tableHeader: { bold: true, fontSize: 12, color: 'black' }
+//     },
+//     defaultStyle: {
+//       font: 'Helvetica'
+//     }
+//   };
+//   console.log('docDefinition:', docDefinition);
+//   // 4️⃣ Create and immediately download
+//   pdfMake.createPdf(docDefinition).download('proposal.pdf');
+//   console.log('PDF generation triggered. Check downloads folder.');
+// }
+
+
+// function generatePDF() {
+//     // 1️⃣ Find all sections to include
+//     const includedSections = document.querySelectorAll('.proposal-section');
+//     let htmlContent = '';
+
+//     includedSections.forEach(section => {
+//         const checkbox = section.querySelector('.section-live-preview');
+//         if (checkbox && checkbox.checked) {
+//             htmlContent += `
+//                 <div class="pdf-section">
+//                     ${section.innerHTML}
+//                 </div>
+//                 <div class="page-break"></div>
+//             `;
+//         }
+//     });
+
+//     // 2️⃣ Add CSS for forced page breaks
+//     htmlContent = `
+//         <html>
+//         <head>
+//             <style>
+//                 body { font-family: Arial, sans-serif; }
+//                 .page-break { page-break-after: always; }
+//                 /* Add your styles as needed */
+//             </style>
+//         </head>
+//         <body>${htmlContent}</body>
+//         </html>
+//     `;
+
+//     // 3️⃣ POST to your Puppeteer server
+//     fetch('http://localhost:5000/api/generate-pdf', {
+//         method: 'POST',
+//         headers: { 'Content-Type': 'text/html' },
+//         body: htmlContent
+//     })
+//     .then(response => response.blob())
+//     .then(blob => {
+//         // 4️⃣ Trigger file download
+//         const url = window.URL.createObjectURL(blob);
+//         const a = document.createElement('a');
+//         a.href = url;
+//         a.download = 'proposal.pdf';
+//         a.click();
+//         window.URL.revokeObjectURL(url);
+//     });
+// }
+// function buildProposalHtml(data) {
+//     let html = `
+//         <html>
+//         <head>
+//           <style>
+//             body { font-family: 'Arial', sans-serif; color: #222; margin: 0; }
+//             .section-title { font-size: 2rem; font-weight: 400; margin-bottom: 0.5em; }
+//             .logo { position: absolute; right: 40px; top: 40px; width: 110px; }
+//             .section { max-width: 750px; margin: 0 auto 0 auto; padding-top: 80px; position: relative; min-height: 900px; }
+//             .hr { border: none; border-top: 2px solid #222; margin: 1em 0; }
+//             .page-break { page-break-after: always; }
+//             table { width: 100%; border-collapse: collapse; margin-top: 1em; }
+//             th, td { border: 1px solid #bbb; padding: 0.5em; font-size: 1rem; }
+//             th { background: #f7f7f7; }
+//           </style>
+//         </head>
+//         <body>
+//     `;
+
+//     // Cover Page
+//     if (data.includeCover) {
+//         html += `
+//             <div class="section pdf-section" style="text-align:center; padding-top:120px;">
+//                 <img src="data:image/png;base64,..." class="logo" />
+//                 <div style="font-size:2.5rem; margin-top:80px;">${data.proposalTitle}</div>
+//                 <div style="margin-top:40px; font-size:1.2rem;">
+//                     <b>Prepared for:</b> ${data.clientName}<br>
+//                     <b>Project Address:</b> ${data.projectAddress}<br>
+//                     <b>Date:</b> ${data.date}
+//                 </div>
+//             </div>
+//             <div class="page-break"></div>
+//         `;
+//     }
+
+//     // Introduction (example)
+//     if (data.includeIntro) {
+//         html += `
+//             <div class="section pdf-section">
+//                 <div class="section-title">Introduction</div>
+//                 <hr class="hr" />
+//                 <div class="section-content">
+//                     <p>${data.introText}</p>
+//                 </div>
+//             </div>
+//             <div class="page-break"></div>
+//         `;
+//     }
+
+//     // ...Repeat for all other sections...
+
+//     // Example: Table Section
+//     if (data.includeScope) {
+//         html += `
+//             <div class="section pdf-section">
+//                 <div class="section-title">General Scope of Services</div>
+//                 <hr class="hr" />
+//                 <div class="section-content">
+//                     <table>
+//                         <thead>
+//                             <tr>
+//                                 <th>Service</th>
+//                                 <th>Mandatory</th>
+//                                 <th>Optional</th>
+//                                 <!-- etc. -->
+//                             </tr>
+//                         </thead>
+//                         <tbody>
+//         `;
+//         data.scopeRows.forEach(row => {
+//             html += `
+//                 <tr>
+//                     <td>${row.service}</td>
+//                     <td>${row.mandatory ? '✔' : ''}</td>
+//                     <td>${row.optional ? '✔' : ''}</td>
+//                     <!-- etc. -->
+//                 </tr>
+//             `;
+//         });
+//         html += `</tbody></table></div></div><div class="page-break"></div>`;
+//     }
+
+//     // ... (Continue for all proposal sections)
+
+//     html += `</body></html>`;
+//     return html;
+// }
+
+function buildProposalHtml() {
+    // 1. Gather section DOM elements and their inclusion states
+    const sections = document.querySelectorAll('.proposal-section');
+    let htmlSections = '';
+    let isFirstSection = true; // for cover page logic
+
+    // 2. Loop through each section and build the exportable HTML
+    sections.forEach(section => {
+        const $section = $(section);
+        const cb = $section.find('.section-live-preview')[0];
+        if (cb && cb.checked) {
+            // Determine section title
+            const titleEl = section.querySelector('h2, h1');
+            const sectionTitle = titleEl ? titleEl.innerText : 'Section';
+
+            // Get cleaned section content via your function
+            const sectionContent = generateSectionContent($section);
+
+            // Cover Page (assume first included section is cover; adjust as needed)
+            if (isFirstSection && section.id === 'cover-section') {
+                htmlSections += `
+                    <div class="section pdf-section cover-page" style="text-align:center; padding-top:120px;">
+                        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAACkAAAAHACAYAAABHGawxAAABgGlDQ1BJQ0MgUHJvZmlsZQAASImVlwdUU0kYx9+9R8QvQ0NJCQhJSopCglJTWmUlJSqIqKCgoIwoKSmpKQhKSEpMRGBiAgkKwIv6+rs6hASlO+/nvWfnfuO/55z7zr3nHu43aP9HnZDLgjA0KgmCTUGkOQ8ThBJqEImJACJKoiESdRkwlNjoAiIxSwSBUQu7AfRk2xnJMjDsODzTjxA4Q83JnLuikxiVIsA1EIfUlfAvkBvPZQFkItKqQ7IkMwR2wtKi+hEZbA1AfwtyzxWm7GhQHctJjPVBBkJUuBkiFiiw6iy+I3yj1Z4qlrRL3iN8O9EomU8IFC7f8U4gAEswA8cLP9uxHGHif9ItJ+92ByADwL8BZZs4STVQp3iEc74Tu9bHyv0q6jP54vwDwBhR0QPpU4+E4nOV5ZJm7wrnHGRMu+F05PdSt5o5i7hrNxJ04tID4CB+AFDhMR4OxkN8AAAAJcEhZcwAALiMAAC4jAXilP3YAAAJXSURBVHhe7drRDYJAEAXg6xny62nY9RcbDkS0JkCTssPMEAAAAAAADw7DLs8Yay6EmQlvuyc2M0kY4+jfaG14SlZtFJckZrhtxf/66l5VtUSxA2Zwq5ykhnLUaS4vAXG9DJc3IVR9hhkUS7TgJQ7RmsyNOoRUqSn+f8EptkUwT8YkeS/A/H/EblBaMZEoAOVyrE5ylZ7qSqkFwPhZK83Ag+XitvFKKheALlqL0L0swSUZpYTkKQYrBJi+v+yKBRVSBSlBoRYrpNLko6R4CBTlEKQ9TPwYFJl5ojAfEuUgpCkOdYAUapPkFzCGI/wA5lhIAelJQmlKaFAcOKULZSGgFP4FCoQkVU4jAog+BUvhwAot4iKQZBTiFwOAIj7L3NL5/gmnKooMoJSf8yZmyYED9CGP6h5BTnoAAAAAAAAAAAAAAOB4B4FSAAE/6qx2AAAAAElFTkSuQmCC"
+                            class="logo" />
+                        <div style="font-size:2.5rem; margin-top:80px;">${section.querySelector('#proposalTitle') ? section.querySelector('#proposalTitle').value : 'Proposal'}</div>
+                        <div style="margin-top:40px; font-size:1.2rem;">
+                            <b>Prepared for:</b> ${section.querySelector('#clientName') ? section.querySelector('#clientName').value : ''}<br>
+                            <b>Project Address:</b> ${section.querySelector('#projectAddress') ? section.querySelector('#projectAddress').value : ''}<br>
+                            <b>Date:</b> ${section.querySelector('#proposalDate') ? section.querySelector('#proposalDate').value : ''}
+                        </div>
+                    </div>
+                    <div class="page-break"></div>
+                `;
+                isFirstSection = false;
+            } else {
+                // All other sections (clean, minimal, professional look)
+                htmlSections += `
+                    <div class="section pdf-section">
+                        <div class="section-title">${sectionTitle}</div>
+                        <hr class="hr" />
+                        <div class="section-content">${sectionContent}</div>
+                    </div>
+                    <div class="page-break"></div>
+                `;
+                isFirstSection = false;
+            }
+        }
+    });
+
+    // 3. Compose the final HTML, add professional CSS at the top
+    return `
+        <html>
+        <head>
+          <style>
+            body { font-family: 'Arial', sans-serif; color: #222; margin: 0; }
+            .section-title { font-size: 2rem; font-weight: 400; margin-bottom: 0.5em; }
+            .logo { position: absolute; right: 40px; top: 40px; width: 110px; }
+            .section { max-width: 750px; margin: 0 auto 0 auto; padding-top: 80px; position: relative; min-height: 900px; }
+            .hr { border: none; border-top: 2px solid #222; margin: 1em 0; }
+            .page-break { page-break-after: always; }
+            table { width: 100%; border-collapse: collapse; margin-top: 1em; }
+            th, td { border: 1px solid #bbb; padding: 0.5em; font-size: 1rem; }
+            th { background: #f7f7f7; }
+            /* Add any additional styles for spacing, etc., here */
+          </style>
+        </head>
+        <body>
+            ${htmlSections}
+        </body>
+        </html>
+    `;
+}
+
+function generatePDF() {
+    // 1. Get included sections (those with checked 'Include in Proposal')
+    let sectionsHtml = '';
+    document.querySelectorAll('.proposal-section').forEach(section => {
+        const checkbox = section.querySelector('.section-live-preview');
+        if (checkbox && checkbox.checked) {
+            // Extract title (first h2, or customize as needed)
+            const titleEl = section.querySelector('h2, h1');
+            const sectionTitle = titleEl ? titleEl.innerText : 'Section';
+            // Remove buttons, inputs, file pickers, etc.:
+            const clone = section.cloneNode(true);
+            // Remove controls
+            clone.querySelectorAll('input,button,textarea,select,label').forEach(el => el.remove());
+            // Clean up excess margin if needed:
+            clone.style.margin = '0 auto';
+            // Section content (without controls)
+            let sectionContent = clone.innerHTML.trim();
+
+            sectionsHtml += `
+                <div class="section pdf-section">
+                    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAACkAAAAHACAYAAABHGawxAAABgGlDQ1BJQ0MgUHJvZmlsZQAASImVlwdUU0kYx9+9R8QvQ0NJCQhJSopCglJTWmUlJSqIqKCgoIwoKSmpKQhKSEpMRGBiAgkKwIv6+rs6hASlO+/nvWfnfuO/55z7zr3nHu43aP9HnZDLgjA0KgmCTUGkOQ8ThBJqEImJACJKoiESdRkwlNjoAiIxSwSBUQu7AfRk2xnJMjDsODzTjxA4Q83JnLuikxiVIsA1EIfUlfAvkBvPZQFkItKqQ7IkMwR2wtKi+hEZbA1AfwtyzxWm7GhQHctJjPVBBkJUuBkiFiiw6iy+I3yj1Z4qlrRL3iN8O9EomU8IFC7f8U4gAEswA8cLP9uxHGHif9ItJ+92ByADwL8BZZs4STVQp3iEc74Tu9bHyv0q6jP54vwDwBhR0QPpU4+E4nOV5ZJm7wrnHGRMu+F05PdSt5o5i7hrNxJ04tID4CB+AFDhMR4OxkN8AAAAJcEhZcwAALiMAAC4jAXilP3YAAAJXSURBVHhe7drRDYJAEAXg6xny62nY9RcbDkS0JkCTssPMEAAAAAAADw7DLs8Yay6EmQlvuyc2M0kY4+jfaG14SlZtFJckZrhtxf/66l5VtUSxA2Zwq5ykhnLUaS4vAXG9DJc3IVR9hhkUS7TgJQ7RmsyNOoRUqSn+f8EptkUwT8YkeS/A/H/EblBaMZEoAOVyrE5ylZ7qSqkFwPhZK83Ag+XitvFKKheALlqL0L0swSUZpYTkKQYrBJi+v+yKBRVSBSlBoRYrpNLko6R4CBTlEKQ9TPwYFJl5ojAfEuUgpCkOdYAUapPkFzCGI/wA5lhIAelJQmlKaFAcOKULZSGgFP4FCoQkVU4jAog+BUvhwAot4iKQZBTiFwOAIj7L3NL5/gmnKooMoJSf8yZmyYED9CGP6h5BTnoAAAAAAAAAAAAAAOB4B4FSAAE/6qx2AAAAAElFTkSuQmCC"
+                         class="logo" />
+                    <div class="section-title">${sectionTitle}</div>
+                    <hr class="hr" />
+                    <div class="section-content">${sectionContent}</div>
+                </div>
+                <div class="page-break"></div>
+            `;
+        }
+    });
+
+    
+    const printHtml = buildProposalHtml();
+
+    // 3. POST to Puppeteer server
+    fetch('http://localhost:5000/api/generate-pdf', {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/html' },
+        body: printHtml
+    })
+    .then(response => {
+        if (!response.ok) throw new Error('PDF generation failed');
+        return response.blob();
+    })
+    .then(blob => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'proposal.pdf';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+    })
+    .catch(err => {
+        alert('Error generating PDF: ' + err.message);
+    });
+}
+
+
 
 
 
@@ -1496,7 +1844,10 @@ $(document).ready(function() {
                     console.error('Error parsing proposal data:', e);
                 }
             }
-        });
+            // // Hook download buttons
+            // document.getElementById('downloadBtn').addEventListener('click', generatePDF);
+            // document.getElementById('downloadFromPreview').addEventListener('click', generatePDF);
+    });
     // Update the section button group generation
     $('.proposal-section').each(function() {
         const buttonGroup = `
@@ -1800,17 +2151,5 @@ $(document).ready(function() {
         showPDFPreview(defaultPdfPath, previewDiv);
     });
 
-    // Update the click handler for download button
-    $('#downloadBtn').click(function() {
-        generatePDF();
-    });
-
-    $('#downloadFromPreview').click(function() {
-        generatePDF();
-    });
-
+    
 });
-
-// Add these functions after the existing code
-
-
