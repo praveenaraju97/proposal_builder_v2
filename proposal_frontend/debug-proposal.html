@@ -1,59 +1,67 @@
 
         <html>
         <head>
-          <style>
+        <style>
             body { font-family: 'Arial', sans-serif; color: #222; margin: 0; }
             .section-title { font-size: 2rem; font-weight: 400; margin-bottom: 0.5em; }
             .logo { position: absolute; right: 40px; top: 40px; width: 110px; }
-            .section { max-width: 750px; margin: 0 auto 0 auto; padding-top: 80px; position: relative; min-height: 900px; }
+            .section.pdf-section {
+                max-width: 750px;
+                margin: 0 auto 1.5em auto;
+                padding: 30px 0 0 0;
+                /* No min-height */
+            }
+            .section-content, .pdf-section, .intro-content, .terms-content, .project-brief-content {
+                text-align: justify;
+            }
             .hr { border: none; border-top: 2px solid #222; margin: 1em 0; }
-            .page-break { page-break-after: always; }
+            .page-break {
+                page-break-after: always;
+                margin: 0;
+                height: 0;
+            }
             table { width: 100%; border-collapse: collapse; margin-top: 1em; }
             th, td { border: 1px solid #bbb; padding: 0.5em; font-size: 1rem; }
             th { background: #f7f7f7; }
-            /* Add any additional styles for spacing, etc., here */
-          </style>
+        </style>
         </head>
         <body>
-            
-                    <div class="section pdf-section cover-page" style="text-align:center; padding-top:120px;">
-                        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAACkAAAAHACAYAAABHGawxAAABgGlDQ1BJQ0MgUHJvZmlsZQAASImVlwdUU0kYx9+9R8QvQ0NJCQhJSopCglJTWmUlJSqIqKCgoIwoKSmpKQhKSEpMRGBiAgkKwIv6+rs6hASlO+/nvWfnfuO/55z7zr3nHu43aP9HnZDLgjA0KgmCTUGkOQ8ThBJqEImJACJKoiESdRkwlNjoAiIxSwSBUQu7AfRk2xnJMjDsODzTjxA4Q83JnLuikxiVIsA1EIfUlfAvkBvPZQFkItKqQ7IkMwR2wtKi+hEZbA1AfwtyzxWm7GhQHctJjPVBBkJUuBkiFiiw6iy+I3yj1Z4qlrRL3iN8O9EomU8IFC7f8U4gAEswA8cLP9uxHGHif9ItJ+92ByADwL8BZZs4STVQp3iEc74Tu9bHyv0q6jP54vwDwBhR0QPpU4+E4nOV5ZJm7wrnHGRMu+F05PdSt5o5i7hrNxJ04tID4CB+AFDhMR4OxkN8AAAAJcEhZcwAALiMAAC4jAXilP3YAAAJXSURBVHhe7drRDYJAEAXg6xny62nY9RcbDkS0JkCTssPMEAAAAAAADw7DLs8Yay6EmQlvuyc2M0kY4+jfaG14SlZtFJckZrhtxf/66l5VtUSxA2Zwq5ykhnLUaS4vAXG9DJc3IVR9hhkUS7TgJQ7RmsyNOoRUqSn+f8EptkUwT8YkeS/A/H/EblBaMZEoAOVyrE5ylZ7qSqkFwPhZK83Ag+XitvFKKheALlqL0L0swSUZpYTkKQYrBJi+v+yKBRVSBSlBoRYrpNLko6R4CBTlEKQ9TPwYFJl5ojAfEuUgpCkOdYAUapPkFzCGI/wA5lhIAelJQmlKaFAcOKULZSGgFP4FCoQkVU4jAog+BUvhwAot4iKQZBTiFwOAIj7L3NL5/gmnKooMoJSf8yZmyYED9CGP6h5BTnoAAAAAAAAAAAAAAOB4B4FSAAE/6qx2AAAAAElFTkSuQmCC"
-                            class="logo" />
-                        <div style="font-size:2.5rem; margin-top:80px;"></div>
-                        <div style="margin-top:40px; font-size:1.2rem;">
-                            <b>Prepared for:</b> <br>
-                            <b>Project Address:</b> <br>
-                            <b>Date:</b> 
-                        </div>
+        
+                <div class="section pdf-section cover-page" style="text-align:center; padding-top:120px;">
+                    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAACkAAAAHACAYAAABHGawxAAABgGlDQ1BJQ0MgUHJvZmlsZQAASImVlwdUU0kYx9+9R8QvQ0NJCQhJSopCglJTWmUlJSqIqKCgoIwoKSmpKQhKSEpMRGBiAgkKwIv6+rs6hASlO+/nvWfnfuO/55z7zr3nHu43aP9HnZDLgjA0KgmCTUGkOQ8ThBJqEImJACJKoiESdRkwlNjoAiIxSwSBUQu7AfRk2xnJMjDsODzTjxA4Q83JnLuikxiVIsA1EIfUlfAvkBvPZQFkItKqQ7IkMwR2wtKi+hEZbA1AfwtyzxWm7GhQHctJjPVBBkJUuBkiFiiw6iy+I3yj1Z4qlrRL3iN8O9EomU8IFC7f8U4gAEswA8cLP9uxHGHif9ItJ+92ByADwL8BZZs4STVQp3iEc74Tu9bHyv0q6jP54vwDwBhR0QPpU4+E4nOV5ZJm7wrnHGRMu+F05PdSt5o5i7hrNxJ04tID4CB+AFDhMR4OxkN8AAAAJcEhZcwAALiMAAC4jAXilP3YAAAJXSURBVHhe7drRDYJAEAXg6xny62nY9RcbDkS0JkCTssPMEAAAAAAADw7DLs8Yay6EmQlvuyc2M0kY4+jfaG14SlZtFJckZrhtxf/66l5VtUSxA2Zwq5ykhnLUaS4vAXG9DJc3IVR9hhkUS7TgJQ7RmsyNOoRUqSn+f8EptkUwT8YkeS/A/H/EblBaMZEoAOVyrE5ylZ7qSqkFwPhZK83Ag+XitvFKKheALlqL0L0swSUZpYTkKQYrBJi+v+yKBRVSBSlBoRYrpNLko6R4CBTlEKQ9TPwYFJl5ojAfEuUgpCkOdYAUapPkFzCGI/wA5lhIAelJQmlKaFAcOKULZSGgFP4FCoQkVU4jAog+BUvhwAot4iKQZBTiFwOAIj7L3NL5/gmnKooMoJSf8yZmyYED9CGP6h5BTnoAAAAAAAAAAAAAAOB4B4FSAAE/6qx2AAAAAElFTkSuQmCC"
+                        class="logo" />
+                    <div style="font-size:2.5rem; margin-top:80px;">Consultancy Services Proposal</div>
+                    <div style="margin-top:40px; font-size:1.2rem;">
+                        <b>Prepared for:</b> Emaar<br>
+                        <b>Project Address:</b> <br>
+                        <b>Date:</b> 
                     </div>
-                    <div class="page-break"></div>
-                
-                    <div class="section pdf-section">
-                        <div class="section-title">Introduction</div>
-                        <hr class="hr" />
-                        <div class="section-content">
+                </div>
+            <div class="page-break"></div>
+                <div class="section pdf-section">
+                    <div class="section-title">Introduction</div>
+                    <hr class="hr" />
+                    <div class="section-content">
                 <div class="intro-content">
-                    
+                    <p>&nbsp;Areas Spreadsheet 6. Rendered Views – 2 Unique Options of Elevations (9 Views) A3 Size (Hardcopy) Completed Pdf files Stage 1b Final Concept Design Stage Final Concept Design completed and verbally approved by Client on 09-February-2020 Package and Submit client approved concept for Preliminary Design approval to authorities: 1. Submit client approved Concept design to DM for preliminary approval. 2. Submit Electrical Load NOC to DEWA Completed 1. Updated Floor Plans 2. Updated Area Statement 3. Exterior Perspective Views (03 Nos Options) Archcorp Architectural Engineering Page 4 of 27 Drawings to be submitted: 1. Architectural Drawings 2. Calculations includingDevelop planning options exploring the maximum potential of site, in line with the agreed project brief. Outline Concept Design isggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh Develop planning options exploring the maximum potential of site, in line with the agreed project brief. Outline Concept Design is completed. 2 Options of Concept Design were presented to client Completed 1. Site Plan 2. Ground Floor Plan Archcorp Architectural Engineering Page 3 of 27 3. Typical Floor Plan 4. Roof Plan 5. Areas Spreadsheet 6. Rendered Views – 2 Unique Options of Elevations (9 Views) A3 Size (Hardcopy) Completed Pdf files Stage 1b Final Concept Design Stage Final Concept Design completed and verbally approved by Client on 09-February-2020 Package and Submit client approved concept for Preliminary Design approval to authorities: 1. Submit client approved Concept design to DM for preliminary approval. 2. Submit Electrical Load NOC&nbsp;</p><p>eted. 2 Options of Concept Design were presented to client Completed 1. Site Plan 2. Ground Floor Plan Archcorp Architectural Engineering Page 3 of 27 3. Typical Floor Plan 4. Roof Plan 5. Areas Spreadsheet 6. Rendered Views – 2 Unique Options of Elevations (9 Views) A3 Size (Hardcopy) Completed Pdf files Stage 1b Final Concept Design Stage Final Concept Design completed and verbally approved by Client on 09-February-2020 Package and Submit client approved concept for Preliminary Design approval to authorities: 1. Submit client approved Concept design to DM for preliminary approval. 2. Submit Electrical Load NOC to DEWA Completed 1. Updated Floor Plans 2. Updated Area Statement 3. Exterior Perspective Views (03 Nos Options) Archcorp Architectural Engineering Page 4 of 27 Drawings to be submitted: 1. Architectural Drawings 2. Calculations includingDevelop planning options exploring the maximum potential of site, in line with the agreed project brief. Outline Concept Design isggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh Develop planning options exploring the maximum potential of site, in line with the agreed project brief. Outline Concept Design is completed. 2 Options of Concept Design were presented to client Completed 1. Site Plan 2. Ground Floor Plan Archcorp Architectural Engineering Page 3 of 27 3. Typical Floor Plan 4. Roof Plan 5. Areas Spreadsheet 6. Rendered Views – 2 Unique Options of Elevations (9 Views) A3 Size (Hardcopy) Completed Pdf files Stage 1b Final Concept Design Stage Final Concept Design completed and verbally approved by Client on 09-February-2020 Package and Submit client approved concept for Preliminary Design approval to authorities: 1. Submit client approved Concept design to DM for preliminary approval. 2. Submit Electrical Load NOC to DEWA Completed 1. Updated Floor Plans 2. Updated Area Statement 3. Exterior Perspective Views (03 Nos Options) Archcorp Architectural Engineering Page 4 of 27 Drawings to be submitted: 1. Architectural Drawings 2. Calculations includingDevelop planning options exploring the maximum potential of site, in line with the agreed project brief. Outline Concept Design isggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh &nbsp;Areas Spreadsheet 6. Rendered Views – 2 Unique Options of Elevations (9 Views) A3 Size (Hardcopy) Completed Pdf files Stage 1b Final Concept Design Stage Final Concept Design completed and verbally approved by Client on 09-February-2020 Package and Submit client approved concept for Preliminary Design approval to authorities: 1. Submit client approved Concept design to DM for preliminary approval. 2. Submit Electrical Load NOC to DEWA Completed 1. Updated Floor Plans 2. Updated Area Statement 3. Exterior Perspective Views (03 Nos Options) Archcorp Architectural Engineering Page 4 of 27 Drawings to be submitted: 1. Architectural Drawings 2. Calculations includingDevelop planning options exploring the maximum potential of site, in line with the agreed project brief. Outline Concept Design isggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh Develop planning options exploring the maximum potential of site, in line with the agreed project brief. Outline Concept Design is completed. 2 Options of Concept Design were presented to client Completed 1. Site Plan 2. Ground Floor Plan Archcorp Architectural Engineering Page 3 of 27 3. Typical Floor Plan 4. Roof Plan 5. Areas Spreadsheet 6. Rendered Views – 2 Unique Options of Elevations (9 Views) A3 Size (Hardcopy) Completed Pdf files Stage 1b Final Concept Design Stage Final Concept Design completed and verbally approved by Client on 09-February-2020 Package and Submit client approved concept for Preliminary Design approval to authorities: 1. Submit client approved Concept design to DM for preliminary approval. 2. Submit Electrical Load NOC&nbsp;</p><p>eted. 2 Options of Concept Design were presented to client Completed 1. Site Plan 2. Ground Floor Plan Archcorp Architectural Engineering Page 3 of 27 3. Typical Floor Plan 4. Roof Plan 5. Areas Spreadsheet 6. Rendered Views – 2 Unique Options of Elevations (9 Views) A3 Size (Hardcopy) Completed Pdf files Stage 1b Final Concept Design Stage Final Concept Design completed and verbally approved by Client on 09-February-2020 Package and Submit client approved concept for Preliminary Design approval to authorities: 1. Submit client approved Concept design to DM for preliminary approval. 2. Submit Electrical Load NOC to DEWA Completed 1. Updated Floor Plans 2. Updated Area Statement 3. Exterior Perspective Views (03 Nos Options) Archcorp Architectural Engineering Page 4 of 27 Drawings to be submitted: 1. Architectural Drawings 2. Calculations includingDevelop planning options exploring the maximum potential of site, in line with the agreed project brief. Outline Concept Design isggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh Develop planning options exploring the maximum potential of site, in line with the agreed project brief. Outline Concept Design is completed. 2 Options of Concept Design were presented to client Completed 1. Site Plan 2. Ground Floor Plan Archcorp Architectural Engineering Page 3 of 27 3. Typical Floor Plan 4. Roof Plan 5. Areas Spreadsheet 6. Rendered Views – 2 Unique Options of Elevations (9 Views) A3 Size (Hardcopy) Completed Pdf files Stage 1b Final Concept Design Stage Final Concept Design completed and verbally approved by Client on 09-February-2020 Package and Submit client approved concept for Preliminary Design approval to authorities: 1. Submit client approved Concept design to DM for preliminary approval. 2. Submit Electrical Load NOC to DEWA Completed 1. Updated Floor Plans 2. Updated Area Statement 3. Exterior Perspective Views (03 Nos Options) Archcorp Architectural Engineering Page 4 of 27 Drawings to be submitted: 1. Architectural Drawings 2. Calculations includingDevelop planning options exploring the maximum potential of site, in line with the agreed project brief. Outline Concept Design isggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh &nbsp;Areas Spreadsheet 6. Rendered Views – 2 Unique Options of Elevations (9 Views) A3 Size (Hardcopy) Completed Pdf files Stage 1b Final Concept Design Stage Final Concept Design completed and verbally approved by Client on 09-February-2020 Package and Submit client approved concept for Preliminary Design approval to authorities: 1. Submit client approved Concept design to DM for preliminary approval. 2. Submit Electrical Load NOC to DEWA Completed 1. Updated Floor Plans 2. Updated Area Statement 3. Exterior Perspective Views (03 Nos Options) Archcorp Architectural Engineering Page 4 of 27 Drawings to be submitted: 1. Architectural Drawings 2. Calculations includingDevelop planning options exploring the maximum potential of site, in line with the agreed project brief. Outline Concept Design isggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh Develop planning options exploring the maximum potential of site, in line with the agreed project brief. Outline Concept Design is completed. 2 Options of Concept Design were presented to client Completed 1. Site Plan 2. Ground Floor Plan Archcorp Architectural Engineering Page 3 of 27 3. Typical Floor Plan 4. Roof Plan 5. Areas Spreadsheet 6. Rendered Views – 2 Unique Options of Elevations (9 Views) A3 Size (Hardcopy) Completed Pdf files Stage 1b Final Concept Design Stage Final Concept Design completed and verbally approved by Client on 09-February-2020 Package and Submit client approved concept for Preliminary Design approval to authorities: 1. Submit client approved Concept design to DM for preliminary approval. 2. Submit Electrical Load NOC&nbsp;</p><p>eted. 2 Options of Concept Design were presented to client Completed 1. Site Plan 2. Ground Floor Plan Archcorp Architectural Engineering Page 3 of 27 3. Typical Floor Plan 4. Roof Plan 5. Areas Spreadsheet 6. Rendered Views – 2 Unique Options of Elevations (9 Views) A3 Size (Hardcopy) Completed Pdf files Stage 1b Final Concept Design Stage Final Concept Design completed and verbally approved by Client on 09-February-2020 Package and Submit client approved concept for Preliminary Design approval to authorities: 1. Submit client approved Concept design to DM for preliminary approval. 2. Submit Electrical Load NOC to DEWA Completed 1. Updated Floor Plans 2. Updated Area Statement 3. Exterior Perspective Views (03 Nos Options) Archcorp Architectural Engineering Page 4 of 27 Drawings to be submitted: 1. Architectural Drawings 2. Calculations includingDevelop planning options exploring the maximum potential of site, in line with the agreed project brief. Outline Concept Design isggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh Develop planning options exploring the maximum potential of site, in line with the agreed project brief. Outline Concept Design is completed. 2 Options of Concept Design were presented to client Completed 1. Site Plan 2. Ground Floor Plan Archcorp Architectural Engineering Page 3 of 27 3. Typical Floor Plan 4. Roof Plan 5. Areas Spreadsheet 6. Rendered Views – 2 Unique Options of Elevations (9 Views) A3 Size (Hardcopy) Completed Pdf files Stage 1b Final Concept Design Stage Final Concept Design completed and verbally approved by Client on 09-February-2020 Package and Submit client approved concept for Preliminary Design approval to authorities: 1. Submit client approved Concept design to DM for preliminary approval. 2. Submit Electrical Load NOC to DEWA Completed 1. Updated Floor Plans 2. Updated Area Statement 3. Exterior Perspective Views (03 Nos Options) Archcorp Architectural Engineering Page 4 of 27 Drawings to be submitted: 1. Architectural Drawings 2. Calculations includingDevelop planning options exploring the maximum potential of site, in line with the agreed project brief. Outline Concept Design isggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh &nbsp;Areas Spreadsheet 6. Rendered Views – 2 Unique Options of Elevations (9 Views) A3 Size (Hardcopy) Completed Pdf files Stage 1b Final Concept Design Stage Final Concept Design completed and verbally approved by Client on 09-February-2020 Package and Submit client approved concept for Preliminary Design approval to authorities: 1. Submit client approved Concept design to DM for preliminary approval. 2. Submit Electrical Load NOC to DEWA Completed 1. Updated Floor Plans 2. Updated Area Statement 3. Exterior Perspective Views (03 Nos Options) Archcorp Architectural Engineering Page 4 of 27 Drawings to be submitted: 1. Architectural Drawings 2. Calculations includingDevelop planning options exploring the maximum potential of site, in line with the agreed project brief. Outline Concept Design isggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh Develop planning options exploring the maximum potential of site, in line with the agreed project brief. Outline Concept Design is completed. 2 Options of Concept Design were presented to client Completed 1. Site Plan 2. Ground Floor Plan Archcorp Architectural Engineering Page 3 of 27 3. Typical Floor Plan 4. Roof Plan 5. Areas Spreadsheet 6. Rendered Views – 2 Unique Options of Elevations (9 Views) A3 Size (Hardcopy) Completed Pdf files Stage 1b Final Concept Design Stage Final Concept Design completed and verbally approved by Client on 09-February-2020 Package and Submit client approved concept for Preliminary Design approval to authorities: 1. Submit client approved Concept design to DM for preliminary approval. 2. Submit Electrical Load NOC&nbsp;</p><p>eted. 2 Options of Concept Design were presented to client Completed 1. Site Plan 2. Ground Floor Plan Archcorp Architectural Engineering Page 3 of 27 3. Typical Floor Plan 4. Roof Plan 5. Areas Spreadsheet 6. Rendered Views – 2 Unique Options of Elevations (9 Views) A3 Size (Hardcopy) Completed Pdf files Stage 1b Final Concept Design Stage Final Concept Design completed and verbally approved by Client on 09-February-2020 Package and Submit client approved concept for Preliminary Design approval to authorities: 1. Submit client approved Concept design to DM for preliminary approval. 2. Submit Electrical Load NOC to DEWA Completed 1. Updated Floor Plans 2. Updated Area Statement 3. Exterior Perspective Views (03 Nos Options) Archcorp Architectural Engineering Page 4 of 27 Drawings to be submitted: 1. Architectural Drawings 2. Calculations includingDevelop planning options exploring the maximum potential of site, in line with the agreed project brief. Outline Concept Design isggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh Develop planning options exploring the maximum potential of site, in line with the agreed project brief. Outline Concept Design is completed. 2 Options of Concept Design were presented to client Completed 1. Site Plan 2. Ground Floor Plan Archcorp Architectural Engineering Page 3 of 27 3. Typical Floor Plan 4. Roof Plan 5. Areas Spreadsheet 6. Rendered Views – 2 Unique Options of Elevations (9 Views) A3 Size (Hardcopy) Completed Pdf files Stage 1b Final Concept Design Stage Final Concept Design completed and verbally approved by Client on 09-February-2020 Package and Submit client approved concept for Preliminary Design approval to authorities: 1. Submit client approved Concept design to DM for preliminary approval. 2. Submit Electrical Load NOC to DEWA Completed 1. Updated Floor Plans 2. Updated Area Statement 3. Exterior Perspective Views (03 Nos Options) Archcorp Architectural Engineering Page 4 of 27 Drawings to be submitted: 1. Architectural Drawings 2. Calculations includingDevelop planning options exploring the maximum potential of site, in line with the agreed project brief. Outline Concept Design isggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh&nbsp;</p>
                 </div>
                     </div>
-                    </div>
-                    <div class="page-break"></div>
-                
-                    <div class="section pdf-section">
-                        <div class="section-title">Project Brief</div>
-                        <hr class="hr" />
-                        <div class="section-content">
+                </div>
+            <div class="page-break"></div>
+                <div class="section pdf-section">
+                    <div class="section-title">Project Brief</div>
+                    <hr class="hr" />
+                    <div class="section-content">
                 <div class="project-brief-content">
-                    <p><em>No brief or file provided.</em></p>
+                    <p>&nbsp;Areas Spreadsheet 6. Rendered Views – 2 Unique Options of Elevations (9 Views) A3 Size (Hardcopy) Completed Pdf files Stage 1b Final Concept Design Stage Final Concept Design completed and verbally approved by Client on 09-February-2020 Package and Submit client approved concept for Preliminary Design approval to authorities: 1. Submit client approved Concept design to DM for preliminary approval. 2. Submit Electrical Load NOC to DEWA Completed 1. Updated Floor Plans 2. Updated Area Statement 3. Exterior Perspective Views (03 Nos Options) Archcorp Architectural Engineering Page 4 of 27 Drawings to be submitted: 1. Architectural Drawings 2. Calculations includingDevelop planning options exploring the maximum potential of site, in line with the agreed project brief. Outline Concept Design isggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh Develop planning options exploring the maximum potential of site, in line with the agreed project brief. Outline Concept Design is completed. 2 Options of Concept Design were presented to client Completed 1. Site Plan 2. Ground Floor Plan Archcorp Architectural Engineering Page 3 of 27 3. Typical Floor Plan 4. Roof Plan 5. Areas Spreadsheet 6. Rendered Views – 2 Unique Options of Elevations (9 Views) A3 Size (Hardcopy) Completed Pdf files Stage 1b Final Concept Design Stage Final Concept Design completed and verbally approved by Client on 09-February-2020 Package and Submit client approved concept for Preliminary Design approval to authorities: 1. Submit client approved Concept design to DM for preliminary approval. 2. Submit Electrical Load NOC&nbsp;</p><p>eted. 2 Options of Concept Design were presented to client Completed 1. Site Plan 2. Ground Floor Plan Archcorp Architectural Engineering Page 3 of 27 3. Typical Floor Plan 4. Roof Plan 5. Areas Spreadsheet 6. Rendered Views – 2 Unique Options of Elevations (9 Views) A3 Size (Hardcopy) Completed Pdf files Stage 1b Final Concept Design Stage Final Concept Design completed and verbally approved by Client on 09-February-2020 Package and Submit client approved concept for Preliminary Design approval to authorities: 1. Submit client approved Concept design to DM for preliminary approval. 2. Submit Electrical Load NOC to DEWA Completed 1. Updated Floor Plans 2. Updated Area Statement 3. Exterior Perspective Views (03 Nos Options) Archcorp Architectural Engineering Page 4 of 27 Drawings to be submitted: 1. Architectural Drawings 2. Calculations includingDevelop planning options exploring the maximum potential of site, in line with the agreed project brief. Outline Concept Design isggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh Develop planning options exploring the maximum potential of site, in line with the agreed project brief. Outline Concept Design is completed. 2 Options of Concept Design were presented to client Completed 1. Site Plan 2. Ground Floor Plan Archcorp Architectural Engineering Page 3 of 27 3. Typical Floor Plan 4. Roof Plan 5. Areas Spreadsheet 6. Rendered Views – 2 Unique Options of Elevations (9 Views) A3 Size (Hardcopy) Completed Pdf files Stage 1b Final Concept Design Stage Final Concept Design completed and verbally approved by Client on 09-February-2020 Package and Submit client approved concept for Preliminary Design approval to authorities: 1. Submit client approved Concept design to DM for preliminary approval. 2. Submit Electrical Load NOC to DEWA Completed 1. Updated Floor Plans 2. Updated Area Statement 3. Exterior Perspective Views (03 Nos Options) Archcorp Architectural Engineering Page 4 of 27 Drawings to be submitted: 1. Architectural Drawings 2. Calculations includingDevelop planning options exploring the maximum potential of site, in line with the agreed project brief. Outline Concept Design isggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh &nbsp;Areas Spreadsheet 6. Rendered Views – 2 Unique Options of Elevations (9 Views) A3 Size (Hardcopy) Completed Pdf files Stage 1b Final Concept Design Stage Final Concept Design completed and verbally approved by Client on 09-February-2020 Package and Submit client approved concept for Preliminary Design approval to authorities: 1. Submit client approved Concept design to DM for preliminary approval. 2. Submit Electrical Load NOC to DEWA Completed 1. Updated Floor Plans 2. Updated Area Statement 3. Exterior Perspective Views (03 Nos Options) Archcorp Architectural Engineering Page 4 of 27 Drawings to be submitted: 1. Architectural Drawings 2. Calculations includingDevelop planning options exploring the maximum potential of site, in line with the agreed project brief. Outline Concept Design isggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh Develop planning options exploring the maximum potential of site, in line with the agreed project brief. Outline Concept Design is completed. 2 Options of Concept Design were presented to client Completed 1. Site Plan 2. Ground Floor Plan Archcorp Architectural Engineering Page 3 of 27 3. Typical Floor Plan 4. Roof Plan 5. Areas Spreadsheet 6. Rendered Views – 2 Unique Options of Elevations (9 Views) A3 Size (Hardcopy) Completed Pdf files Stage 1b Final Concept Design Stage Final Concept Design completed and verbally approved by Client on 09-February-2020 Package and Submit client approved concept for Preliminary Design approval to authorities: 1. Submit client approved Concept design to DM for preliminary approval. 2. Submit Electrical Load NOC&nbsp;</p><p>eted. 2 Options of Concept Design were presented to client Completed 1. Site Plan 2. Ground Floor Plan Archcorp Architectural Engineering Page 3 of 27 3. Typical Floor Plan 4. Roof Plan 5. Areas Spreadsheet 6. Rendered Views – 2 Unique Options of Elevations (9 Views) A3 Size (Hardcopy) Completed Pdf files Stage 1b Final Concept Design Stage Final Concept Design completed and verbally approved by Client on 09-February-2020 Package and Submit client approved concept for Preliminary Design approval to authorities: 1. Submit client approved Concept design to DM for preliminary approval. 2. Submit Electrical Load NOC to DEWA Completed 1. Updated Floor Plans 2. Updated Area Statement 3. Exterior Perspective Views (03 Nos Options) Archcorp Architectural Engineering Page 4 of 27 Drawings to be submitted: 1. Architectural Drawings 2. Calculations includingDevelop planning options exploring the maximum potential of site, in line with the agreed project brief. Outline Concept Design isggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh Develop planning options exploring the maximum potential of site, in line with the agreed project brief. Outline Concept Design is completed. 2 Options of Concept Design were presented to client Completed 1. Site Plan 2. Ground Floor Plan Archcorp Architectural Engineering Page 3 of 27 3. Typical Floor Plan 4. Roof Plan 5. Areas Spreadsheet 6. Rendered Views – 2 Unique Options of Elevations (9 Views) A3 Size (Hardcopy) Completed Pdf files Stage 1b Final Concept Design Stage Final Concept Design completed and verbally approved by Client on 09-February-2020 Package and Submit client approved concept for Preliminary Design approval to authorities: 1. Submit client approved Concept design to DM for preliminary approval. 2. Submit Electrical Load NOC to DEWA Completed 1. Updated Floor Plans 2. Updated Area Statement 3. Exterior Perspective Views (03 Nos Options) Archcorp Architectural Engineering Page 4 of 27 Drawings to be submitted: 1. Architectural Drawings 2. Calculations includingDevelop planning options exploring the maximum potential of site, in line with the agreed project brief. Outline Concept Design isggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh &nbsp;Areas Spreadsheet 6. Rendered Views – 2 Unique Options of Elevations (9 Views) A3 Size (Hardcopy) Completed Pdf files Stage 1b Final Concept Design Stage Final Concept Design completed and verbally approved by Client on 09-February-2020 Package and Submit client approved concept for Preliminary Design approval to authorities: 1. Submit client approved Concept design to DM for preliminary approval. 2. Submit Electrical Load NOC to DEWA Completed 1. Updated Floor Plans 2. Updated Area Statement 3. Exterior Perspective Views (03 Nos Options) Archcorp Architectural Engineering Page 4 of 27 Drawings to be submitted: 1. Architectural Drawings 2. Calculations includingDevelop planning options exploring the maximum potential of site, in line with the agreed project brief. Outline Concept Design isggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh Develop planning options exploring the maximum potential of site, in line with the agreed project brief. Outline Concept Design is completed. 2 Options of Concept Design were presented to client Completed 1. Site Plan 2. Ground Floor Plan Archcorp Architectural Engineering Page 3 of 27 3. Typical Floor Plan 4. Roof Plan 5. Areas Spreadsheet 6. Rendered Views – 2 Unique Options of Elevations (9 Views) A3 Size (Hardcopy) Completed Pdf files Stage 1b Final Concept Design Stage Final Concept Design completed and verbally approved by Client on 09-February-2020 Package and Submit client approved concept for Preliminary Design approval to authorities: 1. Submit client approved Concept design to DM for preliminary approval. 2. Submit Electrical Load NOC&nbsp;</p><p>eted. 2 Options of Concept Design were presented to client Completed 1. Site Plan 2. Ground Floor Plan Archcorp Architectural Engineering Page 3 of 27 3. Typical Floor Plan 4. Roof Plan 5. Areas Spreadsheet 6. Rendered Views – 2 Unique Options of Elevations (9 Views) A3 Size (Hardcopy) Completed Pdf files Stage 1b Final Concept Design Stage Final Concept Design completed and verbally approved by Client on 09-February-2020 Package and Submit client approved concept for Preliminary Design approval to authorities: 1. Submit client approved Concept design to DM for preliminary approval. 2. Submit Electrical Load NOC to DEWA Completed 1. Updated Floor Plans 2. Updated Area Statement 3. Exterior Perspective Views (03 Nos Options) Archcorp Architectural Engineering Page 4 of 27 Drawings to be submitted: 1. Architectural Drawings 2. Calculations includingDevelop planning options exploring the maximum potential of site, in line with the agreed project brief. Outline Concept Design isggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh Develop planning options exploring the maximum potential of site, in line with the agreed project brief. Outline Concept Design is completed. 2 Options of Concept Design were presented to client Completed 1. Site Plan 2. Ground Floor Plan Archcorp Architectural Engineering Page 3 of 27 3. Typical Floor Plan 4. Roof Plan 5. Areas Spreadsheet 6. Rendered Views – 2 Unique Options of Elevations (9 Views) A3 Size (Hardcopy) Completed Pdf files Stage 1b Final Concept Design Stage Final Concept Design completed and verbally approved by Client on 09-February-2020 Package and Submit client approved concept for Preliminary Design approval to authorities: 1. Submit client approved Concept design to DM for preliminary approval. 2. Submit Electrical Load NOC to DEWA Completed 1. Updated Floor Plans 2. Updated Area Statement 3. Exterior Perspective Views (03 Nos Options) Archcorp Architectural Engineering Page 4 of 27 Drawings to be submitted: 1. Architectural Drawings 2. Calculations includingDevelop planning options exploring the maximum potential of site, in line with the agreed project brief. Outline Concept Design isggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh&nbsp;</p>
                 </div>
             </div>
-                    </div>
-                    <div class="page-break"></div>
-                
-                    <div class="section pdf-section">
-                        <div class="section-title">Agreement Overview</div>
-                        <hr class="hr" />
-                        <div class="section-content">
+                </div>
+            <div class="page-break"></div>
+                <div class="section pdf-section">
+                    <div class="section-title">Agreement Overview</div>
+                    <hr class="hr" />
+                    <div class="section-content">
                 <div class="row">
                 <div class="col-6">
                     <p><strong>Client:</strong> Mr. Buti Obaid Buti Al Mulla</p>
@@ -72,20 +80,18 @@
                 <div class="col-4"><p><strong>Plot No:</strong> 3347643</p></div>
                 </div>
             </div>
-                    </div>
-                    <div class="page-break"></div>
-                
-                    <div class="section pdf-section">
-                        <div class="section-title">Constituent Documents</div>
-                        <hr class="hr" />
-                        <div class="section-content"></div>
-                    </div>
-                    <div class="page-break"></div>
-                
-                    <div class="section pdf-section">
-                        <div class="section-title">General Scope of Services</div>
-                        <hr class="hr" />
-                        <div class="section-content">
+                </div>
+            <div class="page-break"></div>
+                <div class="section pdf-section">
+                    <div class="section-title">Constituent Documents</div>
+                    <hr class="hr" />
+                    <div class="section-content"></div>
+                </div>
+            <div class="page-break"></div>
+                <div class="section pdf-section">
+                    <div class="section-title">General Scope of Services</div>
+                    <hr class="hr" />
+                    <div class="section-content">
             <table class="preview-table">
                 <thead>
                 <tr>
@@ -103,49 +109,19 @@
                     <tr>
                         <td>—</td>
                         <td class="text-center"><i class="fas fa-times-square cross-red"></i></td>
-                        <td class="text-center"><i class="fas fa-check-square tick-green"></i></td>
                         <td class="text-center"><i class="fas fa-times-square cross-red"></i></td>
-                        <td class="text-center"><i class="fas fa-check-square tick-green"></i></td>
-                        <td class="text-center">No</td>
-                        <td class="text-center">No</td>
-                    </tr>
-                    
-                    <tr>
-                        <td>—</td>
-                        <td class="text-center"><i class="fas fa-check-square tick-green"></i></td>
-                        <td class="text-center"><i class="fas fa-check-square tick-green"></i></td>
                         <td class="text-center"><i class="fas fa-times-square cross-red"></i></td>
-                        <td class="text-center"><i class="fas fa-check-square tick-green"></i></td>
+                        <td class="text-center"><i class="fas fa-times-square cross-red"></i></td>
                         <td class="text-center"><strong>Yes</strong></td>
                         <td class="text-center">No</td>
                     </tr>
                     
                     <tr>
                         <td>—</td>
-                        <td class="text-center"><i class="fas fa-times-square cross-red"></i></td>
                         <td class="text-center"><i class="fas fa-check-square tick-green"></i></td>
                         <td class="text-center"><i class="fas fa-times-square cross-red"></i></td>
-                        <td class="text-center"><i class="fas fa-check-square tick-green"></i></td>
-                        <td class="text-center">No</td>
-                        <td class="text-center">No</td>
-                    </tr>
-                    
-                    <tr>
-                        <td>—</td>
-                        <td class="text-center"><i class="fas fa-check-square tick-green"></i></td>
                         <td class="text-center"><i class="fas fa-times-square cross-red"></i></td>
-                        <td class="text-center"><i class="fas fa-check-square tick-green"></i></td>
-                        <td class="text-center"><i class="fas fa-check-square tick-green"></i></td>
-                        <td class="text-center">No</td>
-                        <td class="text-center"><strong>Yes</strong></td>
-                    </tr>
-                    
-                    <tr>
-                        <td>—</td>
                         <td class="text-center"><i class="fas fa-times-square cross-red"></i></td>
-                        <td class="text-center"><i class="fas fa-check-square tick-green"></i></td>
-                        <td class="text-center"><i class="fas fa-times-square cross-red"></i></td>
-                        <td class="text-center"><i class="fas fa-check-square tick-green"></i></td>
                         <td class="text-center">No</td>
                         <td class="text-center">No</td>
                     </tr>
@@ -153,29 +129,27 @@
                     <tr>
                         <td>—</td>
                         <td class="text-center"><i class="fas fa-times-square cross-red"></i></td>
-                        <td class="text-center"><i class="fas fa-check-square tick-green"></i></td>
                         <td class="text-center"><i class="fas fa-times-square cross-red"></i></td>
-                        <td class="text-center"><i class="fas fa-check-square tick-green"></i></td>
-                        <td class="text-center"><strong>Yes</strong></td>
+                        <td class="text-center"><i class="fas fa-times-square cross-red"></i></td>
+                        <td class="text-center"><i class="fas fa-times-square cross-red"></i></td>
+                        <td class="text-center">No</td>
                         <td class="text-center">No</td>
                     </tr>
                     
                 </tbody>
             </table></div>
-                    </div>
-                    <div class="page-break"></div>
-                
-                    <div class="section pdf-section">
-                        <div class="section-title">Stages and Deliverables</div>
-                        <hr class="hr" />
-                        <div class="section-content"><figure class="table"><table class="preview-table"><thead><tr><th>Stage</th><th>Tasks &amp; Activities</th><th>Deliverables</th><th>Format</th><th>Timelines</th></tr></thead><tbody><tr><td>Stage name</td><td><p>Architectural team shall undertake the</p><p>following:</p><p>1. Review and incorporate Client's</p><p>comments on the concept design</p><p>submission in design drawings.</p><p>2. Coordinate with structure and MEP</p><p>engineers</p><p>3. Develop floor plans layouts, the</p><p>elevations &amp; building sections.</p><p>4. Agree on general finishes – Interior</p><p>&amp; Exterior, including general</p><p>joinery items</p><p>MEP engineers shall prepare:</p><p>1. Key schematic drawings for all</p><p>relevant systems including details</p><p>of interfaces.</p><p>2. Details of MEP load and demand</p><p>schedule.</p><p>3. List of Manufacturers and</p><p>Suppliers.</p><p>Structural engineers shall prepare the</p><p>following:</p><p>1. Basic Calculations</p><p>2. Framing Plans</p><p>3. Major component sizes</p><p>Preliminary Design NOCs</p><p>1. Apply to authorities for Design</p><p>NOCs including:</p><p>Demarcation Certificate, Gate</p><p>Level, Swimming Pool, Sewage,</p><p>Drainage, IFC, Etisalat, Water &amp;</p><p>Power (DEWA), Exit/ Entry, Civil</p><p>defense, external Pavement</p></td><td>Deliverables</td><td>Format</td><td>Timeline</td></tr></tbody></table></figure></div>
-                    </div>
-                    <div class="page-break"></div>
-                
-                    <div class="section pdf-section">
-                        <div class="section-title">Man Month Rates and Proposed Deployment</div>
-                        <hr class="hr" />
-                        <div class="section-content">
+                </div>
+            <div class="page-break"></div>
+                <div class="section pdf-section">
+                    <div class="section-title">Stages and Deliverables</div>
+                    <hr class="hr" />
+                    <div class="section-content"><figure class="table"><table class="preview-table"><thead><tr><th>Stage</th><th>Tasks &amp; Activities</th><th>Deliverables</th><th>Format</th><th>Timelines</th></tr></thead><tbody><tr><td>Stage name</td><td><p>Tasks &amp; activities Areas Spreadsheet 6. Rendered Views – 2 Unique Options of Elevations (9 Views) A3 Size (Hardcopy) Completed Pdf files Stage 1b Final Concept Design Stage Final Concept Design completed and verbally approved by Client on 09-February-2020 Package and Submit client approved concept for Preliminary Design approval to authorities: 1. Submit client approved Concept design to DM for preliminary approval. 2. Submit Electrical Load NOC to DEWA Completed 1. Updated Floor Plans 2. Updated Area Statement 3. Exterior Perspective Views (03 Nos Options) Archcorp Architectural Engineering Page 4 of 27 Drawings to be submitted: 1. Architectural Drawings 2. Calculations includingDevelop planning options exploring the maximum potential of site, in line with the agreed project brief. Outline Concept Design isggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh Develop planning options exploring the maximum potential of site, in line with the agreed project brief. Outline Concept Design is completed. 2 Options of Concept Design were presented to client Completed 1. Site Plan 2. Ground Floor Plan Archcorp Architectural Engineering Page 3 of 27 3. Typical Floor Plan 4. Roof Plan 5. Areas Spreadsheet 6. Rendered Views – 2 Unique Options of Elevations (9 Views) A3 Size (Hardcopy) Completed Pdf files Stage 1b Final Concept Design Stage Final Concept Design completed and verbally approved by Client on 09-February-2020 Package and Submit client approved concept for Preliminary Design approval to authorities: 1. Submit client approved Concept design to DM for preliminary approval. 2. Submit Electrical Load NOC&nbsp;</p><p>eted. 2 Options of Concept Design were presented to client Completed 1. Site Plan 2. Ground Floor Plan Archcorp Architectural Engineering Page 3 of 27 3. Typical Floor Plan 4. Roof Plan 5. Areas Spreadsheet 6. Rendered Views – 2 Unique Options of Elevations (9 Views) A3 Size (Hardcopy) Completed Pdf files Stage 1b Final Concept Design Stage Final Concept Design completed and verbally approved by Client on 09-February-2020 Package and Submit client approved concept for Preliminary Design approval to authorities: 1. Submit client approved Concept design to DM for preliminary approval. 2. Submit Electrical Load NOC to DEWA Completed 1. Updated Floor Plans 2. Updated Area Statement 3. Exterior Perspective Views (03 Nos Options) Archcorp Architectural Engineering Page 4 of 27 Drawings to be submitted: 1. Architectural Drawings 2. Calculations includingDevelop planning options exploring the maximum potential of site, in line with the agreed project brief. Outline Concept Design isggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh Develop planning options exploring the maximum potential of site, in line with the agreed project brief. Outline Concept Design is completed. 2 Options of Concept Design were presented to client Completed 1. Site Plan 2. Ground Floor Plan Archcorp Architectural Engineering Page 3 of 27 3. Typical Floor Plan 4. Roof Plan 5. Areas Spreadsheet 6. Rendered Views – 2 Unique Options of Elevations (9 Views) A3 Size (Hardcopy) Completed Pdf files Stage 1b Final Concept Design Stage Final Concept Design completed and verbally approved by Client on 09-February-2020 Package and Submit client approved concept for Preliminary Design approval to authorities: 1. Submit client approved Concept design to DM for preliminary approval. 2. Submit Electrical Load NOC to DEWA Completed 1. Updated Floor Plans 2. Updated Area Statement 3. Exterior Perspective Views (03 Nos Options) Archcorp Architectural Engineering Page 4 of 27 Drawings to be submitted: 1. Architectural Drawings 2. Calculations includingDevelop planning options exploring the maximum potential of site, in line with the agreed project brief. Outline Concept Design isggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh&nbsp;</p></td><td><p>&nbsp;Areas Spreadsheet 6. Rendered Views – 2 Unique Options of Elevations (9 Views) A3 Size (Hardcopy) Completed Pdf files Stage 1b Final Concept Design Stage Final Concept Design completed and verbally approved by Client on 09-February-2020 Package and Submit client approved concept for Preliminary Design approval to authorities: 1. Submit client approved Concept design to DM for preliminary approval. 2. Submit Electrical Load NOC to DEWA Completed 1. Updated Floor Plans 2. Updated Area Statement 3. Exterior Perspective Views (03 Nos Options) Archcorp Architectural Engineering Page 4 of 27 Drawings to be submitted: 1. Architectural Drawings 2. Calculations includingDevelop planning options exploring the maximum potential of site, in line with the agreed project brief. Outline Concept Design isggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh Develop planning options exploring the maximum potential of site, in line with the agreed project brief. Outline Concept Design is completed. 2 Options of Concept Design were presented to client Completed 1. Site Plan 2. Ground Floor Plan Archcorp Architectural Engineering Page 3 of 27 3. Typical Floor Plan 4. Roof Plan 5. Areas Spreadsheet 6. Rendered Views – 2 Unique Options of Elevations (9 Views) A3 Size (Hardcopy) Completed Pdf files Stage 1b Final Concept Design Stage Final Concept Design completed and verbally approved by Client on 09-February-2020 Package and Submit client approved concept for Preliminary Design approval to authorities: 1. Submit client approved Concept design to DM for preliminary approval. 2. Submit Electrical Load NOC&nbsp;</p><p>eted. 2 Options of Concept Design were presented to client Completed 1. Site Plan 2. Ground Floor Plan Archcorp Architectural Engineering Page 3 of 27 3. Typical Floor Plan 4. Roof Plan 5. Areas Spreadsheet 6. Rendered Views – 2 Unique Options of Elevations (9 Views) A3 Size (Hardcopy) Completed Pdf files Stage 1b Final Concept Design Stage Final Concept Design completed and verbally approved by Client on 09-February-2020 Package and Submit client approved concept for Preliminary Design approval to authorities: 1. Submit client approved Concept design to DM for preliminary approval. 2. Submit Electrical Load NOC to DEWA Completed 1. Updated Floor Plans 2. Updated Area Statement 3. Exterior Perspective Views (03 Nos Options) Archcorp Architectural Engineering Page 4 of 27 Drawings to be submitted: 1. Architectural Drawings 2. Calculations includingDevelop planning options exploring the maximum potential of site, in line with the agreed project brief. Outline Concept Design isggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh Develop planning options exploring the maximum potential of site, in line with the agreed project brief. Outline Concept Design is completed. 2 Options of Concept Design were presented to client Completed 1. Site Plan 2. Ground Floor Plan Archcorp Architectural Engineering Page 3 of 27 3. Typical Floor Plan 4. Roof Plan 5. Areas Spreadsheet 6. Rendered Views – 2 Unique Options of Elevations (9 Views) A3 Size (Hardcopy) Completed Pdf files Stage 1b Final Concept Design Stage Final Concept Design completed and verbally approved by Client on 09-February-2020 Package and Submit client approved concept for Preliminary Design approval to authorities: 1. Submit client approved Concept design to DM for preliminary approval. 2. Submit Electrical Load NOC to DEWA Completed 1. Updated Floor Plans 2. Updated Area Statement 3. Exterior Perspective Views (03 Nos Options) Archcorp Architectural Engineering Page 4 of 27 Drawings to be submitted: 1. Architectural Drawings 2. Calculations includingDevelop planning options exploring the maximum potential of site, in line with the agreed project brief. Outline Concept Design isggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh Deliverables</p></td><td><p>Format Areas Spreadsheet 6. Rendered Views – 2 Unique Options of Elevations (9 Views) A3 Size (Hardcopy) Completed Pdf files Stage 1b Final Concept Design Stage Final Concept Design completed and verbally approved by Client on 09-February-2020 Package and Submit client approved concept for Preliminary Design approval to authorities: 1. Submit client approved Concept design to DM for preliminary approval. 2. Submit Electrical Load NOC to DEWA Completed 1. Updated Floor Plans 2. Updated Area Statement 3. Exterior Perspective Views (03 Nos Options) Archcorp Architectural Engineering Page 4 of 27 Drawings to be submitted: 1. Architectural Drawings 2. Calculations includingDevelop planning options exploring the maximum potential of site, in line with the agreed project brief. Outline Concept Design isggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh Develop planning options exploring the maximum potential of site, in line with the agreed project brief. Outline Concept Design is completed. 2 Options of Concept Design were presented to client Completed 1. Site Plan 2. Ground Floor Plan Archcorp Architectural Engineering Page 3 of 27 3. Typical Floor Plan 4. Roof Plan 5. Areas Spreadsheet 6. Rendered Views – 2 Unique Options of Elevations (9 Views) A3 Size (Hardcopy) Completed Pdf files Stage 1b Final Concept Design Stage Final Concept Design completed and verbally approved by Client on 09-February-2020 Package and Submit client approved concept for Preliminary Design approval to authorities: 1. Submit client approved Concept design to DM for preliminary approval. 2. Submit Electrical Load NOC&nbsp;</p><p>eted. 2 Options of Concept Design were presented to client Completed 1. Site Plan 2. Ground Floor Plan Archcorp Architectural Engineering Page 3 of 27 3. Typical Floor Plan 4. Roof Plan 5. Areas Spreadsheet 6. Rendered Views – 2 Unique Options of Elevations (9 Views) A3 Size (Hardcopy) Completed Pdf files Stage 1b Final Concept Design Stage Final Concept Design completed and verbally approved by Client on 09-February-2020 Package and Submit client approved concept for Preliminary Design approval to authorities: 1. Submit client approved Concept design to DM for preliminary approval. 2. Submit Electrical Load NOC to DEWA Completed 1. Updated Floor Plans 2. Updated Area Statement 3. Exterior Perspective Views (03 Nos Options) Archcorp Architectural Engineering Page 4 of 27 Drawings to be submitted: 1. Architectural Drawings 2. Calculations includingDevelop planning options exploring the maximum potential of site, in line with the agreed project brief. Outline Concept Design isggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh Develop planning options exploring the maximum potential of site, in line with the agreed project brief. Outline Concept Design is completed. 2 Options of Concept Design were presented to client Completed 1. Site Plan 2. Ground Floor Plan Archcorp Architectural Engineering Page 3 of 27 3. Typical Floor Plan 4. Roof Plan 5. Areas Spreadsheet 6. Rendered Views – 2 Unique Options of Elevations (9 Views) A3 Size (Hardcopy) Completed Pdf files Stage 1b Final Concept Design Stage Final Concept Design completed and verbally approved by Client on 09-February-2020 Package and Submit client approved concept for Preliminary Design approval to authorities: 1. Submit client approved Concept design to DM for preliminary approval. 2. Submit Electrical Load NOC to DEWA Completed 1. Updated Floor Plans 2. Updated Area Statement 3. Exterior Perspective Views (03 Nos Options) Archcorp Architectural Engineering Page 4 of 27 Drawings to be submitted: 1. Architectural Drawings 2. Calculations includingDevelop planning options exploring the maximum potential of site, in line with the agreed project brief. Outline Concept Design isggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh&nbsp;</p></td><td>Timeline</td></tr></tbody></table></figure></div>
+                </div>
+            <div class="page-break"></div>
+                <div class="section pdf-section">
+                    <div class="section-title">Man Month Rates and Proposed Deployment</div>
+                    <hr class="hr" />
+                    <div class="section-content">
                 <table class="preview-table">
                     <thead>
                         <tr>
@@ -189,43 +163,53 @@
                     </thead>
                     <tbody>
                         <tr>
-                                <td class="preserve-whitespace">Position</td>
-                                <td class="preserve-whitespace">Role description</td>
-                                <td class="preserve-whitespace">65456</td>
-                                <td class="preserve-whitespace">67%</td>
+                                <td class="preserve-whitespace">—</td>
+                                <td class="preserve-whitespace">—</td>
+                                <td class="preserve-whitespace">—</td>
+                                <td class="preserve-whitespace">—</td>
                                 <td class="preserve-whitespace">—</td>
                                 <td class="preserve-whitespace">—</td>
                             </tr><tr>
-                                <td class="preserve-whitespace">Position</td>
-                                <td class="preserve-whitespace">Role description</td>
-                                <td class="preserve-whitespace">—</td>
-                                <td class="preserve-whitespace">67%</td>
                                 <td class="preserve-whitespace">—</td>
                                 <td class="preserve-whitespace">—</td>
-                            </tr><tr>
-                                <td class="preserve-whitespace">Position</td>
-                                <td class="preserve-whitespace">Role description</td>
                                 <td class="preserve-whitespace">—</td>
-                                <td class="preserve-whitespace">67%</td>
+                                <td class="preserve-whitespace"> Areas Spreadsheet 6. Rendered Views – 2 Unique Options of Elevations (9 Views) A3 Size (Hardcopy) Completed Pdf files Stage 1b Final Concept Design Stage Final Concept Design completed and verbally approved by Client on 09-February-2020 Package and Submit client approved concept for Preliminary Design approval to authorities: 1. Submit client approved Concept design to DM for preliminary approval. 2. Submit Electrical Load NOC to DEWA Completed 1. Updated Floor Plans 2. Updated Area Statement 3. Exterior Perspective Views (03 Nos Options) Archcorp Architectural Engineering Page 4 of 27 Drawings to be submitted: 1. Architectural Drawings 2. Calculations includingDevelop planning options exploring the maximum potential of site, in line with the agreed project brief. Outline Concept Design isggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh Develop planning options exploring the maximum potential of site, in line with the agreed project brief. Outline Concept Design is completed. 2 Options of Concept Design were presented to client Completed 1. Site Plan 2. Ground Floor Plan Archcorp Architectural Engineering Page 3 of 27 3. Typical Floor Plan 4. Roof Plan 5. Areas Spreadsheet 6. Rendered Views – 2 Unique Options of Elevations (9 Views) A3 Size (Hardcopy) Completed Pdf files Stage 1b Final Concept Design Stage Final Concept Design completed and verbally approved by Client on 09-February-2020 Package and Submit client approved concept for Preliminary Design approval to authorities: 1. Submit client approved Concept design to DM for preliminary approval. 2. Submit Electrical Load NOC 
+
+eted. 2 Options of Concept Design were presented to client Completed 1. Site Plan 2. Ground Floor Plan Archcorp Architectural Engineering Page 3 of 27 3. Typical Floor Plan 4. Roof Plan 5. Areas Spreadsheet 6. Rendered Views – 2 Unique Options of Elevations (9 Views) A3 Size (Hardcopy) Completed Pdf files Stage 1b Final Concept Design Stage Final Concept Design completed and verbally approved by Client on 09-February-2020 Package and Submit client approved concept for Preliminary Design approval to authorities: 1. Submit client approved Concept design to DM for preliminary approval. 2. Submit Electrical Load NOC to DEWA Completed 1. Updated Floor Plans 2. Updated Area Statement 3. Exterior Perspective Views (03 Nos Options) Archcorp Architectural Engineering Page 4 of 27 Drawings to be submitted: 1. Architectural Drawings 2. Calculations includingDevelop planning options exploring the maximum potential of site, in line with the agreed project brief. Outline Concept Design isggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh Develop planning options exploring the maximum potential of site, in line with the agreed project brief. Outline Concept Design is completed. 2 Options of Concept Design were presented to client Completed 1. Site Plan 2. Ground Floor Plan Archcorp Architectural Engineering Page 3 of 27 3. Typical Floor Plan 4. Roof Plan 5. Areas Spreadsheet 6. Rendered Views – 2 Unique Options of Elevations (9 Views) A3 Size (Hardcopy) Completed Pdf files Stage 1b Final Concept Design Stage Final Concept Design completed and verbally approved by Client on 09-February-2020 Package and Submit client approved concept for Preliminary Design approval to authorities: 1. Submit client approved Concept design to DM for preliminary approval. 2. Submit Electrical Load NOC to DEWA Completed 1. Updated Floor Plans 2. Updated Area Statement 3. Exterior Perspective Views (03 Nos Options) Archcorp Architectural Engineering Page 4 of 27 Drawings to be submitted: 1. Architectural Drawings 2. Calculations includingDevelop planning options exploring the maximum potential of site, in line with the agreed project brief. Outline Concept Design isggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh </td>
                                 <td class="preserve-whitespace">—</td>
                                 <td class="preserve-whitespace">—</td>
                             </tr><tr>
-                                <td class="preserve-whitespace">Position</td>
-                                <td class="preserve-whitespace">Role description</td>
                                 <td class="preserve-whitespace">—</td>
-                                <td class="preserve-whitespace">67%</td>
+                                <td class="preserve-whitespace"> Areas Spreadsheet 6. Rendered Views – 2 Unique Options of Elevations (9 Views) A3 Size (Hardcopy) Completed Pdf files Stage 1b Final Concept Design Stage Final Concept Design completed and verbally approved by Client on 09-February-2020 Package and Submit client approved concept for Preliminary Design approval to authorities: 1. Submit client approved Concept design to DM for preliminary approval. 2. Submit Electrical Load NOC to DEWA Completed 1. Updated Floor Plans 2. Updated Area Statement 3. Exterior Perspective Views (03 Nos Options) Archcorp Architectural Engineering Page 4 of 27 Drawings to be submitted: 1. Architectural Drawings 2. Calculations includingDevelop planning options exploring the maximum potential of site, in line with the agreed project brief. Outline Concept Design isggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh Develop planning options exploring the maximum potential of site, in line with the agreed project brief. Outline Concept Design is completed. 2 Options of Concept Design were presented to client Completed 1. Site Plan 2. Ground Floor Plan Archcorp Architectural Engineering Page 3 of 27 3. Typical Floor Plan 4. Roof Plan 5. Areas Spreadsheet 6. Rendered Views – 2 Unique Options of Elevations (9 Views) A3 Size (Hardcopy) Completed Pdf files Stage 1b Final Concept Design Stage Final Concept Design completed and verbally approved by Client on 09-February-2020 Package and Submit client approved concept for Preliminary Design approval to authorities: 1. Submit client approved Concept design to DM for preliminary approval. 2. Submit Electrical Load NOC 
+
+eted. 2 Options of Concept Design were presented to client Completed 1. Site Plan 2. Ground Floor Plan Archcorp Architectural Engineering Page 3 of 27 3. Typical Floor Plan 4. Roof Plan 5. Areas Spreadsheet 6. Rendered Views – 2 Unique Options of Elevations (9 Views) A3 Size (Hardcopy) Completed Pdf files Stage 1b Final Concept Design Stage Final Concept Design completed and verbally approved by Client on 09-February-2020 Package and Submit client approved concept for Preliminary Design approval to authorities: 1. Submit client approved Concept design to DM for preliminary approval. 2. Submit Electrical Load NOC to DEWA Completed 1. Updated Floor Plans 2. Updated Area Statement 3. Exterior Perspective Views (03 Nos Options) Archcorp Architectural Engineering Page 4 of 27 Drawings to be submitted: 1. Architectural Drawings 2. Calculations includingDevelop planning options exploring the maximum potential of site, in line with the agreed project brief. Outline Concept Design isggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh Develop planning options exploring the maximum potential of site, in line with the agreed project brief. Outline Concept Design is completed. 2 Options of Concept Design were presented to client Completed 1. Site Plan 2. Ground Floor Plan Archcorp Architectural Engineering Page 3 of 27 3. Typical Floor Plan 4. Roof Plan 5. Areas Spreadsheet 6. Rendered Views – 2 Unique Options of Elevations (9 Views) A3 Size (Hardcopy) Completed Pdf files Stage 1b Final Concept Design Stage Final Concept Design completed and verbally approved by Client on 09-February-2020 Package and Submit client approved concept for Preliminary Design approval to authorities: 1. Submit client approved Concept design to DM for preliminary approval. 2. Submit Electrical Load NOC to DEWA Completed 1. Updated Floor Plans 2. Updated Area Statement 3. Exterior Perspective Views (03 Nos Options) Archcorp Architectural Engineering Page 4 of 27 Drawings to be submitted: 1. Architectural Drawings 2. Calculations includingDevelop planning options exploring the maximum potential of site, in line with the agreed project brief. Outline Concept Design isggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh </td>
+                                <td class="preserve-whitespace">—</td>
+                                <td class="preserve-whitespace">—</td>
+                                <td class="preserve-whitespace">—</td>
+                                <td class="preserve-whitespace">—</td>
+                            </tr><tr>
+                                <td class="preserve-whitespace">—</td>
+                                <td class="preserve-whitespace">—</td>
+                                <td class="preserve-whitespace">—</td>
+                                <td class="preserve-whitespace">—</td>
+                                <td class="preserve-whitespace">—</td>
+                                <td class="preserve-whitespace">—</td>
+                            </tr><tr>
+                                <td class="preserve-whitespace">—</td>
+                                <td class="preserve-whitespace">—</td>
+                                <td class="preserve-whitespace">—</td>
+                                <td class="preserve-whitespace">—</td>
                                 <td class="preserve-whitespace">—</td>
                                 <td class="preserve-whitespace">—</td>
                             </tr>
                     </tbody>
                 </table></div>
-                    </div>
-                    <div class="page-break"></div>
-                
-                    <div class="section pdf-section">
-                        <div class="section-title">Design Payment Stages</div>
-                        <hr class="hr" />
-                        <div class="section-content">
+                </div>
+            <div class="page-break"></div>
+                <div class="section pdf-section">
+                    <div class="section-title">Design Payment Stages</div>
+                    <hr class="hr" />
+                    <div class="section-content">
                 <table class="preview-table">
                     <thead>
                         <tr>
@@ -242,25 +226,44 @@
                                 <td></td>
                                 <td></td>
                             </tr><tr>
-                                <td>fdg</td>
-                                <td>10%</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr><tr>
+                                <td>fd</td>
+                                <td></td>
+                                <td>dfe</td>
+                                <td></td>
+                            </tr><tr>
+                                <td></td>
+                                <td></td>
                                 <td></td>
                                 <td></td>
                             </tr><tr>
                                 <td></td>
-                                <td>20%</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr><tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr><tr>
+                                <td></td>
+                                <td></td>
                                 <td></td>
                                 <td></td>
                             </tr>
                     </tbody>
                 </table></div>
-                    </div>
-                    <div class="page-break"></div>
-                
-                    <div class="section pdf-section">
-                        <div class="section-title">Schedule of Rates for Additional Service</div>
-                        <hr class="hr" />
-                        <div class="section-content">
+                </div>
+            <div class="page-break"></div>
+                <div class="section pdf-section">
+                    <div class="section-title">Schedule of Rates for Additional Service</div>
+                    <hr class="hr" />
+                    <div class="section-content">
                 <h4>Design Stage</h4>
                 <table class="preview-table">
                     <thead>
@@ -271,14 +274,23 @@
                     </thead>
                     <tbody>
                         <tr>
-                                <td>qwe</td>
-                                <td>34</td>
+                                <td></td>
+                                <td></td>
                             </tr><tr>
-                                <td>qwe</td>
-                                <td>234</td>
+                                <td></td>
+                                <td></td>
                             </tr><tr>
-                                <td>qwe</td>
-                                <td>243</td>
+                                <td></td>
+                                <td></td>
+                            </tr><tr>
+                                <td></td>
+                                <td></td>
+                            </tr><tr>
+                                <td></td>
+                                <td></td>
+                            </tr><tr>
+                                <td></td>
+                                <td></td>
                             </tr>
                     </tbody>
                 </table>
@@ -292,30 +304,34 @@
                     </thead>
                     <tbody>
                         <tr>
-                                <td>weqwe</td>
-                                <td>34</td>
+                                <td></td>
+                                <td></td>
                             </tr><tr>
-                                <td>qwe</td>
-                                <td>234</td>
+                                <td></td>
+                                <td></td>
                             </tr><tr>
-                                <td>qwe</td>
-                                <td>234</td>
+                                <td></td>
+                                <td></td>
+                            </tr><tr>
+                                <td></td>
+                                <td></td>
+                            </tr><tr>
+                                <td></td>
+                                <td></td>
                             </tr>
                     </tbody>
                 </table></div>
-                    </div>
-                    <div class="page-break"></div>
-                
-                    <div class="section pdf-section">
-                        <div class="section-title">Terms & Conditions</div>
-                        <hr class="hr" />
-                        <div class="section-content">
+                </div>
+            <div class="page-break"></div>
+                <div class="section pdf-section">
+                    <div class="section-title">Terms & Conditions</div>
+                    <hr class="hr" />
+                    <div class="section-content">
                 <div class="terms-content">
-                    
+                    <p>&nbsp;Areas Spreadsheet 6. Rendered Views – 2 Unique Options of Elevations (9 Views) A3 Size (Hardcopy) Completed Pdf files Stage 1b Final Concept Design Stage Final Concept Design completed and verbally approved by Client on 09-February-2020 Package and Submit client approved concept for Preliminary Design approval to authorities: 1. Submit client approved Concept design to DM for preliminary approval. 2. Submit Electrical Load NOC to DEWA Completed 1. Updated Floor Plans 2. Updated Area Statement 3. Exterior Perspective Views (03 Nos Options) Archcorp Architectural Engineering Page 4 of 27 Drawings to be submitted: 1. Architectural Drawings 2. Calculations includingDevelop planning options exploring the maximum potential of site, in line with the agreed project brief. Outline Concept Design isggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh Develop planning options exploring the maximum potential of site, in line with the agreed project brief. Outline Concept Design is completed. 2 Options of Concept Design were presented to client Completed 1. Site Plan 2. Ground Floor Plan Archcorp Architectural Engineering Page 3 of 27 3. Typical Floor Plan 4. Roof Plan 5. Areas Spreadsheet 6. Rendered Views – 2 Unique Options of Elevations (9 Views) A3 Size (Hardcopy) Completed Pdf files Stage 1b Final Concept Design Stage Final Concept Design completed and verbally approved by Client on 09-February-2020 Package and Submit client approved concept for Preliminary Design approval to authorities: 1. Submit client approved Concept design to DM for preliminary approval. 2. Submit Electrical Load NOC&nbsp;</p><p>eted. 2 Options of Concept Design were presented to client Completed 1. Site Plan 2. Ground Floor Plan Archcorp Architectural Engineering Page 3 of 27 3. Typical Floor Plan 4. Roof Plan 5. Areas Spreadsheet 6. Rendered Views – 2 Unique Options of Elevations (9 Views) A3 Size (Hardcopy) Completed Pdf files Stage 1b Final Concept Design Stage Final Concept Design completed and verbally approved by Client on 09-February-2020 Package and Submit client approved concept for Preliminary Design approval to authorities: 1. Submit client approved Concept design to DM for preliminary approval. 2. Submit Electrical Load NOC to DEWA Completed 1. Updated Floor Plans 2. Updated Area Statement 3. Exterior Perspective Views (03 Nos Options) Archcorp Architectural Engineering Page 4 of 27 Drawings to be submitted: 1. Architectural Drawings 2. Calculations includingDevelop planning options exploring the maximum potential of site, in line with the agreed project brief. Outline Concept Design isggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh Develop planning options exploring the maximum potential of site, in line with the agreed project brief. Outline Concept Design is completed. 2 Options of Concept Design were presented to client Completed 1. Site Plan 2. Ground Floor Plan Archcorp Architectural Engineering Page 3 of 27 3. Typical Floor Plan 4. Roof Plan 5. Areas Spreadsheet 6. Rendered Views – 2 Unique Options of Elevations (9 Views) A3 Size (Hardcopy) Completed Pdf files Stage 1b Final Concept Design Stage Final Concept Design completed and verbally approved by Client on 09-February-2020 Package and Submit client approved concept for Preliminary Design approval to authorities: 1. Submit client approved Concept design to DM for preliminary approval. 2. Submit Electrical Load NOC to DEWA Completed 1. Updated Floor Plans 2. Updated Area Statement 3. Exterior Perspective Views (03 Nos Options) Archcorp Architectural Engineering Page 4 of 27 Drawings to be submitted: 1. Architectural Drawings 2. Calculations includingDevelop planning options exploring the maximum potential of site, in line with the agreed project brief. Outline Concept Design isggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh ggg fghh&nbsp;</p>
                 </div></div>
-                    </div>
-                    <div class="page-break"></div>
-                
+                </div>
+            
         </body>
         </html>
-    
+        

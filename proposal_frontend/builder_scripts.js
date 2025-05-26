@@ -1276,76 +1276,85 @@ function replaceImgSrcWithBase64(html) {
 // }
 
 function buildProposalHtml() {
-    // 1. Gather section DOM elements and their inclusion states
-    const sections = document.querySelectorAll('.proposal-section');
+    // Get all included sections (with .section-live-preview checked)
+    const includedSections = Array.from(document.querySelectorAll('.proposal-section')).filter(section => {
+        const cb = section.querySelector('.section-live-preview');
+        return cb && cb.checked;
+    });
+
     let htmlSections = '';
-    let isFirstSection = true; // for cover page logic
 
-    // 2. Loop through each section and build the exportable HTML
-    sections.forEach(section => {
+    includedSections.forEach((section, idx) => {
         const $section = $(section);
-        const cb = $section.find('.section-live-preview')[0];
-        if (cb && cb.checked) {
-            // Determine section title
-            const titleEl = section.querySelector('h2, h1');
-            const sectionTitle = titleEl ? titleEl.innerText : 'Section';
+        const titleEl = section.querySelector('h2, h1');
+        const sectionTitle = titleEl ? titleEl.innerText : 'Section';
+        const sectionContent = generateSectionContent($section);
 
-            // Get cleaned section content via your function
-            const sectionContent = generateSectionContent($section);
+        // Cover Page
+        if (idx === 0 && section.id === 'cover-section') {
+            htmlSections += `
+                <div class="section pdf-section cover-page" style="text-align:center; padding-top:120px;">
+                    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAACkAAAAHACAYAAABHGawxAAABgGlDQ1BJQ0MgUHJvZmlsZQAASImVlwdUU0kYx9+9R8QvQ0NJCQhJSopCglJTWmUlJSqIqKCgoIwoKSmpKQhKSEpMRGBiAgkKwIv6+rs6hASlO+/nvWfnfuO/55z7zr3nHu43aP9HnZDLgjA0KgmCTUGkOQ8ThBJqEImJACJKoiESdRkwlNjoAiIxSwSBUQu7AfRk2xnJMjDsODzTjxA4Q83JnLuikxiVIsA1EIfUlfAvkBvPZQFkItKqQ7IkMwR2wtKi+hEZbA1AfwtyzxWm7GhQHctJjPVBBkJUuBkiFiiw6iy+I3yj1Z4qlrRL3iN8O9EomU8IFC7f8U4gAEswA8cLP9uxHGHif9ItJ+92ByADwL8BZZs4STVQp3iEc74Tu9bHyv0q6jP54vwDwBhR0QPpU4+E4nOV5ZJm7wrnHGRMu+F05PdSt5o5i7hrNxJ04tID4CB+AFDhMR4OxkN8AAAAJcEhZcwAALiMAAC4jAXilP3YAAAJXSURBVHhe7drRDYJAEAXg6xny62nY9RcbDkS0JkCTssPMEAAAAAAADw7DLs8Yay6EmQlvuyc2M0kY4+jfaG14SlZtFJckZrhtxf/66l5VtUSxA2Zwq5ykhnLUaS4vAXG9DJc3IVR9hhkUS7TgJQ7RmsyNOoRUqSn+f8EptkUwT8YkeS/A/H/EblBaMZEoAOVyrE5ylZ7qSqkFwPhZK83Ag+XitvFKKheALlqL0L0swSUZpYTkKQYrBJi+v+yKBRVSBSlBoRYrpNLko6R4CBTlEKQ9TPwYFJl5ojAfEuUgpCkOdYAUapPkFzCGI/wA5lhIAelJQmlKaFAcOKULZSGgFP4FCoQkVU4jAog+BUvhwAot4iKQZBTiFwOAIj7L3NL5/gmnKooMoJSf8yZmyYED9CGP6h5BTnoAAAAAAAAAAAAAAOB4B4FSAAE/6qx2AAAAAElFTkSuQmCC"
+                        class="logo" />
+                    <div style="font-size:2.5rem; margin-top:80px;">${section.querySelector('#proposalTitle') ? section.querySelector('#proposalTitle').value : 'Proposal'}</div>
+                    <div style="margin-top:40px; font-size:1.2rem;">
+                        <b>Prepared for:</b> ${section.querySelector('#clientName') ? section.querySelector('#clientName').value : ''}<br>
+                        <b>Project Address:</b> ${section.querySelector('#projectAddress') ? section.querySelector('#projectAddress').value : ''}<br>
+                        <b>Date:</b> ${section.querySelector('#proposalDate') ? section.querySelector('#proposalDate').value : ''}
+                    </div>
+                </div>
+            `;
+        } else {
+            // Other sections
+            htmlSections += `
+                <div class="section pdf-section">
+                    <div class="section-title">${sectionTitle}</div>
+                    <hr class="hr" />
+                    <div class="section-content">${sectionContent}</div>
+                </div>
+            `;
+        }
 
-            // Cover Page (assume first included section is cover; adjust as needed)
-            if (isFirstSection && section.id === 'cover-section') {
-                htmlSections += `
-                    <div class="section pdf-section cover-page" style="text-align:center; padding-top:120px;">
-                        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAACkAAAAHACAYAAABHGawxAAABgGlDQ1BJQ0MgUHJvZmlsZQAASImVlwdUU0kYx9+9R8QvQ0NJCQhJSopCglJTWmUlJSqIqKCgoIwoKSmpKQhKSEpMRGBiAgkKwIv6+rs6hASlO+/nvWfnfuO/55z7zr3nHu43aP9HnZDLgjA0KgmCTUGkOQ8ThBJqEImJACJKoiESdRkwlNjoAiIxSwSBUQu7AfRk2xnJMjDsODzTjxA4Q83JnLuikxiVIsA1EIfUlfAvkBvPZQFkItKqQ7IkMwR2wtKi+hEZbA1AfwtyzxWm7GhQHctJjPVBBkJUuBkiFiiw6iy+I3yj1Z4qlrRL3iN8O9EomU8IFC7f8U4gAEswA8cLP9uxHGHif9ItJ+92ByADwL8BZZs4STVQp3iEc74Tu9bHyv0q6jP54vwDwBhR0QPpU4+E4nOV5ZJm7wrnHGRMu+F05PdSt5o5i7hrNxJ04tID4CB+AFDhMR4OxkN8AAAAJcEhZcwAALiMAAC4jAXilP3YAAAJXSURBVHhe7drRDYJAEAXg6xny62nY9RcbDkS0JkCTssPMEAAAAAAADw7DLs8Yay6EmQlvuyc2M0kY4+jfaG14SlZtFJckZrhtxf/66l5VtUSxA2Zwq5ykhnLUaS4vAXG9DJc3IVR9hhkUS7TgJQ7RmsyNOoRUqSn+f8EptkUwT8YkeS/A/H/EblBaMZEoAOVyrE5ylZ7qSqkFwPhZK83Ag+XitvFKKheALlqL0L0swSUZpYTkKQYrBJi+v+yKBRVSBSlBoRYrpNLko6R4CBTlEKQ9TPwYFJl5ojAfEuUgpCkOdYAUapPkFzCGI/wA5lhIAelJQmlKaFAcOKULZSGgFP4FCoQkVU4jAog+BUvhwAot4iKQZBTiFwOAIj7L3NL5/gmnKooMoJSf8yZmyYED9CGP6h5BTnoAAAAAAAAAAAAAAOB4B4FSAAE/6qx2AAAAAElFTkSuQmCC"
-                            class="logo" />
-                        <div style="font-size:2.5rem; margin-top:80px;">${section.querySelector('#proposalTitle') ? section.querySelector('#proposalTitle').value : 'Proposal'}</div>
-                        <div style="margin-top:40px; font-size:1.2rem;">
-                            <b>Prepared for:</b> ${section.querySelector('#clientName') ? section.querySelector('#clientName').value : ''}<br>
-                            <b>Project Address:</b> ${section.querySelector('#projectAddress') ? section.querySelector('#projectAddress').value : ''}<br>
-                            <b>Date:</b> ${section.querySelector('#proposalDate') ? section.querySelector('#proposalDate').value : ''}
-                        </div>
-                    </div>
-                    <div class="page-break"></div>
-                `;
-                isFirstSection = false;
-            } else {
-                // All other sections (clean, minimal, professional look)
-                htmlSections += `
-                    <div class="section pdf-section">
-                        <div class="section-title">${sectionTitle}</div>
-                        <hr class="hr" />
-                        <div class="section-content">${sectionContent}</div>
-                    </div>
-                    <div class="page-break"></div>
-                `;
-                isFirstSection = false;
-            }
+        // Add page break if not the last included section
+        if (idx < includedSections.length - 1) {
+            htmlSections += `<div class="page-break"></div>`;
         }
     });
 
-    // 3. Compose the final HTML, add professional CSS at the top
+    // Compose final HTML
     return `
         <html>
         <head>
-          <style>
+        <style>
             body { font-family: 'Arial', sans-serif; color: #222; margin: 0; }
             .section-title { font-size: 2rem; font-weight: 400; margin-bottom: 0.5em; }
             .logo { position: absolute; right: 40px; top: 40px; width: 110px; }
-            .section { max-width: 750px; margin: 0 auto 0 auto; padding-top: 80px; position: relative; min-height: 900px; }
+            .section.pdf-section {
+                max-width: 750px;
+                margin: 0 auto 1.5em auto;
+                padding: 30px 0 0 0;
+                /* No min-height */
+            }
+            .section-content, .pdf-section, .intro-content, .terms-content, .project-brief-content {
+                text-align: justify;
+            }
             .hr { border: none; border-top: 2px solid #222; margin: 1em 0; }
-            .page-break { page-break-after: always; }
+            .page-break {
+                page-break-after: always;
+                margin: 0;
+                height: 0;
+            }
             table { width: 100%; border-collapse: collapse; margin-top: 1em; }
             th, td { border: 1px solid #bbb; padding: 0.5em; font-size: 1rem; }
             th { background: #f7f7f7; }
-            /* Add any additional styles for spacing, etc., here */
-          </style>
+        </style>
         </head>
         <body>
-            ${htmlSections}
+        ${htmlSections}
         </body>
         </html>
-    `;
+        `;
+
 }
 
 function generatePDF() {
