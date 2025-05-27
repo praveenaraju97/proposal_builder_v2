@@ -3,12 +3,14 @@ const cors = require('cors');
 const fs = require('fs');
 const puppeteer = require('puppeteer');
 const bodyParser = require('body-parser');
+const { PDFDocument } = require('pdf-lib');
+
 
 const app = express();
 app.use(cors({
     origin: ['http://127.0.0.1:5001', 'http://localhost:5001','null']
 }));
-app.use(bodyParser.text({ limit: '10mb', type: 'text/html' }));
+app.use(bodyParser.json({ limit: '20mb' }));
 
 
 // const BASE64_LOGO = fs.readFileSync('./archcorp logo.png', { encoding: 'base64' }); // or paste base64 string
@@ -68,6 +70,178 @@ app.post('/api/generate-pdf', async (req, res) => {
         res.status(500).send('PDF generation failed: ' + error);
     }
 });
+
+app.post('/api/generate-mixed-pdf', async (req, res) => {
+    let browser;
+    try {
+        const sections = req.body; // [{html, orientation}]
+        browser = await puppeteer.launch({ args: ['--no-sandbox', '--disable-setuid-sandbox'] });
+
+        const pdfBuffers = [];
+        for (const section of sections) {
+            const page = await browser.newPage();
+            // Wrap HTML in a full doc if needed
+            let htmlContent = section.html;
+            if (!htmlContent.match(/<html/i)) {
+                htmlContent = `
+                  <!DOCTYPE html>
+                  <html>
+                  <head>
+                    <meta charset="utf-8">
+                    <title>Section</title>
+                    <style>
+                        body { font-family: Arial, sans-serif; margin: 0; padding: 40px; }
+                        table.preview-table { width: 100%; border-collapse: collapse; }
+                        table.preview-table th, table.preview-table td { border: 1px solid #888; padding: 8px; }
+                        /* Compact table inside landscape */                      
+                            .pdf-page.landscape .preview-table {
+                            width: 100% !important;
+                            table-layout: auto !important;
+                            font-size: 10pt !important;
+                            border-collapse: collapse;
+                            }
+
+                            .pdf-page.landscape .preview-table th,
+                            .pdf-page.landscape .preview-table td {
+                            padding: 4px 6px !important;
+                            word-break: break-word;
+                            white-space: normal;
+                            }
+                        /* Add any more needed CSS here */
+
+
+                        .cover-content {
+                            min-height: 50vh;
+                            display: flex;
+                            flex-direction: column;
+                            align-items: center;
+                            justify-content: center;
+                            text-align: center;
+                            padding: 20px;
+                            max-width: 800px;
+                            width: 100%;
+                            page-break-after: always;
+                        }
+
+                        .section-title {
+                            font-size: 1.8rem;
+                            font-weight: 600;
+                            color: #2c3e50;
+                            margin-bottom: 1.2rem;
+                            padding-bottom: 0.4rem;
+                            border-bottom: 2px solid #3498db;
+                            text-transform: uppercase;
+                            letter-spacing: 1px;
+                        }
+                        .logo { 
+                            margin-bottom: 40px;
+                            width: 150px;
+                            opacity: 0.9;
+                        }
+                        .section.pdf-section {
+                            max-width: 680px;
+                            margin: 0 auto;
+                            padding: 40px 0;
+                            page-break-after: always;
+                        }
+                        .section-content {
+                            font-size: 1rem;
+                            text-align: justify;               
+                        }                
+                        .hr {
+                            border: none;
+                            border-top: 1px solid #ddd;
+                            margin: 2rem 0;
+                        }
+                        
+                        table {
+                            width: 100%;
+                            border-collapse: collapse;
+                            margin: 1.5rem 0;
+                            box-shadow: 0 1px 3px rgba(0,0,0,0.1);              
+                        }
+                        th {
+                            background-color: #2c3e50;
+                            color: white;
+                            padding: 0.8rem;
+                            text-align: left;
+                            font-weight: 600;
+                        }
+                        td {
+                            padding: 0.8rem;
+                            border-bottom: 1px solid #ecf0f1;
+                            vertical-align: top;
+                        }
+                        tr:nth-child(even) {
+                            background-color: #f8f9fa;
+                        }
+                        .cover-title {
+                            font-size: 2.8rem;
+                            color: #2c3e50;
+                            margin-bottom: 1.5rem;
+                            text-align: center;
+                            line-height: 1.2;
+                            font-weight: 300;
+                        }
+                        .cover-title {
+                            font-size: 2.5rem;
+                            font-weight: 600;
+                            color: #2c3e50;
+                            margin-bottom: 40px;
+                        }
+
+                        .client-info {
+                            font-size: 1.2rem;
+                            line-height: 1.8;
+                        }
+                        .project-details {
+                            margin-top: 4rem;
+                            font-size: 1.05rem;
+                        }
+                        
+
+
+
+
+                    </style>
+                  </head>
+                  <body>${section.html}</body>
+                  </html>
+                `;
+            }
+            await page.setContent(htmlContent, { waitUntil: 'networkidle0' });
+            const buffer = await page.pdf({
+                format: 'A4',
+                landscape: section.orientation === 'landscape',
+                printBackground: true,
+                margin: { top: '30px', bottom: '30px', left: '30px', right: '30px' },
+                displayHeaderFooter: false
+            });
+            pdfBuffers.push(buffer);
+            await page.close();
+        }
+        await browser.close();
+
+        // Merge PDFs using pdf-lib
+        const mergedPdf = await PDFDocument.create();
+        for (const buf of pdfBuffers) {
+            const tempPdf = await PDFDocument.load(buf);
+            const pages = await mergedPdf.copyPages(tempPdf, tempPdf.getPageIndices());
+            pages.forEach((page) => mergedPdf.addPage(page));
+        }
+        const finalPdf = await mergedPdf.save();
+
+        res.setHeader('Content-Type', 'application/pdf');
+        res.setHeader('Content-Disposition', 'attachment; filename="proposal.pdf"');
+        res.send(Buffer.from(finalPdf));
+    } catch (err) {
+        if (browser) await browser.close();
+        console.error('PDF generation error:', err);
+        res.status(500).send('PDF generation error: ' + err.message);
+    }
+});
+
+
 
 app.listen(5000, () => {
     console.log('PDF server running on port 5000');

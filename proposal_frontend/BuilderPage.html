@@ -89,14 +89,14 @@
 
             <!-- Main Content Area -->
             <div class="col-md-9 main-content">
-                <div class="toolbar">
+                <!-- <div class="toolbar">
                     <button class="btn btn-sm btn-outline-secondary" id="addImageBtn">
                         <i class="fas fa-image"></i> Add Image
                     </button>
                     <button class="btn btn-sm btn-outline-secondary" id="addTableBtn">
                         <i class="fas fa-table"></i> Add Table
                     </button>
-                </div>
+                </div> -->
 
                 <div class="proposal-container" >
                     <!-- Original Sections -->
@@ -423,40 +423,40 @@
 
                     <!-- Stages and Deliverables Section -->
                         <div id="stages-deliverables-section" class="proposal-section">
-                        <h2>Stages and Deliverables</h2>
-                        <div class="form-check form-switch mt-2">
-                            <input class="form-check-input section-live-preview" type="checkbox" id="livePreview-deliverables">
-                            <label class="form-check-label" for="livePreview-deliverables">Include in Proposal</label>
-                        </div>
+                            <h2>Stages and Deliverables</h2>
+                            <div class="form-check form-switch mt-2">
+                                <input class="form-check-input section-live-preview" type="checkbox" id="livePreview-deliverables">
+                                <label class="form-check-label" for="livePreview-deliverables">Include in Proposal</label>
+                            </div>
 
-                        <!-- CKEditor editing host -->
-                        <div id="deliverables-editor">
-                            <table class="table table-bordered stages-deliverables-table">
-                            <!-- HEADER stays static -->
-                            <thead contenteditable="false">
-                                <tr>
-                                <th>Stage</th>
-                                <th>Tasks & Activities</th>
-                                <th>Deliverables</th>
-                                <th>Format</th>
-                                <th>Timelines</th>
-                                </tr>
-                            </thead>
-                            <!-- BODY is editable -->
-                            <tbody class="stages-deliverables-entries">
-                                <tr class="stage-deliverable-entry">
-                                <td class="editable-cell">Stage name</td>
-                                <td class="editable-cell">Tasks & activities</td>
-                                <td class="editable-cell">Deliverables</td>
-                                <td class="editable-cell">Format</td>
-                                <td class="editable-cell">Timeline</td>
-                                </tr>
-                                <!-- …more rows… -->
-                            </tbody>
-                            </table>
-                        </div>
+                            <!-- CKEditor editing host -->
+                            <div id="deliverables-editor">
+                                <table class="table table-bordered stages-deliverables-table">
+                                <!-- HEADER stays static -->
+                                <thead contenteditable="false">
+                                    <tr>
+                                    <th>Stage</th>
+                                    <th>Tasks & Activities</th>
+                                    <th>Deliverables</th>
+                                    <th>Format</th>
+                                    <th>Timelines</th>
+                                    </tr>
+                                </thead>
+                                <!-- BODY is editable -->
+                                <tbody class="stages-deliverables-entries">
+                                    <tr class="stage-deliverable-entry">
+                                    <td class="editable-cell">Stage name</td>
+                                    <td class="editable-cell">Tasks & activities</td>
+                                    <td class="editable-cell">Deliverables</td>
+                                    <td class="editable-cell">Format</td>
+                                    <td class="editable-cell">Timeline</td>
+                                    </tr>
+                                    <!-- …more rows… -->
+                                </tbody>
+                                </table>
+                            </div>
 
-                        <button class="btn btn-primary add-stage-deliverable mt-3">Add Stage</button>
+                            <!-- <button class="btn btn-primary add-stage-deliverable mt-3">Add Stage</button> -->
                         </div>
 
 
@@ -909,27 +909,27 @@
     // 1️⃣ Declare a global for later
     window.deliverablesEditor = null;
     ClassicEditor
-         .create( document.querySelector('#deliverables-editor'), {
-           toolbar: [
-             'insertTable','tableColumn','tableRow','mergeTableCells',
-             '|','bold','italic','undo','redo'
-           ],
-           table: {
-             contentToolbar: [ 'tableColumn','tableRow','mergeTableCells' ]
-           }
-         })
-         .then( editor => {
+        .create(document.querySelector('#deliverables-editor'), {
+            toolbar: [
+                'insertTable', 'tableColumn', 'tableRow', 'mergeTableCells',
+                '|', 'bold', 'italic', 'undo', 'redo'
+            ],
+            table: {
+                contentToolbar: ['tableColumn', 'tableRow', 'mergeTableCells']
+            }
+        })
+        .then(editor => {
+            window.deliverablesEditor = editor;
 
-        window.deliverablesEditor = editor;
-         // 🛠 Inject the preview-table class into CKEditor tables on‐the‐fly
-         editor.model.document.on('change:data', () => {
-           // (we don’t need to write back to the DOM here;
-           // generateSectionContent will handle it)
-         });
-         })
-         .catch( error => {
-           console.error('Error initializing deliverables editor:', error);
-         });
+            // 🛠 Inject the preview-table class into CKEditor tables on‐the‐fly
+            editor.model.document.on('change:data', () => {
+            // (we don’t need to write back to the DOM here;
+            // generateSectionContent will handle it)
+            });
+        })
+        .catch(error => {
+            console.error('Error initializing deliverables editor:', error);
+        });
  });
  </script>
  <script>
@@ -943,6 +943,7 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log('Generating PDF from preview...');
         generatePDF()
         // Call your actual generatePDF function here.
+        
     });
 });
 </script>
