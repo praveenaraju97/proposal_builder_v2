@@ -688,14 +688,16 @@ function getSectionHtmlAndOrientation($sec) {
 
         const html = `
             <div class="pdf-page cover-page" data-sec="cover-section">
-                <div class="section-content text-center">
-                    <h1 class="mb-4">${title}</h1>
-                    <p class="mb-3">Prepared for: ${client}</p>
-                    <p class="mb-3">Project Address: ${address}</p>
-                    <p>Date: ${date}</p>
+                <div class="cover-content">
+                    <h1 class="cover-title mb-4">${title}</h1>
+                    <div class="client-info mb-3">Prepared for: ${client}</div><br>
+                    <div class="project-info mb-3">Project Address: ${address}</div><br>
+                    <div class="date-info">Date: ${date}</div>
                 </div>
             </div>
+
         `;
+        
         return { html, orientation };
     }
 
