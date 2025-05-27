@@ -1,5 +1,5 @@
 
-const API_BASE_URL = 'http://localhost:5000/api';
+const API_BASE_URL = 'http://localhost:5001/api';
 // Function to collect PDFs to merge
 
 
@@ -1294,14 +1294,14 @@ function buildProposalHtml() {
         // Cover Page
         if (idx === 0 && section.id === 'cover-section') {
             htmlSections += `
-                <div class="section pdf-section cover-page" style="text-align:center; padding-top:120px;">
-                    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAACkAAAAHACAYAAABHGawxAAABgGlDQ1BJQ0MgUHJvZmlsZQAASImVlwdUU0kYx9+9R8QvQ0NJCQhJSopCglJTWmUlJSqIqKCgoIwoKSmpKQhKSEpMRGBiAgkKwIv6+rs6hASlO+/nvWfnfuO/55z7zr3nHu43aP9HnZDLgjA0KgmCTUGkOQ8ThBJqEImJACJKoiESdRkwlNjoAiIxSwSBUQu7AfRk2xnJMjDsODzTjxA4Q83JnLuikxiVIsA1EIfUlfAvkBvPZQFkItKqQ7IkMwR2wtKi+hEZbA1AfwtyzxWm7GhQHctJjPVBBkJUuBkiFiiw6iy+I3yj1Z4qlrRL3iN8O9EomU8IFC7f8U4gAEswA8cLP9uxHGHif9ItJ+92ByADwL8BZZs4STVQp3iEc74Tu9bHyv0q6jP54vwDwBhR0QPpU4+E4nOV5ZJm7wrnHGRMu+F05PdSt5o5i7hrNxJ04tID4CB+AFDhMR4OxkN8AAAAJcEhZcwAALiMAAC4jAXilP3YAAAJXSURBVHhe7drRDYJAEAXg6xny62nY9RcbDkS0JkCTssPMEAAAAAAADw7DLs8Yay6EmQlvuyc2M0kY4+jfaG14SlZtFJckZrhtxf/66l5VtUSxA2Zwq5ykhnLUaS4vAXG9DJc3IVR9hhkUS7TgJQ7RmsyNOoRUqSn+f8EptkUwT8YkeS/A/H/EblBaMZEoAOVyrE5ylZ7qSqkFwPhZK83Ag+XitvFKKheALlqL0L0swSUZpYTkKQYrBJi+v+yKBRVSBSlBoRYrpNLko6R4CBTlEKQ9TPwYFJl5ojAfEuUgpCkOdYAUapPkFzCGI/wA5lhIAelJQmlKaFAcOKULZSGgFP4FCoQkVU4jAog+BUvhwAot4iKQZBTiFwOAIj7L3NL5/gmnKooMoJSf8yZmyYED9CGP6h5BTnoAAAAAAAAAAAAAAOB4B4FSAAE/6qx2AAAAAElFTkSuQmCC"
-                        class="logo" />
-                    <div style="font-size:2.5rem; margin-top:80px;">${section.querySelector('#proposalTitle') ? section.querySelector('#proposalTitle').value : 'Proposal'}</div>
-                    <div style="margin-top:40px; font-size:1.2rem;">
-                        <b>Prepared for:</b> ${section.querySelector('#clientName') ? section.querySelector('#clientName').value : ''}<br>
-                        <b>Project Address:</b> ${section.querySelector('#projectAddress') ? section.querySelector('#projectAddress').value : ''}<br>
-                        <b>Date:</b> ${section.querySelector('#proposalDate') ? section.querySelector('#proposalDate').value : ''}
+                <div class="section pdf-section cover-page">
+                    <div class="cover-content">
+                        <div style="font-size:2.5rem;">${section.querySelector('#proposalTitle') ? section.querySelector('#proposalTitle').value : 'Consultancy Services Proposal'}</div>
+                        <div style="margin-top:40px; font-size:1.2rem;">
+                            <b>Prepared for:</b> ${section.querySelector('#clientName') ? section.querySelector('#clientName').value : ''}<br>
+                            <b>Project Address:</b> ${section.querySelector('#projectAddress') ? section.querySelector('#projectAddress').value : ''}<br>
+                            <b>Date:</b> ${section.querySelector('#proposalDate') ? section.querySelector('#proposalDate').value : ''}
+                        </div>
                     </div>
                 </div>
             `;
@@ -1328,21 +1328,25 @@ function buildProposalHtml() {
         <head>
         <style>
             body { 
-                font-family: 'Georgia', serif; 
+                font-family: 'Arial','Georgia', serif; 
                 color: #333;
                 line-height: 1.6;
                 margin: 0;
                 padding: 40px 0;
             }
-            .cover-page {
-                min-height: 100vh;
+            .cover-content {
+                min-height: 50vh;
                 display: flex;
                 flex-direction: column;
                 align-items: center;
                 justify-content: center;
-                padding: 60px 0;
-                border-bottom: 1px solid #eee;
+                text-align: center;
+                padding: 20px;
+                max-width: 800px;
+                width: 100%;
+                page-break-after: always;
             }
+
             .section-title {
                 font-size: 1.8rem;
                 font-weight: 600;
@@ -1402,15 +1406,16 @@ function buildProposalHtml() {
                 line-height: 1.2;
                 font-weight: 300;
             }
-            .client-info {
-                margin-top: 3rem;
-                font-size: 1.1rem;
-                text-align: center;
-                line-height: 1.8;
-            }
-            .client-info strong {
-                color: #2c3e50;
+            .cover-title {
+                font-size: 2.5rem;
                 font-weight: 600;
+                color: #2c3e50;
+                margin-bottom: 40px;
+            }
+
+            .client-info {
+                font-size: 1.2rem;
+                line-height: 1.8;
             }
             .project-details {
                 margin-top: 4rem;
@@ -1429,6 +1434,7 @@ function buildProposalHtml() {
         `;
 
 }
+
 
 function generatePDF() {
     // 1. Get included sections (those with checked 'Include in Proposal')
