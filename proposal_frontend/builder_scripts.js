@@ -735,171 +735,171 @@ function getSectionsForPDF() {
     return sections;
 }
 
-function buildProposalHtml() {
-    // Get all included sections (with .section-live-preview checked)
-    const includedSections = Array.from(document.querySelectorAll('.proposal-section')).filter(section => {
-        const cb = section.querySelector('.section-live-preview');
-        return cb && cb.checked;
-    });
+// function buildProposalHtml() {
+//     // Get all included sections (with .section-live-preview checked)
+//     const includedSections = Array.from(document.querySelectorAll('.proposal-section')).filter(section => {
+//         const cb = section.querySelector('.section-live-preview');
+//         return cb && cb.checked;
+//     });
 
-    let htmlSections = '';
+//     let htmlSections = '';
 
-    includedSections.forEach((section, idx) => {
-        const $section = $(section);
-        const titleEl = section.querySelector('h2, h1');
-        const sectionTitle = titleEl ? titleEl.innerText : 'Section';
-        const sectionContent = generateSectionContent($section);
+//     includedSections.forEach((section, idx) => {
+//         const $section = $(section);
+//         const titleEl = section.querySelector('h2, h1');
+//         const sectionTitle = titleEl ? titleEl.innerText : 'Section';
+//         const sectionContent = generateSectionContent($section);
 
-        // Cover Page
-        if (idx === 0 && section.id === 'cover-section') {
-            htmlSections += `
-                <div class="section pdf-section cover-page">
-                    <div class="cover-content">
-                        <div style="font-size:2.5rem;">${section.querySelector('#proposalTitle') ? section.querySelector('#proposalTitle').value : 'Consultancy Services Proposal'}</div>
-                        <div style="margin-top:40px; font-size:1.2rem;">
-                            <b>Prepared for:</b> ${section.querySelector('#clientName') ? section.querySelector('#clientName').value : ''}<br>
-                            <b>Project Address:</b> ${section.querySelector('#projectAddress') ? section.querySelector('#projectAddress').value : ''}<br>
-                            <b>Date:</b> ${section.querySelector('#proposalDate') ? section.querySelector('#proposalDate').value : ''}
-                        </div>
-                    </div>
-                </div>
-            `;
-        } else {
-            // Other sections
-            htmlSections += `
-                <div class="section pdf-section">
-                    <div class="section-title">${sectionTitle}</div>
-                    <hr class="hr" />
-                    <div class="section-content">${sectionContent}</div>
-                </div>
-            `;
-        }
+//         // Cover Page
+//         if (idx === 0 && section.id === 'cover-section') {
+//             htmlSections += `
+//                 <div class="section pdf-section cover-page">
+//                     <div class="cover-content">
+//                         <div style="font-size:2.5rem;">${section.querySelector('#proposalTitle') ? section.querySelector('#proposalTitle').value : 'Consultancy Services Proposal'}</div>
+//                         <div style="margin-top:40px; font-size:1.2rem;">
+//                             <b>Prepared for:</b> ${section.querySelector('#clientName') ? section.querySelector('#clientName').value : ''}<br>
+//                             <b>Project Address:</b> ${section.querySelector('#projectAddress') ? section.querySelector('#projectAddress').value : ''}<br>
+//                             <b>Date:</b> ${section.querySelector('#proposalDate') ? section.querySelector('#proposalDate').value : ''}
+//                         </div>
+//                     </div>
+//                 </div>
+//             `;
+//         } else {
+//             // Other sections
+//             htmlSections += `
+//                 <div class="section pdf-section">
+//                     <div class="section-title">${sectionTitle}</div>
+//                     <hr class="hr" />
+//                     <div class="section-content">${sectionContent}</div>
+//                 </div>
+//             `;
+//         }
 
-        // Add page break if not the last included section
-        if (idx < includedSections.length - 1) {
-            htmlSections += `<div class="page-break"></div>`;
-        }
-    });
+//         // Add page break if not the last included section
+//         if (idx < includedSections.length - 1) {
+//             htmlSections += `<div class="page-break"></div>`;
+//         }
+//     });
 
-    // Compose final HTML
-    return `
-        <html>
-        <head>
-        <style>
-            body { 
-                font-family: 'Arial','Georgia', serif; 
-                color: #333;
-                line-height: 1.6;
-                margin: 0;
-                padding: 40px 0;
-            }
-            .cover-content {
-                min-height: 50vh;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                justify-content: center;
-                text-align: center;
-                padding: 20px;
-                max-width: 800px;
-                width: 100%;
-                page-break-after: always;
-            }
+//     // Compose final HTML
+//     return `
+//         <html>
+//         <head>
+//         <style>
+//             body { 
+//                 font-family: 'Arial','Georgia', serif; 
+//                 color: #333;
+//                 line-height: 1.6;
+//                 margin: 0;
+//                 padding: 40px 0;
+//             }
+//             .cover-content {
+//                 min-height: 50vh;
+//                 display: flex;
+//                 flex-direction: column;
+//                 align-items: center;
+//                 justify-content: center;
+//                 text-align: center;
+//                 padding: 20px;
+//                 max-width: 800px;
+//                 width: 100%;
+//                 page-break-after: always;
+//             }
 
-            .section-title {
-                font-size: 1.8rem;
-                font-weight: 600;
-                color: #2c3e50;
-                margin-bottom: 1.2rem;
-                padding-bottom: 0.4rem;
-                border-bottom: 2px solid #3498db;
-                text-transform: uppercase;
-                letter-spacing: 1px;
-            }
-            .logo { 
-                margin-bottom: 40px;
-                width: 150px;
-                opacity: 0.9;
-            }
-            .section.pdf-section {
-                max-width: 680px;
-                margin: 0 auto;
-                padding: 40px 0;
-                page-break-after: always;
-            }
-            .section-content {
-                font-size: 1rem;
-                text-align: justify;               
-            }                
-            .hr {
-                border: none;
-                border-top: 1px solid #ddd;
-                margin: 2rem 0;
-            }
+//             .section-title {
+//                 font-size: 1.8rem;
+//                 font-weight: 600;
+//                 color: #2c3e50;
+//                 margin-bottom: 1.2rem;
+//                 padding-bottom: 0.4rem;
+//                 border-bottom: 2px solid #3498db;
+//                 text-transform: uppercase;
+//                 letter-spacing: 1px;
+//             }
+//             .logo { 
+//                 margin-bottom: 40px;
+//                 width: 150px;
+//                 opacity: 0.9;
+//             }
+//             .section.pdf-section {
+//                 max-width: 680px;
+//                 margin: 0 auto;
+//                 padding: 40px 0;
+//                 page-break-after: always;
+//             }
+//             .section-content {
+//                 font-size: 1rem;
+//                 text-align: justify;               
+//             }                
+//             .hr {
+//                 border: none;
+//                 border-top: 1px solid #ddd;
+//                 margin: 2rem 0;
+//             }
             
-            table {
-                width: 100%;
-                border-collapse: collapse;
-                margin: 1.5rem 0;
-                box-shadow: 0 1px 3px rgba(0,0,0,0.1);              
-            }
-            th {
-                background-color: #2c3e50;
-                color: white;
-                padding: 0.8rem;
-                text-align: left;
-                font-weight: 600;
-            }
-            td {
-                padding: 0.8rem;
-                border-bottom: 1px solid #ecf0f1;
-                vertical-align: top;
-            }
-            tr:nth-child(even) {
-                background-color: #f8f9fa;
-            }
-            .cover-title {
-                font-size: 2.8rem;
-                color: #2c3e50;
-                margin-bottom: 1.5rem;
-                text-align: center;
-                line-height: 1.2;
-                font-weight: 300;
-            }
-            .cover-title {
-                font-size: 2.5rem;
-                font-weight: 600;
-                color: #2c3e50;
-                margin-bottom: 40px;
-            }
+//             table {
+//                 width: 100%;
+//                 border-collapse: collapse;
+//                 margin: 1.5rem 0;
+//                 box-shadow: 0 1px 3px rgba(0,0,0,0.1);              
+//             }
+//             th {
+//                 background-color: #2c3e50;
+//                 color: white;
+//                 padding: 0.8rem;
+//                 text-align: left;
+//                 font-weight: 600;
+//             }
+//             td {
+//                 padding: 0.8rem;
+//                 border-bottom: 1px solid #ecf0f1;
+//                 vertical-align: top;
+//             }
+//             tr:nth-child(even) {
+//                 background-color: #f8f9fa;
+//             }
+//             .cover-title {
+//                 font-size: 2.8rem;
+//                 color: #2c3e50;
+//                 margin-bottom: 1.5rem;
+//                 text-align: center;
+//                 line-height: 1.2;
+//                 font-weight: 300;
+//             }
+//             .cover-title {
+//                 font-size: 2.5rem;
+//                 font-weight: 600;
+//                 color: #2c3e50;
+//                 margin-bottom: 40px;
+//             }
 
-            .client-info {
-                font-size: 1.2rem;
-                line-height: 1.8;
-            }
-            .project-details {
-                margin-top: 4rem;
-                font-size: 1.05rem;
-            }
-            @page {
-                size: A4;
-                margin: 20mm;
-            }
-            
-
-
+//             .client-info {
+//                 font-size: 1.2rem;
+//                 line-height: 1.8;
+//             }
+//             .project-details {
+//                 margin-top: 4rem;
+//                 font-size: 1.05rem;
+//             }
+//             @page {
+//                 size: A4;
+//                 margin: 20mm;
+//             }
             
 
 
-        </style>
-        </head>
-        <body>
-        ${htmlSections}
-        </body>
-        </html>
-        `;
+            
 
-}
+
+//         </style>
+//         </head>
+//         <body>
+//         ${htmlSections}
+//         </body>
+//         </html>
+//         `;
+
+// }
 
 
 // Function that actually generates the PDF, when clicked on download button

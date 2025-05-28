@@ -4,6 +4,8 @@ const fs = require('fs');
 const puppeteer = require('puppeteer');
 const bodyParser = require('body-parser');
 const { PDFDocument } = require('pdf-lib');
+const path = require('path');
+
 
 
 const app = express();
@@ -24,6 +26,7 @@ app.post('/api/generate-mixed-pdf', async (req, res) => {
             day: 'numeric'
         });
 
+        let sectionCounter = 1;
         const pdfBuffers = [];
         for (const section of sections) {
             const page = await browser.newPage();
@@ -37,8 +40,8 @@ app.post('/api/generate-mixed-pdf', async (req, res) => {
                     <meta charset="utf-8">
                     <title>Section</title>
                     <style>
-                        body { font-family: Arial, sans-serif; margin: 0; padding: 40px; color: #333;
-                line-height: 1.6;}
+  body { font-family: Arial, sans-serif; margin: 0; padding: 20px; color: #333;
+                line-height: 1.0;}
                         table.preview-table { width: 100%; border-collapse: collapse; }
                         table.preview-table th, table.preview-table td { border: 1px solid #888; padding: 8px; }
                         /* Compact table inside landscape */                      
@@ -71,15 +74,15 @@ app.post('/api/generate-mixed-pdf', async (req, res) => {
                             page-break-after: always;
                         }
 
-                        .section-title {
-                            font-size: 1.8rem;
+                        .section-header {
+                            font-size: 1.0rem;
                             font-weight: 600;
                             color: #2c3e50;
                             margin-bottom: 1.2rem;
-                            padding-bottom: 0.4rem;
-                            border-bottom: 2px solid #3498db;
+                            // padding-bottom: 0.4rem;
+                            border-bottom: 2px solid #2c3e50;
                             text-transform: uppercase;
-                            letter-spacing: 1px;
+                            // letter-spacing: 1px;
                         }
                         .logo { 
                             margin-bottom: 40px;
@@ -146,6 +149,8 @@ app.post('/api/generate-mixed-pdf', async (req, res) => {
                             margin-top: 4rem;
                             font-size: 1.05rem;
                         }
+
+
                         
 
 
@@ -178,6 +183,14 @@ app.post('/api/generate-mixed-pdf', async (req, res) => {
             `
             });
             pdfBuffers.push(buffer);
+
+            // Save htmlContent to a file for debugging
+         
+            const debugHtmlPath = path.join(__dirname, `debug_section_${sectionCounter}.html`);
+            //fs.writeFileSync(debugHtmlPath, htmlContent);
+            console.log(`Saved debug HTML to ${debugHtmlPath}`);
+            sectionCounter++;
+
             await page.close();
         }
         await browser.close();
